@@ -22,7 +22,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://hdong.space/archives/page/2/">
+    <link rel="canonical" href="http://hdong.space/page/3/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -46,7 +46,7 @@
 <body ontouchstart="" class="animated fadeIn">
 <!-- Navigation -->
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="false" data-istags="false
-" data-ishome="false">
+" data-ishome="true">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header page-scroll">
@@ -123,6 +123,126 @@
 <!-- Main Content -->
 
 
+<style>
+
+    .custom-haojen-container .post-preview:nth-of-type(1),
+    .custom-haojen-container .post-preview-poetry:nth-of-type(1) {
+        text-align: center;
+        background-repeat: no-repeat;
+        border-radius: 3px;
+        background-size: cover;
+        padding: 0;
+        height: 300px;
+        display: table;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.16);
+    }
+
+    /*去掉诗歌的背景图片*/
+    .custom-haojen-container .post-preview-poetry:nth-of-type(1) {
+        background-image: none !important;
+        background-color: rgba(255, 248, 220, 0.5);
+    }
+
+    .custom-haojen-container .post-preview:nth-child(1) h2,
+    .custom-haojen-container .post-preview:nth-child(1) .post-meta,
+    .custom-haojen-container .post-preview:nth-child(1) .post-subtitle {
+        text-shadow: 0 0 40px rgba(0, 0, 0, 1);
+        letter-spacing: 1px;
+        color: #fff;
+        margin-top: 0;
+        padding-left: 60px;
+        padding-right: 60px;
+    }
+
+    .custom-haojen-container .post-preview:nth-child(1) .post-meta {
+        font-size: .9em;
+        font-weight: 300;
+        margin-top: 0;
+    }
+
+    .custom-haojen-container .post-preview-poetry:nth-child(1) .post-subtitle {
+        letter-spacing: 6px;
+        font-size: 18px;
+        font-family: unset;
+        font-weight: 400;
+        color: rgba(0, 0, 0, .75)
+    }
+
+    /*不显示摘要*/
+    .custom-haojen-container .post-preview:nth-child(1) .post-content-preview {
+        display: none
+    }
+
+    /*只第一个显示背景图片*/
+    .custom-haojen-container .post-preview:not(:nth-child(1)) {
+        background-image: none !important;
+    }
+
+    /*第一个分界线去掉*/
+    .custom-haojen-container hr:nth-of-type(1) {
+        display: none;
+    }
+
+    /*主题*/
+    .custom-haojen-container .post-preview:nth-of-type(1) > a {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    /*诗词标题*/
+    .custom-haojen-container .post-preview-poetry:nth-child(1) h2 {
+        font-size: 35px;
+        font-family: STKaiti;
+        color: rgba(0, 0, 0, .8);
+    }
+
+    .custom-haojen-container .post-preview-poetry:nth-of-type(1) .post-meta {
+        color: #0e2231;
+    }
+
+    @media (max-width: 768px) {
+        .custom-haojen-container .post-preview:nth-child(1) {
+            height: 240px;
+        }
+
+        .custom-haojen-container .post-preview-poetry:nth-child(1) h2 {
+            font-size: 28px !important;
+            margin-top: 0;
+        }
+
+        .custom-haojen-container .post-preview:nth-child(1) .post-subtitle {
+            font-size: 18px;
+            font-weight: 400;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .custom-haojen-container .post-preview:nth-of-type(1) > a {
+            padding: 20px
+        }
+    }
+
+    /*手机屏幕*/
+    @media (max-width: 400px) {
+        .custom-haojen-container .post-preview:nth-child(1) {
+            height: 195px;
+        }
+
+        .custom-haojen-container .post-preview-poetry:nth-child(1) h2 {
+            font-size: 20px !important;
+        }
+
+        .custom-haojen-container .post-preview:nth-child(1) .post-subtitle {
+            font-size: 16px;
+        }
+
+        .custom-haojen-container .post-preview:nth-child(1) a {
+            padding: 30px 20px;
+        }
+    }
+</style>
+
 <!-- Page Header -->
 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 visible-xs-block visible-sm-block">
     <div class="row">
@@ -150,22 +270,23 @@
 
 
 <div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/05/pca/">
+    <a href="/2017/03/mini-server/">
         <h2 class="post-title">
-            主成分分析的原理与实践
+            Ubuntu系统配置篇
         </h2>
         <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-16
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-03-01
         </p>
         
         <h3 class="post-subtitle">
-            Principal Components Analysis Algorithm
+            Set up a Mini Ubuntu Personal Server
         </h3>
         
         <div class="post-content-preview">
             <p>
-                介绍主成分分析（Principal Components Analysis， PCA）和之前说到的线性判别分析一样，都是一种广泛使用的数据将维方法。PCA是一个和LDA非常相关的算法，从推导、求解、到算法最终的结果，都有着相当的相似，不过它和LDA也有一些不同的地方。
-首先，PCA是一种无监督的..
+                基本配置有一些软件和事情基本上装完系统是必须需要装的，个人的习惯如下
+
+sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop gitsudo apt-get dist-upgrade #升级..
             </p>
         </div>
     </a>
@@ -177,21 +298,24 @@
 
 
 <div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/05/lda/">
+    <a href="/2016/10/miRouter/">
         <h2 class="post-title">
-            线性判别分析的原理与实践
+            小米路由器Mini配置汇总
         </h2>
         <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-14
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-10-07
         </p>
         
         <h3 class="post-subtitle">
-            Linear Discriminant Analysis Algorithm
+            Management and Configuration for Xiaomi Router Mini
         </h3>
         
         <div class="post-content-preview">
             <p>
-                介绍线性判别分析（Linear Discriminant Analysis, LDA）是一种有监督式的数据降维方法，是在机器学习和数据挖掘中一种广泛使用的经典算法。LDA的希望将带上标签的数据（点），通过投影的方法，投影到维度更低的空间中，使得投影后的点，按类别区分成一簇一簇的情况，并且相同类别..
+                刷入 Openwrt小米路由器要刷openwrt的话，主要分成以下几步：
+
+首先去小米路由器官网下载最新的开发版固件，把路由器固件升级成开发版系统，只要在你的路由器设置菜单里面选择手动升级系统即可，具体请参考这里
+刷好开发版后，用手机连接路由器，下载小米路由器APP，安装打开，按步骤绑定你的路由..
             </p>
         </div>
     </a>
@@ -203,21 +327,21 @@
 
 
 <div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/05/pointers-part2/">
+    <a href="/2016/10/binary-search-analysis/">
         <h2 class="post-title">
-            Understanding the Pointers Advanced
+            Analysis of Binary Search
         </h2>
         <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-06
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-10-03
         </p>
         
         <h3 class="post-subtitle">
-            理解C/C++指针类型进阶
+            二分查找性质分析
         </h3>
         
         <div class="post-content-preview">
             <p>
-                IntroductionThis blog is the second one that talking about the pointers. In the previous one, I talked about what is the pointer and why the type of..
+                BackgroundDays before, I was studying the tree structure. In tree search operation, we need to find a minimum element in a node that is bigger (in t..
             </p>
         </div>
     </a>
@@ -229,179 +353,21 @@
 
 
 <div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/04/pointers-part1/">
+    <a href="/2016/10/endian-problem/">
         <h2 class="post-title">
-            Understanding the Pointers in C/C++
+            Endian Problem in Coding
         </h2>
         <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-16
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-10-02
         </p>
         
         <h3 class="post-subtitle">
-            理解C/C++指针类型
+            编程中的大小端问题
         </h3>
         
         <div class="post-content-preview">
             <p>
-                IntroductionPointers are most frequently used variable type in programming languages like C/C++. In this blog, I want to share my understandings abo..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/04/3d-array/">
-        <h2 class="post-title">
-            Dynamically Create N-D array in C
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-15
-        </p>
-        
-        <h3 class="post-subtitle">
-            C语言里面动态创建N维数组的方法
-        </h3>
-        
-        <div class="post-content-preview">
-            <p>
-                Traditional wayIn a C program, If we want to create an N-dimension array in heap (dynamically), we need to allocate the memory space step by step. F..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/04/strong-weak-symbol/">
-        <h2 class="post-title">
-            Strong and Weak Symbols in GCC
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-15
-        </p>
-        
-        <h3 class="post-subtitle">
-            GCC里面的强符号和弱符号
-        </h3>
-        
-        <div class="post-content-preview">
-            <p>
-                MotivationGlobal variables are powerful but have the risk of being altered carelessly. Under most cases, we can add static modifier on this global v..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/04/hexo-mathjax/">
-        <h2 class="post-title">
-            Hexo 添加 MathJax 支持
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-09
-        </p>
-        
-        <h3 class="post-subtitle">
-            Add the Support of MathJax in Hexo
-        </h3>
-        
-        <div class="post-content-preview">
-            <p>
-                背景介绍HEXO是一个基于Node.Js的静态个人博客软件，可以将自己写的Markdown形式的文章渲染成静态网页。通过和Github结合，可以很方便的搭建自己的博客，具体可以参考这篇文章搭建。
-在我们写博客的时候，难免要遇到公式，尤其是在写一些理论性比较强的博客的时候，这个时候我们就需要在网页..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/04/ipsec-vpn/">
-        <h2 class="post-title">
-            Ubuntu14.04 搭建 IPSec VPN
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-09
-        </p>
-        
-        <h3 class="post-subtitle">
-            Set up IPSec VPN in Ubuntu 14.04
-        </h3>
-        
-        <div class="post-content-preview">
-            <p>
-                背景现在PPTP-VPN已经不安全了，虽然搭建PPTP服务很简单，安全对于我们一般用户来说也不说很在意，但是比较麻烦的是MAC OSX以及IOS的最新版本已经强制将PPTP服务从系统中移除，无法使用之前便捷的VPN服务，因此搭建一个新一代安全的VPN服务还是很有必要的。
-L2TP/IPsec V..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/04/bug-crash-function-call/">
-        <h2 class="post-title">
-            BUG-Crash When Calling Function
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-08
-        </p>
-        
-        <h3 class="post-subtitle">
-            BUG-调用函数就崩溃
-        </h3>
-        
-        <div class="post-content-preview">
-            <p>
-                BackgroundRecently, one of my teammate asked me to help him to debug a program. The behavior of the program was so strange that makes him unable to ..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  " style="background-image: url('/imgs/default-post-cover.jpg')">
-    <a href="/2017/03/speedup-binary-search/">
-        <h2 class="post-title">
-            Speedup the Binary Search
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-03-15
-        </p>
-        
-        <h3 class="post-subtitle">
-            加快二分查找的速度
-        </h3>
-        
-        <div class="post-content-preview">
-            <p>
-                IntroductionBinary search is known as the fastest search algorithm on a sorted array. Though it works pretty good in most cases, the performance und..
+                Introduction to EndianAs we know, the storage unit of modern computer system is Byte and each byte is 8-bit long. Most of the programming language h..
             </p>
         </div>
     </a>
@@ -418,13 +384,9 @@ L2TP/IPsec V..
 <ul class="pager">
     
     <li class="previous">
-        <a href="/archives/">&larr; Newer Posts</a>
+        <a href="/page/2/">&larr; Newer Posts</a>
     </li>
     
-    
-    <li class="next">
-        <a href="/archives/page/3/">Older Posts &rarr;</a>
-    </li>
     
 </ul>
 
