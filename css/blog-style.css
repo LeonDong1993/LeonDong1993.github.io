@@ -883,11 +883,11 @@ img::-moz-selection {
     .one-tag-list .post-preview .post-meta {
         font-size: 18px;
     }
-	
+
 	.one-archive-list .post-preview {
 		margin-left: 40px;
 	}
-	
+
 	.archive-month {
 		margin-left: 20px;
 	}
@@ -1168,7 +1168,7 @@ img::-moz-selection {
 }
 .post-preview > a > .post-title{
     margin-bottom: 0;
-    font-weight: 200;
+    font-weight: bold;
     text-shadow: 0 0 1px rgba(0,0,0,.15);
 }
 @media screen and (max-width: 500px) {
