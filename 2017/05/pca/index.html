@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        主成分分析的原理与实践｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2017/05/pca/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>主成分分析的原理与实践</h1>
+                    
+                    <h2 class="subheading">Principal Components Analysis Algorithm</h2>
+                    
+                    <span class="meta">
+                         作者 Hailiang Dong
+                        <span>
+                          日期 2017-05-16
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#algorithm"
+                           title="algorithm">algorithm</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            主成分分析的原理与实践
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>主成分分析（Principal Components Analysis， PCA）和之前说到的线性判别分析一样，都是一种广泛使用的数据将维方法。PCA是一个和LDA非常相关的算法，从推导、求解、到算法最终的结果，都有着相当的相似，不过它和LDA也有一些不同的地方。</p>
+<p>首先，PCA是一种无监督的数据降维方法。也就是说，他的输入数据没有标签来指示它是哪一个类别的。其次，它的降维目标和LDA不同。它的目标是通过某种线性投影，将高维的数据映射到低维的空间中表示，并期望在所投影的维度上数据的方差最大（损失的信息最少），以此使用较少的数据维度，同时保留住较多的原数据点的特性，投影时没有利用任何数据内部的分类信息。<br><img src="/figs/pca/pca_vs_lda.png" alt="Illustration of PCA and LDA"><br>如上图所示，图的左边是PCA，它所作的只是将整组数据整体映射到最方便表示这组数据的坐标轴上，映射时没有利用任何数据内部的分类信息。<br>图的右边是LDA，可以明显看出，两类输入映射到了另外一个坐标轴上，有了这样一个映射，两组数据之间的就变得更易区分了(在低维上就可以区分，减少了很大的运算量)。</p>
+<h2 id="PCA的理论基础"><a href="#PCA的理论基础" class="headerlink" title="PCA的理论基础"></a>PCA的理论基础</h2><h3 id="最大化方差理论"><a href="#最大化方差理论" class="headerlink" title="最大化方差理论"></a>最大化方差理论</h3><p>在信号处理中认为信号具有较大的方差，噪声有较小的方差，信噪比就是信号与噪声的方差比，越大越好。对于一组二维的数据来说，我们希望选择一个具有最大化方差的投影方向，这样子损失的信息（噪声）可以达到最小，也就是说方差最大和损失的信息最少这两个目标在PCA中是等价的。其实，通过两种不同的目标去做推导，得到的理论结果也是一样的（具体可见参考文献2）。</p>
+<h3 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h3><p>在这边文章里面，我们采用最大化数据投影后的方差作为优化目标决定数据的投影方向。<br>假设现在的投影向量为$w$（假设投影到一维的情形），所有数据的集合用符号$D$表示，数据总量为$N$。首先我们获取原始数据的中心，<br>$$<br>u &#x3D; \frac{1}{N} \sum_{x \in D} x<br>$$<br>那么经过投影后，数据中心为$u’ &#x3D; w^Tu$. 那么投影后数据的方差可以表示为<br>$$<br>Var &#x3D; \sum_{i&#x3D;1}^N {(w^Tx_i - u’)^2} &#x3D; \sum_{i&#x3D;1}^N w^T(x_i - u)(x_i - u)^Tw<br>$$<br>令$ S&#x3D; \sum_{i&#x3D;1}^N (x_i - u)(x_i - u)^T$，则$ Var &#x3D;  \sum_{i&#x3D;1}^N w^TSw $. 事实上，当数据只有两维的时候：<br>$$S &#x3D; \begin{bmatrix}<br>{\sum (d_1 - \overline{d_1})^2}&amp;{\sum (d_1 - \overline{d_1})(d_2 - \overline{d_2})}\<br>{\sum (d_1 - \overline{d_1})(d_2 - \overline{d_2})} &amp; \sum (d_2 - \overline{d_2})^2<br>\end{bmatrix}$$<br>其中$d_i$表示 x 的第 i 个维度的数据，$\overline{d_i}$表示其均值。所以，不难发现：<br>$$S &#x3D; N \times \begin{bmatrix}<br>cov(d_1,d_1)&amp; cov(d_1,d_2)\<br>cov(d_2,d_1) &amp; cov(d_2,d_2)<br>\end{bmatrix}$$<br>也就是说，事实上$S$是协方差矩阵的常数倍，又因为常数不影响投影方向的求解，所以我们可以在求解的时候使用数据的协方差矩阵即可。<br>回到推导中来，要想使$ Var &#x3D;  \sum_{i&#x3D;1}^N w^TSw $达到最大，同样我们添加约束条件$||w^Tw||&#x3D;1$并使用拉格朗日乘子法，得到<br>$$<br>L &#x3D; w^TSw - \lambda(w^Tw)<br>$$<br>因此，通过求导得到<br>$$<br>\frac{dL}{dw} &#x3D; 2Sw-\lambda 2w<br>$$<br>令上式等于0, 求取最大值，得到<br>$$<br>Sw &#x3D; \lambda w<br>$$<br>于是该问题再次变成了一个求取矩阵S的特征向量问题。当降维数量大于1的时候，我们只需要选其矩阵S前K大特征值所对应的特征向量即可。</p>
+<h2 id="一个简单的例子"><a href="#一个简单的例子" class="headerlink" title="一个简单的例子"></a>一个简单的例子</h2><p>假如说我们现在有一组二维的数据，并且我们想通过PCA方法将数据降低到一维。原始数据的图像表示如下。<br><img src="/figs/pca/original.png" alt="original data fig"><br>按照上面的理论推导，为了得到最佳的投影方向，我们需要计算矩阵$S$。但是通过上述分析我们也可以直接使用数据的协方差矩阵。<br>$$<br>C &#x3D; \begin{bmatrix}<br>cov(d_1,d_1)&amp; cov(d_1,d_2)\<br>cov(d_2,d_1) &amp; cov(d_2,d_2)<br>\end{bmatrix}<br>&#x3D; \begin{bmatrix}<br>0.6166 &amp; 0.6154\<br>0.6154 &amp; 0.7165<br>\end{bmatrix}<br>$$<br>可以看到，该矩阵是一个对称的矩阵，元素$C_{1,2}$和$C_{2,1}$是相等的。接下来，我们计算协方差矩阵$C$的特征值和特征向量，得到两个特征值0.0491，1.2840和对应的特征向量，分别为<br>$$<br>v_1 &#x3D; [-0.7352,0.6779], v_2 &#x3D; [0.6779,0.7352]<br>$$<br>注意，由于协方差矩阵是对称的，这里得到的两个特征向量一定是正交的，这一点和LDA方法不太一样。在这两个特征向量里面选取特征值较大的对应的特征向量，即$w &#x3D; [0.6779,0.7352]$<br>接下来，通过这个向量，我们可以将原始数据降维到一维空间中，即<br>$$<br>FinalData &#x3D; oriData*w<br>$$<br>这样我们就将一组二维的数据投影到了一维的空间中，并且尽最大可能保留的数据的信息。<br>为了将投影后的数据可视化出来，我们可以通过投影向量$w$重建原始数据$oriData$，因为根据上式，我们可以得到<br>$$<br>oriData’ &#x3D; FinalData \cdot w^{-1} &#x3D; FinalData \cdot w^T<br>$$<br>值得注意的是，重建后的数据和原始数据是不完全一样的，因为我们在做投影的时候已经损失了一部分的信息。事实上，重建后的数据刚好就是原始数据在投影向量上的那些点构成的数据，具体可见下图。</p>
+<p><img src="/figs/pca/final_res.png" alt="final result presenation"></p>
+<p>在这幅图中，蓝色的点表示重建后（投影数据的二维表示），可以看出PCA最大限度地保持了数据点之间的相对位置关系，降低了数据的维度，方便后期的处理。</p>
+<p>总的来说, 假如说你的数据是$M \times N$维度的，也就是一共有N个数据，每个数据时M维度的，可以得到一个MxM的协方差矩阵，对协方差矩阵求其特征值以及特征向量。选取其中几个特征维度，一般是<strong>特征向量较大的几个特征维度</strong>，假如说这样得到了K个维度，则把这K个特征值对应的向量拿出来，得到一个KxM的特征矩阵。将这个矩阵和原始的数据矩阵相乘，即<br>$$ EigenMat_{k \times m} \times Data_{m \times n} &#x3D; NewData_{k \times n} $$</p>
+<p>这样得的到数据$new data$就降低成为K维的了。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">clc;clear;close all;</span><br><span class="line">mdata=[<span class="number">2.5</span> <span class="number">2.4</span></span><br><span class="line"><span class="number">0.5</span> <span class="number">0.7</span></span><br><span class="line"><span class="number">2.2</span> <span class="number">2.9</span></span><br><span class="line"><span class="number">1.9</span> <span class="number">2.2</span></span><br><span class="line"><span class="number">3.1</span> <span class="number">3.0</span></span><br><span class="line"><span class="number">2.3</span> <span class="number">2.7</span></span><br><span class="line"><span class="number">2</span> <span class="number">1.6</span></span><br><span class="line"><span class="number">1</span> <span class="number">1.1</span></span><br><span class="line"><span class="number">1.5</span> <span class="number">1.6</span></span><br><span class="line"><span class="number">1.1</span> <span class="number">0.9</span>];</span><br><span class="line"></span><br><span class="line">x=mdata(:,<span class="number">1</span>);</span><br><span class="line">y=mdata(:,<span class="number">2</span>);</span><br><span class="line"><span class="built_in">plot</span>(x,y,<span class="string">&#x27;^r&#x27;</span>);</span><br><span class="line">covmatrix=cov(x,y);</span><br><span class="line">[V,D]=eig(covmatrix);</span><br><span class="line"><span class="comment">% the importance of PCA</span></span><br><span class="line">fvector=V(:,<span class="number">2</span>);</span><br><span class="line">finaldata=mdata*fvector;</span><br><span class="line"><span class="comment">% reconstruct the data</span></span><br><span class="line">lastdata=finaldata*fvector&#x27;;</span><br><span class="line">lx=lastdata(:,<span class="number">1</span>);</span><br><span class="line">ly=lastdata(:,<span class="number">2</span>);</span><br><span class="line"><span class="built_in">hold</span> on;</span><br><span class="line">axis([<span class="number">0</span>,<span class="number">4</span>,<span class="number">0</span>,<span class="number">4</span>])</span><br><span class="line"><span class="built_in">plot</span>(lx,ly,<span class="string">&#x27;b^-&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a target="_blank" rel="noopener" href="http://www.cs.otago.ac.nz/cosc453/student_tutorials/principal_components.pdf">http://www.cs.otago.ac.nz/cosc453/student_tutorials/principal_components.pdf</a><br><a target="_blank" rel="noopener" href="http://www.cnblogs.com/LeftNotEasy/archive/2011/01/08/lda-and-pca-machine-learning.html">http://www.cnblogs.com/LeftNotEasy/archive/2011/01/08/lda-and-pca-machine-learning.html</a></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/05/kmeans/" data-toggle="tooltip" data-placement="top"
+                           title="K-Means 算法基础">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/05/linear_discriminant_analysis/" data-toggle="tooltip" data-placement="top"
+                           title="线性判别分析的原理与实践">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCA%E7%9A%84%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80"><span class="toc-text">PCA的理论基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%A4%A7%E5%8C%96%E6%96%B9%E5%B7%AE%E7%90%86%E8%AE%BA"><span class="toc-text">最大化方差理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B"><span class="toc-text">推导过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="toc-text">一个简单的例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-text">参考文献</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

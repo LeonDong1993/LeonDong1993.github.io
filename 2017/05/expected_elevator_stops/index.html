@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        电梯的停留楼层数量分析｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2017/05/expected_elevator_stops/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>电梯的停留楼层数量分析</h1>
+                    
+                    <h2 class="subheading">Expection of Elevator Stops</h2>
+                    
+                    <span class="meta">
+                         作者 Leon Dong
+                        <span>
+                          日期 2017-05-29
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#math"
+                           title="math">math</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            电梯的停留楼层数量分析
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>假设现在一个楼栋共有M层，有一个电梯一次性最多能装N个人。问题是，假如说现在该电梯在一楼进入了N个乘客，不考虑从中间楼层上的乘客问题，那么该电梯大概需要停留几次才能将所有的乘客送到目的地。也就是说，这N个乘客选出<strong>不同楼层的数量X</strong>的期望是多少？</p>
+<h2 id="按照定义求解"><a href="#按照定义求解" class="headerlink" title="按照定义求解"></a>按照定义求解</h2><p>首先，我们可以分析出随机变量X可能的取值为$[1,min(M,N)]$，对于每一个可能的取值$x$，我们分析一下有多少种可能性。也就是说要分析N个人在M个楼层里面选，最终选出$x$个不同的楼层有几种情况。</p>
+<h3 id="错误的解法"><a href="#错误的解法" class="headerlink" title="错误的解法"></a>错误的解法</h3><p>N个人在M个楼层里面选，最终选出$x$个不同的楼层，则我们先选出$x$个不同的楼层，然后在N个人里面选出$x$人，让每个人都选不同的楼层。接下来，对于剩下$N-x$个人，随便选择楼层即可。因此，按照这种思路，我们可以得到可能性的数量为<br>$$<br>N_x &#x3D; C_M^x C_N^x A_x^x M^{N-x}<br>$$<br>然而，这样求出来的结果是不对的，原因是对于$C_N^x A_x^x M^{N-x}$来说它是存在重复的。也就是说，你一开始选出来的$x$个人和后面剩余的$N-x$个人的选择不能分开考虑。</p>
+<h3 id="正确的解法"><a href="#正确的解法" class="headerlink" title="正确的解法"></a>正确的解法</h3><p>我们先来求$N_1$，也就是说N个人在M个楼层里面选，最终选出1个不同的楼层。这个很简单，既然大家都选择同样的楼层，由于楼层总共也就M层，所以$N_1 &#x3D; C_M^1 \cdot Y(N,1,1)$。其中$Y(N,1,1)$代表N个人在只有1个选择的情况下，选出了1个不同的值的情况数量。</p>
+<p>接下来，我们再来分析$N_2$，也就是说N个人在M个楼层里面选，最终选出2个不同的楼层。首先，同样的，我们任意选择出来两个楼层。所以我们可以得到$N_2 &#x3D; C_M^2 \cdot Y(N,2,2)$。这个问题的重点就在于$Y(N,2,2)$怎么求。<br>首先我们知道N个人在2中选择里面选，最多可能的选择可能性为$2^N$，所以$Y(N,2,2) &lt; 2^N$。这是因为这N个在2个选择里面选，可能出现全选一样的情况，我们需要在$2^N$里面把这一部分情况剪掉，才能得到$Y(N,2,2)$。那么N个在2个选择里面选，选出了一个不同的值有几种可能性呢，也就是说我们要求$Y(N,2,1)$的值。</p>
+<p>求解$Y(N,2,1)$和上面基本一样，也就是说，我们先选择一个值，则接下来的问题就变成了$Y(N,1,1)$，换句话说$Y(N,2,1) &#x3D; C_2^1 Y(N,1,1)$，因此我们可以得到<br>$$<br>N_2 &#x3D; C_M^2 \cdot Y(N,2,2) &#x3D;  C_M^2 \cdot (2^N -  Y(N,2,1))  \<br>&#x3D;  C_M^2 \cdot ( 2^N -  C_2^1 Y(N,1,1)) &#x3D;  C_M^2 \cdot ( 2^N - 2)<br>$$</p>
+<p>同理，我们可以求得<br>$$<br>N_3 &#x3D; C_M^3 \cdot Y(N,3,3) &#x3D; C_M^3 \cdot (3^N -  Y(N,3,2) - Y(N,3,1)) \<br>&#x3D; C_M^3 \cdot (3^N -  C_3^2 Y(N,2,2) - C_3^1 Y(N,1,1))<br>$$<br>由于$Y(N,2,2),Y(N,1,1)$都是已知的，所以$N_3$就可以求出来了。到了这里，我们不难发现对于$N_x$，我们有<br>$$<br>N_x &#x3D; C_M^x Y(N,x,x) &#x3D;C_M^x (x^N - \sum_{i&#x3D;1}^{x-1} {C_x^{i} \cdot Y(N,i,i)})<br>$$<br>有了$N_x$之后，随机变量X的值为$x$的概率$p_x$即为$\frac{N_x}{M^N}$，所以随机变量$X$的期望为</p>
+<p>$$<br>E(X)  &#x3D; \sum_{x&#x3D;1}^{min(N,M)} \frac{N_x}{M^N} \cdot x<br>$$</p>
+<h2 id="简单的求解方法"><a href="#简单的求解方法" class="headerlink" title="简单的求解方法"></a>简单的求解方法</h2><p>可以看到上面的求解方式非常复杂，事实上我们只要利用期望的线性性质对随机变量进行拆分即可很快的求解该问题。定义随机变量$Z_i$代表在电梯在第$i$个楼层停留的次数，则随机变量$Z_i$只有0和1两个取值，且$Z_i$取0的概率就是N个人没有一个人选到该楼层的概率，即$q &#x3D; (\frac{M-1}{M})^N $。因此，$Z_i$的期望就是$1 -(\frac{M-1}{M})^N$。</p>
+<p>由于随机变量$X$和$Z_i$有如下关系，<br>$$<br>X &#x3D; Z_1 + Z_2 + …. +Z_M<br>$$<br>因此，$E(X) &#x3D; M*E(X_1) &#x3D; M - M(\frac{M-1}{M})^N$。这两种方式求出来的结果是一样的，我在python里面进行了验证。从上式也可以看出，当楼层数量趋于无穷大的时候，E(X) 趋向于N，也就是说大家选的楼层基本上都是不同的，这也和我们的直觉相符。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/05/c_read_unsigned/" data-toggle="tooltip" data-placement="top"
+                           title="C语言无符号数据读取">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/05/multi_bucket_hash/" data-toggle="tooltip" data-placement="top"
+                           title="多桶哈希的冲突数量分析">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%89%E7%85%A7%E5%AE%9A%E4%B9%89%E6%B1%82%E8%A7%A3"><span class="toc-text">按照定义求解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E7%9A%84%E8%A7%A3%E6%B3%95"><span class="toc-text">错误的解法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E7%A1%AE%E7%9A%84%E8%A7%A3%E6%B3%95"><span class="toc-text">正确的解法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E6%B1%82%E8%A7%A3%E6%96%B9%E6%B3%95"><span class="toc-text">简单的求解方法</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

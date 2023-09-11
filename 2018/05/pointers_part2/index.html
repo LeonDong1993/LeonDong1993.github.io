@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        Understanding the Pointers Advanced｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2018/05/pointers_part2/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>Understanding the Pointers Advanced</h1>
+                    
+                    <h2 class="subheading">理解C/C++指针类型进阶</h2>
+                    
+                    <span class="meta">
+                         作者 Hailiang Dong
+                        <span>
+                          日期 2018-05-06
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#c/c++"
+                           title="c/c++">c/c++</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            Understanding the Pointers Advanced
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>This blog is the second one that talking about the pointers. In the <a href="/2017/04/16/pointers-01/">previous one</a>, I talked about what is the pointer and why the type of pointers is very important. In this blog, I want to talk about the mysterious relationship between the pointer and the array.</p>
+<h2 id="The-name-of-the-array"><a href="#The-name-of-the-array" class="headerlink" title="The name of the array"></a>The name of the array</h2><p>In <code>C/C++</code>, when we create a array like <code>int a[6]</code>, what is the name <code>a</code> means? Actually, <code>a</code> is the address of the first element and can be use like a pointer. For example,</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a[<span class="number">6</span>];</span><br></pre></td></tr></table></figure>
+<p>Here, <code>a</code> is just like a pointer. If we want to access the third element in this array, we can use <code>*(a+3)</code> instead of using <code>a[3]</code>. Similarly, we can use the following codes to traverse the whole array.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">6</span>;i++)&#123;</span><br><span class="line">    foo = *(a+i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>However, the following way is wrong.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">6</span>;i++)&#123;</span><br><span class="line">    foo = *a;</span><br><span class="line">    a++; <span class="comment">//error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This is because that <code>a</code> is a constant value, which cannot be altered. But we can create a pointer ‘p’ and do traverse like the code above.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *p =a;</span><br><span class="line"><span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">6</span>;i++)&#123;</span><br><span class="line">    <span class="type">int</span> foo = *p;</span><br><span class="line">    p++; <span class="comment">//actually plus 4</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Note that <code>a</code> is already a pointer (address), and we create a pointer <code>p</code> points to the same address like <code>a</code>.</p>
+<h3 id="a-is-not-a-pointer"><a href="#a-is-not-a-pointer" class="headerlink" title="a is not a pointer"></a><code>a</code> is not a pointer</h3><p>As stated before, <code>a</code> is the address of the first element and it can used like a pointer. However, it is not a pointer. We can use two different methods to verify the fact.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> a[<span class="number">6</span>];</span><br><span class="line">	<span class="type">int</span> *p = a ;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d %d\n&quot;</span>,<span class="keyword">sizeof</span>(a),<span class="keyword">sizeof</span>(p)); <span class="comment">// -- A</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%p %p %p\n&quot;</span>,a,&amp;a, &amp;p); <span class="comment">// B</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Execute the code above in any 64-bit machine, at line A, you will get output <code>24 8</code>. It indicated that <code>a</code> is not a pointer otherwise the size of <code>a</code> should be <code>8</code>. Another evidence can be found at line B, the first two address are same while the third are different from that. On my computer, it gives the output <code>0x7ffee2b8edb0 0x7ffee2b8edb0 0x7ffee2b8eda8</code>. It indicates that <code>a</code> cannot be a pointer otherwise <code>&amp;a</code> and <code>a</code> must have different addresses just like <code>&amp;a</code> and <code>&amp;p</code> since two variables cannot have the same address.</p>
+<h3 id="a-and-a"><a href="#a-and-a" class="headerlink" title="a and &amp;a"></a><code>a</code> and <code>&amp;a</code></h3><p>From the above example, we found another puzzling fact: <code>a</code> and <code>&amp;a</code> have the same address. What does this mean ? In fact, <code>a</code> is the address of the first element and <code>&amp;a</code> is the begining address of the whole array. Therefore, they must have the same value but there are some important difference we need to know.</p>
+<p>First, it is about the element type. For <code>a</code>, it is an address of <code>int</code> element, therefore we can create a pointer <code>int *p =a;</code>. For <code>&amp;a</code>, it is an address of the whole array, if you still using <code>int *p = &amp;a;</code>, the compiler will give you a warning says <code>initialization from incompatible pointer type</code>. In other words, the type of <code>&amp;a</code> is not <code>int *</code>. Actually, we need a pointer point to the whole array other than the single element, i.e., <code>int (*p)[6] = &amp;a;</code>. Here, we call <code>p</code> as array pointer.</p>
+<p>The difference in type leads to the difference when conducting add&#x2F;minus operations.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a[<span class="number">5</span>]=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line"><span class="type">int</span> *ptr=(<span class="type">int</span> *)(&amp;a+<span class="number">1</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d,%d&quot;</span>,\*(a+<span class="number">1</span>),\*(ptr<span class="number">-1</span>));</span><br></pre></td></tr></table></figure>
+<p>The output of this program is <code>2 5</code>, let me tell you why. It is easy to understand that <code>\*(a+1) = 2 </code> but why <code>\*(ptr-1)</code> is 5 other than 1. The reason is that <code>&amp;a+1</code> differ from <code>a+1</code>. As stated before, <code>&amp;a</code> is a pointer points to the whole array. Therefore, when calculate <code>&amp;a+1</code>, the actual address is <code>a + sizeof(array) = a + sizeof(int)*5</code>.<br>Since <code>ptr</code> is casted into <code>int *</code> type, <code>ptr -1</code> equals <code>a + sizeof(int)*4</code>, i.e. the address of element <code>a[4]</code>.</p>
+<p>Last, when using array pointer to traverse the array, the right way is using <code>(*p)[i]</code>. Do not use <code>p[i]</code> since it equals <code>*(p+i)</code>. Since <code>p+i</code> is actually <code>p+i*sizeof(array)</code>, it is definitely not right!</p>
+<h3 id="Pointer-array-and-array-pointer"><a href="#Pointer-array-and-array-pointer" class="headerlink" title="Pointer array and array pointer"></a>Pointer array and array pointer</h3><p>Many people cannot distinguish between array pointer and pointer array. With the above understandings, let us talk about some difference between pointer array and array pointer.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> *p_arr[<span class="number">5</span>]; <span class="comment">// pointer array</span></span><br><span class="line">	<span class="type">int</span> arr[<span class="number">5</span>]; <span class="comment">//normal array</span></span><br><span class="line">	<span class="type">int</span> (*arr_p)[<span class="number">5</span>] = &amp;arr; <span class="comment">// array pointer</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%ld %ld\n&quot;</span>, <span class="keyword">sizeof</span>(p_arr),<span class="keyword">sizeof</span>(arr_p));</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%p %p\n&quot;</span>, p_arr+<span class="number">1</span> ,arr_p+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>First, it is about the size. Pointer array is an array contains a lot of pointers while array pointer is just a pointer points to an array. Therefore, pointer array occupies more memory space than array pointer. In the above example, the size of <code>p_arr</code> is <code>5*sizeof(int *) = 40</code> while the size of <code>arr_p</code> is only 8 bytes.</p>
+<p>Second, it is about the add or minus operations. For example <code>p_arr+1</code> is the address of the second element in the <code>p_arr</code> while <code>arr_p+1</code> directly points to the address <code>arr + 6</code>, which already exceed the range of <code>arr</code>.</p>
+<p>Actually, array pointers are often used in 2-D array.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> a[<span class="number">2</span>][<span class="number">2</span>]=&#123;&#123;<span class="number">1</span>,<span class="number">2</span>&#125;,&#123;<span class="number">3</span>,<span class="number">4</span>&#125;&#125;;</span><br><span class="line">	<span class="type">int</span> (*p)[<span class="number">2</span>] = a;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, (*p)[<span class="number">0</span>]);</span><br><span class="line">	p = p +<span class="number">1</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, (*p)[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In this example, the output is <code>1 3</code> and <code>a</code> is a 2-D array contains two rows. In line 2, we create a pointer points to one row (a element in 2-D array) of <code>a</code>. Since <code>a</code> is the address of the first element (a 1-D array), we do not need <code>&amp;a</code> in this example. In line 3, we print the first element in the first row. In line 4, we move the pointer <code>p</code> points to the second row. In line 5, we print the first element of the second row, which is 5.</p>
+<h3 id="An-error-caused-by-initialization"><a href="#An-error-caused-by-initialization" class="headerlink" title="An error caused by initialization"></a>An error caused by initialization</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="type">int</span> a[<span class="number">3</span>][<span class="number">2</span>]=&#123;(<span class="number">0</span>,<span class="number">1</span>),(<span class="number">2</span>,<span class="number">3</span>),(<span class="number">4</span>,<span class="number">5</span>)&#125;;</span><br><span class="line">   <span class="type">int</span> *p;</span><br><span class="line">   p=a[<span class="number">0</span>];</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>,p[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The right result of the program is 1 other than 0 since the programmer use <code>()</code> in initialization process. Actually, in this example, <code>a[3][2]=&#123;(0,1),(2,3),(4,5)&#125;</code> equals <code>a[3][2] =&#123;1,3,5&#125;</code>.</p>
+<h2 id="Declaration-and-definition"><a href="#Declaration-and-definition" class="headerlink" title="Declaration and definition"></a>Declaration and definition</h2><p>When a project contains multiple files, if we define a array in file1 but declare it as a pointer in file2, what will happen?</p>
+<h3 id="Defined-as-an-array-and-declared-as-a-pointer"><a href="#Defined-as-an-array-and-declared-as-a-pointer" class="headerlink" title="Defined as an array and declared as a pointer"></a>Defined as an array and declared as a pointer</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//file1.c</span></span><br><span class="line"><span class="type">int</span> arr[<span class="number">4</span>]=&#123;<span class="number">10</span>,<span class="number">9</span>,<span class="number">8</span>,<span class="number">7</span>&#125;;</span><br><span class="line"><span class="comment">//file2.c</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span> *arr;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, arr[<span class="number">0</span>];</span><br></pre></td></tr></table></figure>
+<p>In this case, in file2, when we access <code>arr[0]</code>, what is the detailed process ? We all know that we when access <code>p[0]</code>, it is same to access the address that <code>p</code> points to. In this example, what is the address <code>arr</code> points to ? Actually, it is <code>10</code> (32-bit system). Therefore, when we want to access <code>arr[0]</code>, the program crashed.</p>
+<h3 id="Defined-as-an-pointer-and-declared-as-a-array"><a href="#Defined-as-an-pointer-and-declared-as-a-array" class="headerlink" title="Defined as an pointer and declared as a array"></a>Defined as an pointer and declared as a array</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//file1.c</span></span><br><span class="line"><span class="type">char</span> *p = <span class="string">&quot;abcdefgh&quot;</span>;</span><br><span class="line"><span class="comment">//file2.c</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">char</span> p[];</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, p[<span class="number">0</span>];</span><br></pre></td></tr></table></figure>
+<p>In this example, in file1, suppose the value of <code>p</code> is <code>0x12345678</code>, i.e., constant string <code>abcdefgh</code> is saved at address <code>0x12345678</code>. In file2, when we access <code>p[0]</code>, since compiler regard it as a char array with value  <code>0x12345678</code>, therefore, we have <code>p[0] = 0x12</code>.</p>
+<p>These two examples tell us that pointer and array are two different things. Although they have some similarities, they are different in various aspects.</p>
+<h2 id="Pointer-function-and-function-pointer"><a href="#Pointer-function-and-function-pointer" class="headerlink" title="Pointer function and function pointer"></a>Pointer function and function pointer</h2><p>Pointer function is a special kind of function that return pointers. For example,</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *<span class="title function_">get_array</span><span class="params">(<span class="type">int</span> size)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> (<span class="type">int</span> *)<span class="built_in">malloc</span>(size);</span><br><span class="line">&#125;</span><br><span class="line">````</span><br><span class="line"></span><br><span class="line">Function pointer is a point that points to a function. Just like <span class="built_in">array</span> pointer, it is just a special kind of pointers.</span><br><span class="line">```c</span><br><span class="line"><span class="type">void</span> <span class="title function_">fun1</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;A\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">fun2</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;B\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">void</span> (*fp)(<span class="type">void</span>);</span><br><span class="line">	fp = fun1; <span class="comment">// ok</span></span><br><span class="line">	fp();</span><br><span class="line">	fp = &amp;fun2; <span class="comment">// ok</span></span><br><span class="line">	fp();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>In this example, I create a function pointer <code>fp</code>. Then, we can let <code>fp</code> points to either <code>fun1</code> or <code>fun2</code>. Note that for functions, <code>fun</code> and <code>&amp;fun</code> are both the entrance address of the function, they are the same.</p>
+<h2 id="Array-as-the-parameter"><a href="#Array-as-the-parameter" class="headerlink" title="Array as the parameter"></a>Array as the parameter</h2><p>In <code>c</code> language, the array cannot be passed into the function. We can only pass the pointer into the function.<br>For example, when we defined a function <code>void fun(char a[3][4]);</code>, the parameter <code>char a[3][4]</code> can also be rewritten as <code>char (*p)[4]</code> or <code>char a[ ][4]</code>.<br>Note that it cannot be rewritten as <code>char a[][]</code>, otherwise when we do <code>a+1</code>, compiler will not know how to calculate the real address.</p>
+<p>All in all, in <code>c</code> language, the size of the first dimension can be omitted, but not for any other dimensions.</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="http://c.biancheng.net/cpp/u/cjinjie4/">http://c.biancheng.net/cpp/u/cjinjie4/</a></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2019/01/find_majority_linear/" data-toggle="tooltip" data-placement="top"
+                           title="Find Majority Element in Linear Time">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/04/speedup_binary_search/" data-toggle="tooltip" data-placement="top"
+                           title="Speedup the Binary Search">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-name-of-the-array"><span class="toc-text">The name of the array</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#a-is-not-a-pointer"><span class="toc-text">a is not a pointer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#a-and-a"><span class="toc-text">a and &amp;a</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pointer-array-and-array-pointer"><span class="toc-text">Pointer array and array pointer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#An-error-caused-by-initialization"><span class="toc-text">An error caused by initialization</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Declaration-and-definition"><span class="toc-text">Declaration and definition</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Defined-as-an-array-and-declared-as-a-pointer"><span class="toc-text">Defined as an array and declared as a pointer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Defined-as-an-pointer-and-declared-as-a-array"><span class="toc-text">Defined as an pointer and declared as a array</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pointer-function-and-function-pointer"><span class="toc-text">Pointer function and function pointer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Array-as-the-parameter"><span class="toc-text">Array as the parameter</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

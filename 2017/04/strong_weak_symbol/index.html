@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        Strong and Weak Symbols in GCC｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2017/04/strong_weak_symbol/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>Strong and Weak Symbols in GCC</h1>
+                    
+                    <h2 class="subheading">GCC里面的强符号和弱符号</h2>
+                    
+                    <span class="meta">
+                         作者 Hailiang Dong
+                        <span>
+                          日期 2017-04-15
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#coding"
+                           title="coding">coding</a>
+                        
+                        <a class="tag" href="/tags/#c/c++"
+                           title="c/c++">c/c++</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            Strong and Weak Symbols in GCC
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><p>Global variables are powerful but have the risk of being altered carelessly. Under most cases, we can add <code>static</code> modifier on this global variables such that these variables can only be altered in the file. However, there do have some situations that we have to use global variables across different files. In this case, we usually encounter an error happened in linking phase, i.e., <code>error:multiple definition</code>. Some of these errors are obvious and easily to debug while others can be really puzzling. Here I will give you an example that I encountered.</p>
+<p>Suppose we have two source files, and the content is</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"><span class="type">int</span> gvar;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;shared var is %d\n&quot;</span>,gvar);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// aux.c</span></span><br><span class="line"><span class="type">int</span> gvar = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+<p>then we run the command</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -o test main.c test.c</span><br></pre></td></tr></table></figure>
+<p>and everything goes smoothly. That is to say, the code presented is correct, variable <code>gvar</code> is not <code>multiple definition</code>. Note that there is no <code>extern</code> modifier for <code>gvar</code> and the result of this program is 5, which means that the variable <code>gvar</code> is shared across two files. This is quite strange since we know that if two global variable have the same name in a project, it will incur <code>multiple definition</code> errors.</p>
+<p>What is more, I found something more interesting. When we change the postfix of these two files,</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mv main.c main.cpp</span><br><span class="line">mv test.c test.cpp</span><br><span class="line">gcc -o test test.cpp main.cpp  #error:multiple definition</span><br></pre></td></tr></table></figure>
+<p>the compiler told me that there is a <code>multiple definition</code> error for variable <code>gvar</code>. How does this happen, the content in the files are not changed and we only changed the file name. An intuitive explanation is that the different of <code>c++</code> and <code>c</code> cause the puzzling bug since <code>.cpp</code> is the file type for <code>c++</code> and <code>.c</code> is for <code>c</code>.</p>
+<h2 id="Strong-and-weak-symbols"><a href="#Strong-and-weak-symbols" class="headerlink" title="Strong and weak symbols"></a>Strong and weak symbols</h2><p>Actually, these strange phenomenons are all caused by one features provided by GCC, called strong and weak symbols. For global variables, it was divided into three types.</p>
+<ul>
+<li>initialized to a non-zero value</li>
+<li>initialized to zero</li>
+<li>not initialized, just defined</li>
+</ul>
+<p>In GCC, the first two types of global variables is called strong symbols that are store in <code>.DATA</code> and <code>.BSS</code> section. As for the third type, it is called weak symbols, and <strong>it is saved in <code>.COMMON</code> section</strong>.</p>
+<p>There are three rules that must be followed for these variables</p>
+<ul>
+<li>only one strong symbol is allowed with the same name</li>
+<li>if there exists one strong symbol and several weak symbols, the weak symbols are overrode by strong symbols</li>
+<li>if there exists several weak symbols, GCC will choose one that have the largest size (memory occupation).</li>
+</ul>
+<p>Now we can clarify why the c version program can run without any errors. In <code>aux.c</code>, we define a strong symbol <code>gvar</code> and it is initialized to 5. In <code>main.c</code>, we only define the variable <code>gvar</code>, and it is a weak symbol. When we compile the program using GCC, the <code>gvar</code> in <code>main.c</code> is overrode by <code>gvar</code> in <code>aux.c</code> according to the second rule. Therefore, the program runs smoothly and the result is 5. If we change the <code>main.c</code> as follows, it will incur <code>multiple definition</code> also.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">// main.c</span></span><br><span class="line"><span class="type">int</span> gvar=<span class="number">0</span>; <span class="comment">// this is a strong symbol</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;shared var is %d\n&quot;</span>,gvar);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Wait, there is still one puzzling problem left. Why the program incurs <code>multiple definition</code> error when the file name is changed ?<br>Actually, when we change the file type from <code>.c</code> to <code>.cpp</code>, the GCC compiler will use the rules for <code>c++</code> problem to compile this c program. Therefore, to answer this question, we need to investigate the difference when GCC handle the strong&#x2F;weak symbol between <code>.cpp</code> and <code>.c</code>.</p>
+<p>Here is my conclusion. For c program, if you define an global variable and not initialize it, GCC will regard it as weak symbol. However, for <code>c++</code> program, the default type is strong variable. That is to say, for line <code>int gvar;</code> in <code>main.cpp</code>, it is a strong symbol. Since we have another strong symbol with the same name in <code>aux.cpp</code>, the compiler gives the error.</p>
+<p>If you want to use weak symbol in a <code>c++</code> program, you need to explicitly declare the variable is weak. For example, if we write a <code>c++</code> program like this,</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="comment">// main.cpp</span></span><br><span class="line"><span class="type">int</span> __attribute__((weak))  gvar=<span class="number">2</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;shared var is %d\n&quot;</span>,gvar);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// aux.cpp</span></span><br><span class="line"><span class="type">int</span> gvar = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+<p>the program will have the same behavior like the c version.</p>
+<p>To avoid the bugs like that, we can use the <code>-fno-common</code> option provided by GCC, it will regard all variables as strong symbols. However, in some cases, we have to use weak symbols (see next section). Therefore, we should develop a good coding habit. There are three rules we can follow,</p>
+<ul>
+<li>eliminate all global variables (hard)</li>
+<li>add <code>static</code> modifier for global variables, provide interfaces for accesses (medium)</li>
+<li>initialize all global variables, such as zero (easy)</li>
+</ul>
+<h2 id="Function-of-s-w-symbols"><a href="#Function-of-s-w-symbols" class="headerlink" title="Function of s. w. symbols"></a>Function of s. w. symbols</h2><p>It seems that we should use strong symbols instead of weak symbols in programming, so why does GCC provide weak symbols? As far as I known, weak symbols are useful for library functions. For example, if the symbols in library are weak symbols, users can easily override some library functions for personal objectives. What’s more, programmers can declare some weak symbols of library functions. If the program is linked with the library, program can provide more powerful features, Otherwise, the program can still run without any errors. Here is a simple example.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">__attribute__((weak)) <span class="type">int</span> <span class="title function_">pthread_create</span><span class="params">( <span class="type">pthread_t</span>*, <span class="type">const</span> <span class="type">pthread_attr_t</span>*,</span></span><br><span class="line"><span class="params">	<span class="type">void</span>*(*)(<span class="type">void</span>*), <span class="type">void</span>*)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (pthread_create)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;This is multi-thread version!\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;This is single-thread version!\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>If the program is not linked with <code>pthread</code> library, it will run in single-thread mode. Otherwise, it can run in multi-thread mode.</p>
+<h2 id="Manage-your-global-variables"><a href="#Manage-your-global-variables" class="headerlink" title="Manage your global variables"></a>Manage your global variables</h2><p>If you have to use global variables, here is an way to manage your global variables in an comfortable way. Create two files called <code>global_var.h</code> and <code>global_var.c</code>. Declare all global variables using <code>extern</code> modifier in <code>global_var.h</code>. Initialize all global variables in <code>global_var.c</code>. For instance,</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// global_var.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span>   GLOBAL_VAR</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span>   GLOBAL_VAR</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">int</span>  g_A;</span><br><span class="line"><span class="keyword">extern</span> <span class="type">char</span> g_B;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// global_var.c</span></span><br><span class="line"><span class="type">int</span>  g_A = <span class="number">0</span>;</span><br><span class="line"><span class="type">char</span> g_B = <span class="string">&#x27;g&#x27;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>When you need to use global variables in other files, such as <code>main.c</code>, simple include <code>global_var.h</code> and you will be able to access all global variables.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;global_var.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;var is %d\n&quot;</span>,g_A);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Through this way, you can easily manage your global variables. However, <strong>be sure to use global variables as less as possible</strong>.</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="http://www.bitscn.com/CL/741921.html">http://www.bitscn.com/CL/741921.html</a><br><a target="_blank" rel="noopener" href="http://blog.csdn.net/astrotycoon/article/details/8008629">http://blog.csdn.net/astrotycoon/article/details/8008629</a><br><a target="_blank" rel="noopener" href="http://blog.csdn.net/hu_jiacheng/article/details/8800540">http://blog.csdn.net/hu_jiacheng/article/details/8800540</a></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/05/linear_discriminant_analysis/" data-toggle="tooltip" data-placement="top"
+                           title="线性判别分析的原理与实践">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/04/hexo_mathjax/" data-toggle="tooltip" data-placement="top"
+                           title="Hexo 添加 MathJax 支持">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Motivation"><span class="toc-text">Motivation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Strong-and-weak-symbols"><span class="toc-text">Strong and weak symbols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Function-of-s-w-symbols"><span class="toc-text">Function of s. w. symbols</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Manage-your-global-variables"><span class="toc-text">Manage your global variables</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

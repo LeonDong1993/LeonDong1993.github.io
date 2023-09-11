@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/archives/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "false" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+
+<!-- Page Header -->
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 visible-xs-block visible-sm-block">
+    <div class="row">
+        <header class="intro-header">
+            <div class="container">
+                <div class="site-heading text-center">
+                    <div class="about-me">
+                        <!--移动端头部显示-->
+                        <img src="/imgs/head.jpg"/>
+                        <h5><a href="/about/">Leon Dong</a></h5>
+                        <p>Stay Hungry, Stay Foolish.</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+</div>
+<!-- Main Content -->
+<div class="container custom-haojen-container">
+    <!-- Post Container -->
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-12 col-xs-12 post-container">
+            <!-- Main Content -->
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2019/01/find_majority_linear/">
+        <h2 class="post-title">
+            Find Majority Element in Linear Time
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-01-08
+        </p>
+        
+        <h3 class="post-subtitle">
+            线性Majority查找算法
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                Problem DescriptionInput: an array of elements with size $N​$, and there exists an element $M​$ accounts for more than 50% of the array (called Majo..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2018/05/pointers_part2/">
+        <h2 class="post-title">
+            Understanding the Pointers Advanced
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2018-05-06
+        </p>
+        
+        <h3 class="post-subtitle">
+            理解C/C++指针类型进阶
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                IntroductionThis blog is the second one that talking about the pointers. In the previous one, I talked about what is the pointer and why the type of..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2018/04/speedup_binary_search/">
+        <h2 class="post-title">
+            Speedup the Binary Search
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2018-04-19
+        </p>
+        
+        <h3 class="post-subtitle">
+            加快二分查找的速度
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                IntroductionBinary search is known as the fastest search algorithm on a sorted array. Though it works pretty good in most cases, the performance und..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2018/04/pointers_part1/">
+        <h2 class="post-title">
+            Understanding the Pointers in C/C++
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2018-04-16
+        </p>
+        
+        <h3 class="post-subtitle">
+            理解C/C++指针类型
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                IntroductionPointers are most frequently used variable type in programming languages like C/C++. In this blog, I want to share my understandings abo..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2018/04/c_create_Nd_arry/">
+        <h2 class="post-title">
+            Dynamically Create N-D array in C
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2018-04-15
+        </p>
+        
+        <h3 class="post-subtitle">
+            C语言里面动态创建N维数组的方法
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                Traditional wayIn a C program, If we want to create an N-dimension array in heap (dynamically), we need to allocate the memory space step by step. F..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2018/04/bug_crash_function_call/">
+        <h2 class="post-title">
+            BUG-Crash When Calling Function
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2018-04-08
+        </p>
+        
+        <h3 class="post-subtitle">
+            BUG-调用函数就崩溃
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                BackgroundRecently, one of my teammate asked me to help him to debug a program. The behavior of the program was so strange that makes him unable to ..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2018/04/endian_problem/">
+        <h2 class="post-title">
+            Endian Problem in Coding
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2018-04-02
+        </p>
+        
+        <h3 class="post-subtitle">
+            编程中的大小端问题
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                Introduction to EndianAs we know, the storage unit of modern computer system is Byte and each byte is 8-bit long. Most of the programming language h..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2018/03/kmp_string_match/">
+        <h2 class="post-title">
+            KMP字符串匹配算法
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2018-03-07
+        </p>
+        
+        <h3 class="post-subtitle">
+            KMP String Match Algorithm
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                问题描述字符串匹配是一个很经典的问题，具体描述如下：
+
+给定两个字符串：主串S和模式串P，判断S中是否包含P，如果包含则返回S中出现的第一个P的位置（ S中出现的所有的P的位置），否则返回-1(NULL)。
+
+在下文中，为了便于分析，我们记主串S的长度为n，模式串P的长度为m。此外，我们用符号i..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2017/05/c_read_unsigned/">
+        <h2 class="post-title">
+            C语言无符号数据读取
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-29
+        </p>
+        
+        <h3 class="post-subtitle">
+            Truncation of Signed Numbers In C
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                背景像C语言这种语言对输入输出的要求极其严格，你必须要制定你读取的数据类型以及格式。现在的问题是如果你读取的时候指定了错误的数据类型，会发生什么？
+案例分析加入说你要读取64位无符号整数类型数据，所以你的程序可能大概是这样子的。
+12unsigned long val=0;scanf(&quot..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2017/05/expected_elevator_stops/">
+        <h2 class="post-title">
+            电梯的停留楼层数量分析
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-29
+        </p>
+        
+        <h3 class="post-subtitle">
+            Expection of Elevator Stops
+        </h3>
+        
+        <div class="post-content-preview">
+            <p>
+                问题描述假设现在一个楼栋共有M层，有一个电梯一次性最多能装N个人。问题是，假如说现在该电梯在一楼进入了N个乘客，不考虑从中间楼层上的乘客问题，那么该电梯大概需要停留几次才能将所有的乘客送到目的地。也就是说，这N个乘客选出不同楼层的数量X的期望是多少？
+按照定义求解首先，我们可以分析出随机变量X可..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+
+<!-- 翻页 pager -->
+
+<ul class="pager">
+    
+    
+    <li class="next">
+        <a href="/archives/page/2/">Older Posts &rarr;</a>
+    </li>
+    
+</ul>
+
+
+        </div>
+        <!-- Sidebar Container -->
+        <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+
+            <!-- About Me -->
+            <section class="visible-md visible-lg" style="padding: 0 18px">
+                <div class="short-about">
+                    <!--侧边栏头像-->
+                    
+                    <img src="/imgs/head.jpg"/>
+                    
+                    <h5><a href="/about/">Leon Dong</a></h5>
+                    
+                    <p>Stay Hungry, Stay Foolish.</p>
+                    
+                    <hr>
+                    <!-- SNS Link 社交 -->
+                    <ul class="list-inline">
+                        
+                        
+                        
+
+                        
+
+                        
+
+                        
+                        <li>
+                            <a target="_blank" href="https://github.com/LeonDong1993">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                            </a>
+                        </li>
+                        
+
+                        
+                        <li>
+                            <a target="_blank" href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                        </span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Featured Tags  标签 -->
+            
+            <section>
+                <div class="tags">
+                    
+                    
+                    <a href="/Tags/#coding" title="coding"
+                       rel="5">coding</a>
+                    
+                    
+                    
+                    <a href="/Tags/#math" title="math"
+                       rel="4">math</a>
+                    
+                    
+                    
+                    <a href="/Tags/#algorithm" title="algorithm"
+                       rel="8">algorithm</a>
+                    
+                    
+                    
+                    <a href="/Tags/#c/c++" title="c/c++"
+                       rel="7">c/c++</a>
+                    
+                    
+                    
+                    <a href="/Tags/#tutorial" title="tutorial"
+                       rel="4">tutorial</a>
+                    
+                    
+                </div>
+            </section>
+            
+
+            
+            <hr>
+            <h5 style="text-align: center;">Links</h5>
+            <ul class="list-inline" style="text-align: center;">
+                
+                <li><a href="https://leetcode.com/LeonDong1993/" target="_blank">Leetcode US</a></li>
+                
+                <li><a href="https://leetcode.cn/u/topo1993/" target="_blank">Leetcode CN</a></li>
+                
+            </ul>
+            
+
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        阿里笔试编程题-相亲的次数问题｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2017/05/alibaba_date_problem/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>阿里笔试编程题-相亲的次数问题</h1>
+                    
+                    <h2 class="subheading">Expection of Dating Problem (From Alibaba)</h2>
+                    
+                    <span class="meta">
+                         作者 Leon Dong
+                        <span>
+                          日期 2017-05-28
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#math"
+                           title="math">math</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            阿里笔试编程题-相亲的次数问题
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>一个未婚男青年要和N个女孩相亲，由于他不记录已经相亲过的女孩，而是每一次随机从这N个女孩中挑选一个进行相亲。由于相亲的女孩可能是已经相亲过的，那么现在的问题就是他平均要相亲多少次，才能将所有的女孩都相亲一遍（期望）。</p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>其实呢，这道题只是一道披着编程外表的数学题。他就是要求男孩相亲次数的期望。假设用随机变量$X$表示男孩按上述方式相亲完所有女孩的所需要的次数，那么题目要求的就是$E(X)$，数学上叫做随机变量的期望。</p>
+<p>对于离散的随机变量$X$来说，要求他的期望$E(X)$的一般方法就是根据定义来求。也就是说，计算出$X$的每一个可能的取值$x_i$以及对应的概率$p_i$，接下来我们就可以得到它的期望为<br>$$<br>E(X) &#x3D; \sum_{i} {x_i \cdot p_i}<br>$$<br>我们可以尝试以这个方式去求得上个问题的期望。首先,我们需要分析出变量$X$所有可能的取值范围。要相亲完N个女孩，考虑最好的情况，这个未婚男青年每次随机挑选到的刚好就是他还没有相亲的，那么他相亲的次数至少也为$N$。然而，这个男青年最多需要多少次，也就是说随机变量$X$的最大值可能是多少？通过简单的分析就可以知道，变量$X$的最大取值是趋于正无穷的，也就是说为了求得期望，我们可能要求一个数学级数，即$E(X) &#x3D; \sum_{i&#x3D;N}^{\infty} {i\cdot p_i}$。</p>
+<p>先不说这个级数如何求取的问题，这样求解期望的最大问题在于每一个值$i$对应的概率$p_i$是非常难求的。举个例子来说，N个女孩，男青年总共用了$2N$次完成相亲的概率$p_{2N}$是多少？这里面的可能性太多了，就算你能求出来共有$M$中可能，那么$p_{2N} &#x3D; M &#x2F; N^{2N}$，这里的运算很容易就溢出了，计算结果根本无法保证精确性。</p>
+<h2 id="问题求解"><a href="#问题求解" class="headerlink" title="问题求解"></a>问题求解</h2><p>为了正确的解决这个问题，我们需要利用期望函数$E$的线性性质来解决该问题。简单的来说，如果有一个随机变量$X &#x3D; w_1 Y_1 + w_2 Y_2$，那么$E(X) &#x3D; w_1E(Y_1) + w_2E(Y_2)$，其中$w_1,w_2$是常数。值得一提的是，这里面我们不需要变量$Y_1$和$Y_2$是相互独立的，哪怕他们相关期望的线性性质也依旧成立。</p>
+<p>所以，我们将上面的随机变量$X$进行拆分。首先定义随机变量$Y_i$代表<strong>当已经相亲的人数有$i-1$人时，每次随机选一个人相亲，相亲到一个没相亲过的人所需要的次数</strong>，所以我们就有了如下的关系<br>$$<br>X &#x3D; Y_1 +Y_2 + … + Y_N<br>$$<br>仔细体味一下上面的关系，它是为什么成立的，在这你就不具体分析了。</p>
+<p>有了这个公式之后，接下来的问题就是如何求随机变量$Y_i$的期望了。对于随机变量$Y_i$，我们可以分析出他的取值的可能性为$[1,\infty]$，这意味着求取$Y_i$的期望是一样要算级数。不过算级数可以通过数学工具，重点是在这种情况下，$Y_i$的每一种取值$y$对应的概率$p_y$很好求得。</p>
+<p>当已经相亲的人数有$i-1$人时，每次随机选一个人相亲，那么选出没有相亲过的人的概率即为$\frac{N-i+1}{N}$,选出相亲过的人的概率为$\frac{i-1}{N}$,令<br>$$<br>p &#x3D; \frac{N-i+1}{N},q &#x3D; \frac{i-1}{N}<br>$$<br>那么这就是一个二项分布，且$y$对应的概率$p_y&#x3D; q^{y-1}\cdot p$。也就是说前$y-1$次都选的是已经相亲过的，第$y$次选到了一个没有相亲过的。</p>
+<p>根据以上的推导，我们可以得到<br>$$<br>E(Y_i) &#x3D; \sum_{y &#x3D; 1}^{\infty} y\cdot q^{y-1}\cdot p<br>$$<br>为了求得该级数的值其实很简单，利用高中的知识就足够了。首先在公式的两边同时乘以$q$，我们得到<br>$$<br>qE(Y_i) &#x3D; \sum_{y &#x3D; 1}^{\infty} (y-1)\cdot q^{y-1}\cdot p<br>$$<br>将上面两个式子相减，得到<br>$$<br>(1-q)E(Y_i) &#x3D; p \cdot \sum_{y &#x3D; 1}^{\infty} q^{y-1} &#x3D; p  \frac{1 \cdot (1-q^{\infty})}{1-q} &#x3D; \frac{p}{1-q}<br>$$<br>所以我们可以得到<br>$$<br>E(Y_i) &#x3D; \frac{p}{(1-q)^2} &#x3D; \frac{1}{p}<br>$$</p>
+<p>所以，到此时，我们就可以很轻松的求得$X$的期望<br>$$<br>E(X) &#x3D; E(Y_1) +E(Y_2) + … +E(Y_N)&#x3D; \frac{1}{\frac{N}{N}} + \frac{1}{\frac{N-1}{N}} + \frac{1}{\frac{N-2}{N}} + … +\frac{1}{\frac{1}{N}}<br>$$<br>接下来就是变成求一下上面这个公式的值了，基本上C语言10行以内就解决了，求出来的结果精度较高且不会溢出。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/05/multi_bucket_hash/" data-toggle="tooltip" data-placement="top"
+                           title="多桶哈希的冲突数量分析">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/05/alibaba_stone_taking/" data-toggle="tooltip" data-placement="top"
+                           title="阿里算法工程师编程小测试-取石子游戏">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="toc-text">问题分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3"><span class="toc-text">问题求解</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

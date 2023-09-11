@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        小米路由器Mini配置汇总｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2016/10/xiaomi_router/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>小米路由器Mini配置汇总</h1>
+                    
+                    <h2 class="subheading">Management and Configuration for Xiaomi Router Mini</h2>
+                    
+                    <span class="meta">
+                         作者 Leon Dong
+                        <span>
+                          日期 2016-10-07
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#tutorial"
+                           title="tutorial">tutorial</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            小米路由器Mini配置汇总
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="刷入-Openwrt"><a href="#刷入-Openwrt" class="headerlink" title="刷入 Openwrt"></a>刷入 Openwrt</h2><p>小米路由器要刷openwrt的话，主要分成以下几步：</p>
+<ul>
+<li>首先去<a target="_blank" rel="noopener" href="http://www.miwifi.com/miwifi_download.html">小米路由器官网</a>下载最新的开发版固件，把路由器固件升级成开发版系统，只要在你的路由器设置菜单里面选择手动升级系统即可，具体请参考<a target="_blank" rel="noopener" href="http://www.miui.com/thread-2600824-1-1.html">这里</a></li>
+<li>刷好开发版后，用手机连接路由器，下载小米路由器APP，安装打开，按步骤绑定你的路由器（和你的小米账号绑定），之后就可以下载SSH工具了</li>
+<li>接下来去<a target="_blank" rel="noopener" href="http://www.miwifi.com/miwifi_download.html">小米路由器官网</a>，点击开放下面的开启SSH工具，下载SSH工具包，刷入路由器（将SSH文件放在U盘根目录，按住路由器上的reset重启刷入），开启SSH权限，具体过程可以参考<a target="_blank" rel="noopener" href="http://bbs.xiaomi.cn/t-10437841">这里</a></li>
+</ul>
+<p>至此，你的准备工作已经完毕。因为这一部分网上的教程实在太多了，而且一般也不会有什么坑，所以就不仔细介绍了。</p>
+<p>接下来，去openwrt中文网下载小米的<a target="_blank" rel="noopener" href="http://downloads.openwrt.org.cn/PandoraBox/Xiaomi-Mini-R1CM/">openwrt固件</a>，建议选择里面的stable版本，在2016年10月7日时有两个稳定版本r512和r1024. r1024版本比较纯净一点，基本上只集成了一些基本的功能，空闲空间大，比较适合老手折腾。r512版本集合了shadowsocks，transmission，迅雷等工具，更方便使用。而且实测过程中r512版本在折腾的过程中不太会出现莫名其妙的错误（后面会有一些解释），对于自己想加入Python等功能的来说也更方便配置。由于openwrt中文网貌似不太稳定，有时候上不去。为此，我把两个版本的固件上传到了<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1bX2dEQ">百度云</a>，欢迎下载。</p>
+<p>下载好固件之后，就是要利用WINSCP等工具把固件传到路由器里面，如果熟悉Linux的话也可以使用scp命令。一般来说可以放到<code>/tmp</code>下面，貌似这里是挂在RAM上的，所以空间还比较大，具体可参考<a target="_blank" rel="noopener" href="http://tieba.baidu.com/p/3618514879">百度贴吧</a>。接下来，利用SSH工具进入小米路由器，输入命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mtd -r write /tmp/PandoraBox_r1024.bin firmware</span><br></pre></td></tr></table></figure>
+<p>然后坐等系统重启，openwrt就刷好啦。不过可能上述命令无法执行（估计路由器出厂批次不同的问题），提示<code>couldnot open mtd device：firmware cant open device for writing</code>错误，这个时候吧上面的最后一个firmware更改成OS1即可刷入。</p>
+<h2 id="安装-Python"><a href="#安装-Python" class="headerlink" title="安装 Python"></a>安装 Python</h2><p>路由器安装了Python之后可玩性就大大增加了，对于动手能力强的programmer可以玩出很多花样，128MB的内存也足够大部分Python程序运行了。在安装python前，得先插个U盘，因为python总体来说占用空间比较大，直接往ROM那剩余的几个MB里面安装可能空间不够，另外以后安装其他软件就会比较麻烦。插完U盘后建议设置一下挂载点（用HUB挂多个设备容易区分），这个可以参考后面的<strong>自定义挂载点</strong>部分。<br>为了将程序安装进入我们的外置U盘，还需要编辑openwrt包管理器opkg的配置文件<code>/etc/opkg.conf</code>。这里面主要有两个地方需要修改</p>
+<blockquote>
+<p>dest root &#x2F;<br>dest ram &#x2F;tmp<br>lists_dir ext &#x2F;usb&#x2F;opkg-lists  # 1 建议修改这一行<br>option overlay_root &#x2F;overlay<br>dest usb &#x2F;usb&#x2F;opkg&#x2F;　# 2 添加这一行<br>src&#x2F;gz r2_base <a target="_blank" rel="noopener" href="http://downloads.openwrt.org.cn/PandoraBox/ralink/packages/base">http://downloads.openwrt.org.cn/PandoraBox/ralink/packages/base</a><br>src&#x2F;gz r2_management <a target="_blank" rel="noopener" href="http://downloads.openwrt.org.cn/PandoraBox/ralink/packages/management">http://downloads.openwrt.org.cn/PandoraBox/ralink/packages/management</a></p>
+</blockquote>
+<p>第一个地方是我建议修改的，这样使用<code>opkg update</code>之后，可以把软件仓库的信息保存的USB设备里面，以后就不用每次重启都要更新了，况且还可能突然连不上这个官方的软件源。第二个地方是必须添加的，后面的路径 <code>/usb/opkg</code>改成你U盘里面的某一个文件夹的路径即可。<br>接下来，执行<code>opkg update</code>更新软件源。完成后，依次输入以下指令即可完成python的安装。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Wget http://downloads.openwrt.org.cn/PandoraBox/ralink/packages/base/libc_0.9.33.2-1_ramips_24kec.ipk</span><br><span class="line">opkg -d usb install libc_0.9.33.2-1_ramips_24kec.ipk <span class="comment"># 标注</span></span><br><span class="line">opkg -d usb install libreadline</span><br><span class="line">opkg -d usb install python</span><br><span class="line">opkg -d usb install python-json</span><br><span class="line">opkg -d usb install python-curl</span><br><span class="line">opkg -d usb install python-openssl</span><br></pre></td></tr></table></figure>
+<p>上面的标注表示手动安装libc，貌似opkg包管理器无法自动安装，所以我们先用wget下载下来，然后本地安装（r1024版本默认已安装）。接下来几行命令都是依次从软件源里面安装相应的软件，如果有依赖的软件也会自动安装。安装完了之后别急着输入python，因为我们把python安装到了usb设备上面，所以需要配置一下链接库的路径来让系统找到python所需要的链接库在哪里。简单来说就是将下面两行添加到<code>/etc/profile</code>文件中。</p>
+<blockquote>
+<p>export PATH&#x3D;$PATH:&#x2F;usb&#x2F;opkg&#x2F;usr&#x2F;bin<br>export LD_LIBRARY_PATH&#x3D;$LD_LIBRARY_PATH:&#x2F;usb&#x2F;opkg&#x2F;usr&#x2F;lib</p>
+</blockquote>
+<p>添加完了之后执行<code>source /etc/profile</code>即可完成环境配置，这时候可以运行python来测试效果了。值得一提的是，第二行并不是所有情况都需要的，我在用r512固件是只加了第一行（网上大部分教程都是这样）就可以运行了。但是在r1024固件里面，会提示错误<code>can&#39;t open zlib.so.1</code>，最后找了很久的教程才找到是链接库路径的问题，添加上之后就完事了，总体来说安装python还是比较简单的。</p>
+<h2 id="安装-PPTP-VPN-服务器"><a href="#安装-PPTP-VPN-服务器" class="headerlink" title="安装 PPTP-VPN 服务器"></a>安装 PPTP-VPN 服务器</h2><p>在PandoraBox的软件库里面有PPTP-VPN服务器安装包，分别是</p>
+<blockquote>
+<p>pptpd - 1.4.0-1 - PopTop pptp server<br>pptpd-pandorabox - 1.4.0-1 - Modified PopTop pptp server.</p>
+</blockquote>
+<p>个人建议直接安装第二个，貌似是针对PandoraBox进行了相应的优化，而且配置起来也非常简单。输入命令<code>opkg install pptpd-pandorabox</code>完成软件安装，值得一提的是不建议将这种服务级别的软件安装到USB里面去。一个原因是配置起来会比较麻烦，第二个是开机启动可能会失败。</p>
+<p>安装完PPTP-VPN之后就是配置了，其配置文件为<code>/etc/config/pptpd</code>，用vim打开该文件，主要写入以下配置</p>
+<blockquote>
+<p>config service ‘pptpd’<br>        option ‘enabled’ ‘1’ # 设置为启用<br>        option ‘localip’ ‘192.168.0.1’ # 设置PPTP网段IP<br>        option ‘remoteip’ ‘192.168.0.20-50’ # 设置PPTP客户端的IP范围<br>        list ‘dnssvrs’ ‘192.168.1.1’  # 手动配置PPTP客户端的DNS服务器，可以忽略<br>config ‘login’ #配置一个用户<br>        option ‘username’ ‘user’<br>        option ‘password’ ‘pwd123’</p>
+</blockquote>
+<p>配置完了PPTP-VPN服务器之后，还需要让VPN所处的网段<code>192.168.0.0/24</code>能通过路由器所处的网段进行上网，这需要借助于<code>iptables</code>。具体的设置只需要在用户防火墙配置文件<code>/etc/firewall.user</code>里面添加如下配置</p>
+<blockquote>
+<p>iptables -A forwarding_rule -s 192.168.0.0&#x2F;24 -j ACCEPT # 接受转发<br>iptables -t nat -A POSTROUTING -s 192.168.0.0&#x2F;24 -j MASQUERADE  # 实现NAT网络转发<br>iptables -A INPUT -p gre -j ACCEPT #接受GRE协议</p>
+</blockquote>
+<p>之后就可以利用命令<code>/etc/init.d/pptpd start</code>开启PPTP服务器即可。</p>
+<h2 id="安装迅雷远程下载"><a href="#安装迅雷远程下载" class="headerlink" title="安装迅雷远程下载"></a>安装迅雷远程下载</h2><p>首先你需要去迅雷远程下载的<a target="_blank" rel="noopener" href="http://luyou.xunlei.com/thread-2216-1-1.html">官网</a>下载相应的安装包，如果你的路由器也是小米路由Mini的话，可以直接在<a target="_blank" rel="noopener" href="http://pan.baidu.com/s/1bpaNRt1">百度云</a>里面下载即可。下载完之后，同样利用WINSCP或scp命令等方式将该文件传入路由器的一个目录（最好就是你将要安装的地方）里面，这里拿<code>/usb/app/</code>举例。利用<code>cd</code>命令进入该目录，输入<code>unzip Xware_1031.zip</code>便可以得到一堆文件。</p>
+<p>这里面只有一个可执行文件portal，在命令行里面输入<code>./portal</code>即可运行迅雷了，命令的输出大概如下图所示</p>
+<p><img src="/figs/default/thunder.jpg" alt="portal run result"></p>
+<p>注意这里面的<code>THE ACTIVE CODE IS: tgnudq</code>，复制这个激活码 tgnudq，打开<a target="_blank" rel="noopener" href="http://yuancheng.xunlei.com/">迅雷远程官网</a>, 输入该激活码绑定该设备即可, 如果需要停止迅雷服务，在命令行输入<code>./portal -s</code>即可停止迅雷服务。如果你经常使用PT下载站，建议使用transmission来下载，迅雷一般是被屏蔽掉的。</p>
+<h2 id="其他设置"><a href="#其他设置" class="headerlink" title="其他设置"></a>其他设置</h2><h3 id="U盘格式的问题"><a href="#U盘格式的问题" class="headerlink" title="U盘格式的问题"></a>U盘格式的问题</h3><p>PandoraBox支持exFAT,ext4等文件系统，所以对于外置U盘可以选择很多文件系统。但是比较推荐的还是ext4文件系统，不推荐使用NTFS系统，因为这个在Linux里面可能性能表现会非常差。比较推荐的还是使用EXT系列的文件系统，这里就拿最新的ext4举例子。</p>
+<p>首先是给U盘分区，直接输入<code>fdisk /dev/sdb</code>进行分区，具体的分区方式可以查看命令里面的帮助，文件系统的类型选择83-Linux即可。分完区后，利用<code>mkfs.ext4 ^has_hournal,extent /dev/sd1</code>对得到的分区进行格式化。值得一提的是，由于ext4是日志型文件系统，对U盘的损失可能比较大，所以需要加入<code>^has_hournal</code>参数禁用日志即可。</p>
+<p>EXT4文件系统默认会占用一部分空间作为inode的信息存储使用，因此在U盘格式化成ext4文件系统后，可能有MB级别的数据占用，这个属于正常情况。</p>
+<h3 id="静态IP和DNS"><a href="#静态IP和DNS" class="headerlink" title="静态IP和DNS"></a>静态IP和DNS</h3><p>当你的路由器里面安装了一些服务软件的时候（例如Web服务，VPN服务），你可能希望你的路由器有一个固定的IP地址，但是你的上层网络可能采用的DHCP的方式给你分配的IP地址，所以有的时候对网络进行了一些改动之后，IP地址可能会发生变化。为了固定IP，可以在<code>/etc/config/network</code>里面直接进行设置</p>
+<blockquote>
+<p>config interface ‘wan’<br>        option ifname ‘eth0.2’<br>        option proto ‘static’<br>        option macaddr ‘f0:b4:29:d8:0d:1d’<br>        option ipaddr ‘xxx.xxx.xxx.xxx’ # 你需要的静态IP<br>        option netmask ‘255.255.255.0’<br>        option gateway ‘xxx.xxx.xxx.xxx’ # 网关地址<br>        option dns ‘xxx.xxx.xxx.xxx’ # Dns 服务器地址</p>
+</blockquote>
+<p>配置完成后，输入<code>/etc/init.d/network restart</code>即可生效。</p>
+<h3 id="Samba服务用户设置"><a href="#Samba服务用户设置" class="headerlink" title="Samba服务用户设置"></a>Samba服务用户设置</h3><p>PandoraBox默认是集成了Samba服务的，也就是说你可以在Windows系统里面以网上邻居的方式直接访问路由器的数据。你可以在配置文件<code>/etc/config/samba</code>里面加入如下配置来启用一个共享</p>
+<blockquote>
+<p>config sambashare<br>        option auto ‘1’<br>        option name ‘dong’<br>        option path ‘&#x2F;usb’<br>        option read_only ‘no’<br>        option guest_ok ‘no’<br>        option create_mask ‘0666’<br>        option dir_mask ‘0755’</p>
+</blockquote>
+<p>一般情况下，我们是不希望该共享是公开的，也就是说需要密码进行访问。但是当你输入你用来登陆路由器的账号密码之后，却发现无法登陆，原因是samba的用户密码是区别于系统的用户密码的。为了添加一个有效的samba用户可以使用<code>smbpasswd -a [username]</code>命令。系统将会提示为该用户设置samba密码，之后你便可以使用该用户进行登陆了。</p>
+<h3 id="自启动脚本"><a href="#自启动脚本" class="headerlink" title="自启动脚本"></a>自启动脚本</h3><p>PandoraBox内部有一个开机自己脚本<code>/etc/rc.local</code>，将自己想执行的命令放入该脚本中，便可以起到开机自启的效果。值得注意的是，在启动的脚本的第一行最好需要添加命令<code>source /etc/profile</code>对环境变量进行更新，否则装在usb里面的程序可能无法执行，例如先前说到的Python。</p>
+<p>还有一个问题就是，由于USB加载可能比自启脚本还要慢，当自启脚本里面使用了USB里面安装的软件时候，可能会因此导致运行失败，因此需要在命令之间加入<code>sleep xx</code>强制让脚本等待xx秒来让USB存储系统初始化完成。</p>
+<blockquote>
+<p>sleep 10<br>source &#x2F;etc&#x2F;profile<br>nice -n 12 &#x2F;etc&#x2F;init.d&#x2F;pptpd start<br>nice -n 13 &#x2F;etc&#x2F;init.d&#x2F;samba start<br>nice -n 13 &#x2F;etc&#x2F;init.d&#x2F;vsftpd start<br>nice -n 15 &#x2F;usb&#x2F;xware&#x2F;portal &gt; &#x2F;tmp&#x2F;ThunderInfo<br>sleep 40<br>nice -n 12 python &#x2F;usb&#x2F;dong&#x2F;code&#x2F;checker.py &amp;<br>python &#x2F;usb&#x2F;dong&#x2F;code&#x2F;reportIP.py &amp;<br>date &gt;&gt; &#x2F;tmp&#x2F;dong_StartInfo.log<br>echo “Finished start rc.local” &gt;&gt; &#x2F;tmp&#x2F;StartInfo.log</p>
+</blockquote>
+<p>上面是我使用的开机脚本，由于ftp和samba以及pptp等服务可能对CPU造成较大的负担（例如连着PPTP-VPN下载东西），启动脚本里面利用了<code>nice -n xx [command]</code>命令来让command以xx的调度优先级进行启动。当该值比较大的时候，优先级低，系统不容易卡死。</p>
+<h3 id="Crontab-配置"><a href="#Crontab-配置" class="headerlink" title="Crontab 配置"></a>Crontab 配置</h3><p>Crontab可以让你周期性的执行某一个任务，而不需要你手动的进行启动。只要定义时间规则系统就可以自动执行相应的命令，例如</p>
+<blockquote>
+<p>58 23 * * * . &#x2F;etc&#x2F;profile; &#x2F;usb&#x2F;dong&#x2F;script&#x2F;daily.sh</p>
+</blockquote>
+<p>该脚本表示在每天的23：58分执行daily脚本，注意中间的<code>. /etc/profile;</code>部分，由于该脚本调用了装在USB里面的python，在执行时必须有相应的环境变量支持，因此必须加入该配置。</p>
+<h3 id="系统文件夹剖析"><a href="#系统文件夹剖析" class="headerlink" title="系统文件夹剖析"></a>系统文件夹剖析</h3><p>在这些配置过程中，我们使用的最多的就是&#x2F;etc文件夹，里面涵盖了系统所有的配置。其中<code>config</code>里面包含了所有服务的配置文件，例如PPTP-VPN、NETWORK、FTP、SAMBA等等。<br><code>init.d</code>里面包含了所有服务的控制脚本，因此我们可以使用<code>/etc/init.d/vsftp start</code>来启动FTP服务，类似的指令还有<code>start|stop|enable|disable</code>。<br><code>rc.d</code>里面包含了所有开机启动服务的控制脚本的符号链接，在这里可以取消一些程序的开机启动，或者关闭它自己利用<code>nice</code>命令和开机启动脚本开启服务。<br><code>crontabs</code>里面包含了所有用户的cron任务规划配置，当然一般情况下我们可以使用<code>crontab -e</code>直接进行编辑。</p>
+<h2 id="参考博文及文献"><a href="#参考博文及文献" class="headerlink" title="参考博文及文献"></a>参考博文及文献</h2><p><a target="_blank" rel="noopener" href="http://blog.csdn.net/zhubin215130/article/details/43271835">Linux系统添加crontab任务无效的问题解决方案</a><br><a target="_blank" rel="noopener" href="https://my.oschina.net/u/1429171/blog/507965">linux目录结构详细介绍</a><br><a target="_blank" rel="noopener" href="http://www.tuicool.com/articles/IJ32maI">USB挂载&amp; U盘启动</a><br><a target="_blank" rel="noopener" href="http://www.360doc.com/content/14/1012/17/4171006_416337800.shtml">openwrt挂载USB存储设备</a><br><a target="_blank" rel="noopener" href="http://www.openwrt.org.cn/bbs/forum.php?mod=viewthread&tid=1081">openwrt 安装PPTP VPN服务</a><br><a target="_blank" rel="noopener" href="http://www.miui.com/forum.php?mod=viewthread&tid=2093928">路由mini安装OpenWRT源的Transmission插件</a><br><a target="_blank" rel="noopener" href="http://www.right.com.cn/forum/thread-135843-1-1.html">详细教程，添加迅雷固件Xware实现远程下载 </a><br><a target="_blank" rel="noopener" href="http://blog.csdn.net/rudyn/article/details/40455413">OpenWrt 进程启动过程分析及添加自启动脚本</a></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/03/mini_server/" data-toggle="tooltip" data-placement="top"
+                           title="Ubuntu系统配置篇">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/10/binary_search_analysis/" data-toggle="tooltip" data-placement="top"
+                           title="Analysis of Binary Search">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B7%E5%85%A5-Openwrt"><span class="toc-text">刷入 Openwrt</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Python"><span class="toc-text">安装 Python</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-PPTP-VPN-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">安装 PPTP-VPN 服务器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%BF%85%E9%9B%B7%E8%BF%9C%E7%A8%8B%E4%B8%8B%E8%BD%BD"><span class="toc-text">安装迅雷远程下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E8%AE%BE%E7%BD%AE"><span class="toc-text">其他设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#U%E7%9B%98%E6%A0%BC%E5%BC%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">U盘格式的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81IP%E5%92%8CDNS"><span class="toc-text">静态IP和DNS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Samba%E6%9C%8D%E5%8A%A1%E7%94%A8%E6%88%B7%E8%AE%BE%E7%BD%AE"><span class="toc-text">Samba服务用户设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC"><span class="toc-text">自启动脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Crontab-%E9%85%8D%E7%BD%AE"><span class="toc-text">Crontab 配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%96%87%E4%BB%B6%E5%A4%B9%E5%89%96%E6%9E%90"><span class="toc-text">系统文件夹剖析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E5%8D%9A%E6%96%87%E5%8F%8A%E6%96%87%E7%8C%AE"><span class="toc-text">参考博文及文献</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        Understanding the Pointers in C/C++｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2018/04/pointers_part1/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>Understanding the Pointers in C/C++</h1>
+                    
+                    <h2 class="subheading">理解C/C++指针类型</h2>
+                    
+                    <span class="meta">
+                         作者 Hailiang Dong
+                        <span>
+                          日期 2018-04-16
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#c/c++"
+                           title="c/c++">c/c++</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            Understanding the Pointers in C/C++
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Pointers are most frequently used variable type in programming languages like <code>C/C++</code>. In this blog, I want to share my understandings about the pointers to you. Specifically, I will tell you how pointers are saved in memory and importance of the pointer type.</p>
+<h2 id="Pointers-in-memory"><a href="#Pointers-in-memory" class="headerlink" title="Pointers in memory"></a>Pointers in memory</h2><p>To beginning, let us talk about what is the pointers and how they are saved in memories. A straightforward explanation is that pointers are addresses and we can apply some special operations like <em>dereference</em> on them. The value of a pointer is the address of a variable the pointer points to. Here is an vivid example.</p>
+<p>Assume we write some codes like</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x = <span class="number">0x1234</span>;</span><br><span class="line"><span class="type">int</span> *p = &amp;x;</span><br></pre></td></tr></table></figure>
+<p>Assume variable <code>x</code> are saved at memory address <code>0x233</code>. The following picture shows how these two variables are organized in the memory.</p>
+<p><img src="/figs/default/pointer_type.png" alt="pointers in memory"></p>
+<p>We know that each variable will occupy some memory space. Considering the <code>x86_64</code> architecture, pointer <code>p</code> will occupy 8 Bytes and <code>x</code> will occupy 4 Bytes. In the above figure, the numbers on the top of the rectangle is the address of the variable. The numbers inside the rectangle is the value while the characters on the left of the rectangle is the name of variable.</p>
+<p>Since <code>&amp;x</code> is the address of the variable, the statement <code>int *p = &amp;x;</code> will create a pointer <code>p</code> and the value of p to <code>0x233</code>. Note that in this case, the function of symbol <code>*</code> is to indicate that <code>p</code> is a pointer. Without the symbol, we will create a integer variable with value <code>0x233</code>.</p>
+<p>Since pointer <code>p</code> is pointed to variable <code>x</code>, languages like <code>C/C++</code> provided a useful operation called <em>dereference</em>, which enables us to manipulate variable <code>x</code> using the pointer <code>p</code>. For example, the following two statements have the same function.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> n1 = x+<span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> n2 = *p+<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>The dereference operation <code>*</code> will first read the value of pointer <code>p</code> and gets <code>0x233</code>. Then, it will read the data saved at memory address <code>0x233</code>, i.e., the value of <code>x</code>. As we can see, we can use pointer <code>p</code> just like variable <code>x</code>, just like <code>p</code> is linked (pointed) to x, and this is why <code>p</code> is called pointer.</p>
+<h2 id="Importance-of-pointer-type"><a href="#Importance-of-pointer-type" class="headerlink" title="Importance of pointer type"></a>Importance of pointer type</h2><p>As stated before, the size of pointers are always 8 Bytes in <code>x86_64</code> system no matter what the type of the pointers. So here comes a question, can I use a pointer with different type with the variable the pointer points to ? Also, what is the function of pointer type?</p>
+<p>For the first question, the answer is yes. Sometimes, we even intentionally change the pointer types to achieve a certain goal and this is called pointer casting. However, if you carelessly altered the type of pointers, it will incur unpredictable errors in your program. I will give your some examples later in this section. Let us first talk about the function of pointer types.</p>
+<p>We know that memory can be regarded as a large one dimensional array where the storage unit is Byte. Therefore, when you create a pointer <code>p</code> for a variable <code>x</code>, the value of pointer <code>p</code> records the address of <code>x</code> such that we can access x using the pointer <code>p</code>. However, <strong>if we do not know the type of pointer p, how can we rightly access the variable <code>x</code> without knowing the size of <code>x</code></strong>. Actually, the pointer type determined the size of Bytes to read from a certain memory address. Therefore, the pointer type must be accordance with the type of the variable. Otherwise, the value may be changed when we use pointer to access the variable.</p>
+<p>Another important aspect of pointer type is that, <strong>when we do mathematical calculations to a pointer, the pointer type also plays an important role in it</strong>. For example, the value of <code>p</code> is <code>0x233</code>, the value of <code>p+1</code> will be <code>0x237</code> other than <code>0x234</code> since the size of an integer is four. In other words, when pointer <code>p</code> add&#x2F;minus a certain value <code>v</code>, the final value of pointer <code>p</code> is <code>p +/- v*sizeof(type)</code>. This feature is very useful when we access an array using pointers.</p>
+<p>Next, I will give you two examples to show the importance of pointer type.</p>
+<h3 id="Example-1-wrong-value"><a href="#Example-1-wrong-value" class="headerlink" title="Example 1 - wrong value"></a>Example 1 - wrong value</h3><p>In the previous example, we create a variable <code>x</code> and a pointer <code>p</code> with the same type points to it. Now we change the type of the pointer as follows.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x=<span class="number">0x1234</span>;</span><br><span class="line"><span class="type">char</span> *p = &amp;x;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;value is %d\n&quot;</span>,*p);</span><br></pre></td></tr></table></figure>
+<p>Now, what is the value of <code>*p</code> ? The program tells us the value is 52, i.e., <code>0x34</code>, which is totally different from the value of <code>x</code>.</p>
+<p>The reason is that we change the type of pointer <code>p</code> to <code>char *</code>, which only allows program to read 1 Byte of data from memory address <code>0x233</code>. Since the size of variable <code>x</code> is 4 Bytes with hexadecimal representation <code>0x00001234</code>, We only read the last Byte <code>0x34</code> of variable <code>x</code>. However, the result also can be <code>0x00</code> caused by different memory manage methods. If you are interested in it, you can visit my <a href="/2016/10/02/endian-problem/">blog</a> to see the detailed explanation.</p>
+<p>However, in some special cases, we do need to get the lower Bytes of a variable. Pointers can help us a lot in situation like that.</p>
+<h3 id="Example-2-null-pointer"><a href="#Example-2-null-pointer" class="headerlink" title="Example 2 - null pointer"></a>Example 2 - null pointer</h3><p>Considering the following codes.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x = <span class="number">0x1234</span>;</span><br><span class="line"><span class="type">int</span> **foo = &amp;x;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d %d\n&quot;</span>,x,*foo);</span><br></pre></td></tr></table></figure>
+<p>The programmer want to create a pointer to <code>x</code> (need a point with type <code>int *</code>). However, it mistakenly create a pointer with type <code>int **</code>, which means the variable type the pointer <code>foo</code> points to is <code>int *</code> and this is not the type of <code>x</code>.</p>
+<p>What is interesting is that, this program gives the right output, both the value of <code>x</code> and <code>*foo</code> is <code>0x1234</code>. However, this does not mean the program is absolutely right. Since the value of a pointer <code>*foo</code> (the type of <code>foo</code> is <code>int*</code>) is <code>0x1234</code>, i.e., we can dereference the the pointer <code>*foo</code>.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,**foo); <span class="comment">//segmentation fault</span></span><br></pre></td></tr></table></figure>
+<p>However, there is a huge risk. If we set the value of x to 0, then we will get an pointer <code>*foo</code> with type <code>int *</code>. Therefore, when we try to dereference the pointer <code>*foo</code>, the program will crash due to the dereference of null pointer.</p>
+<h2 id="MISC"><a href="#MISC" class="headerlink" title="MISC"></a>MISC</h2><h3 id="Pointer-minus-pointer"><a href="#Pointer-minus-pointer" class="headerlink" title="Pointer minus pointer"></a>Pointer minus pointer</h3><p>Sometimes, we want to calculate the offset of a specific element in an array. Suppose we have a pointer <code>p</code> that points to the element and the head pointer <code>h</code>, a simple idea to obtain the offset is to minus the two pointers. However, based on above understandings, we know that <code>p = h + offset*sizeof(type)</code>. Therefore, here comes a question: Is <code>p - h == offset*sizeof(type)</code> ?</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> a[<span class="number">5</span>];</span><br><span class="line">	<span class="type">int</span> *p = &amp;a[<span class="number">4</span>];</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%ld\n&quot;</span>, p-a); <span class="comment">//4</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%ld\n&quot;</span>, (<span class="type">unsigned</span> <span class="type">long</span>)p-(<span class="type">unsigned</span> <span class="type">long</span>)a); <span class="comment">//4*sizeof(int)=16</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Actually, just like add operations, the minus result between pointers will be divided by <code>sizeof(type)</code> automatically. Therefore, <code>p-a</code> is 4 other than 16. However, if we want to obtain the exact value, we can cast the pointer to <code>unsigned long</code> and then employ the minus operation on two integers.</p>
+<h3 id="Pointer-cast"><a href="#Pointer-cast" class="headerlink" title="Pointer cast"></a>Pointer cast</h3><p>We can use pointer cast to do a lot of interesting things. Here is an example that using pointer cast to divide an long into a char array.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">long</span> val = <span class="number">0x0123456789ABCDEF</span>;</span><br><span class="line"><span class="type">char</span> *p = &amp;val;</span><br><span class="line"><span class="keyword">for</span>(i=<span class="number">0</span>;i &lt; <span class="keyword">sizeof</span>(<span class="type">long</span>);i++)&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,p[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Also, at <a href="/2016/10/02/endian-problem/">this blog</a>, shows an fast algorithm used to judge if the bitmap is fully occupied by using the technique of pointer cast.</p>
+<h3 id="2-D-array"><a href="#2-D-array" class="headerlink" title="2-D array"></a>2-D array</h3><p>In <a href="/2017/04/15/3d-array/">this blog</a>, I talked about how to create N-dimensional array in <code>c/c++</code>. However, we need to understand why the type of the head pointer of a 2-D array is <code>int **</code>.<br>The principle behind it is very simple. Suppose we have multiple 1-D arrays. As stated before, the name of these 1-D arrays are pointers (such as <code>int *</code>). Therefore, in order to create an 2-D array, we just need to organize this head pointers in a 1-D array. Since the element in this array is <code>int *</code>, the head pointer of the 2-D array should be <code>int **</code>, which means that it contains multiple 1-D arrays (<code>int *</code>).</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/04/speedup_binary_search/" data-toggle="tooltip" data-placement="top"
+                           title="Speedup the Binary Search">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/04/c_create_Nd_arry/" data-toggle="tooltip" data-placement="top"
+                           title="Dynamically Create N-D array in C">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pointers-in-memory"><span class="toc-text">Pointers in memory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Importance-of-pointer-type"><span class="toc-text">Importance of pointer type</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Example-1-wrong-value"><span class="toc-text">Example 1 - wrong value</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Example-2-null-pointer"><span class="toc-text">Example 2 - null pointer</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MISC"><span class="toc-text">MISC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Pointer-minus-pointer"><span class="toc-text">Pointer minus pointer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pointer-cast"><span class="toc-text">Pointer cast</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-D-array"><span class="toc-text">2-D array</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

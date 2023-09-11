@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        Ubuntu14.04 搭建 IPSec VPN｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2017/04/ipsec_vpn/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>Ubuntu14.04 搭建 IPSec VPN</h1>
+                    
+                    <h2 class="subheading">Set up IPSec VPN in Ubuntu 14.04</h2>
+                    
+                    <span class="meta">
+                         作者 Hailiang Dong
+                        <span>
+                          日期 2017-04-09
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#tutorial"
+                           title="tutorial">tutorial</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            Ubuntu14.04 搭建 IPSec VPN
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>现在PPTP-VPN已经不安全了，虽然<a target="_blank" rel="noopener" href="https://my.oschina.net/isnail/blog/363151">搭建PPTP服务</a>很简单，安全对于我们一般用户来说也不说很在意，但是比较麻烦的是MAC OSX以及IOS的最新版本已经强制将PPTP服务从系统中移除，无法使用之前便捷的VPN服务，因此搭建一个新一代安全的VPN服务还是很有必要的。</p>
+<h2 id="L2TP-IPsec-VPN的问题"><a href="#L2TP-IPsec-VPN的问题" class="headerlink" title="L2TP&#x2F;IPsec VPN的问题"></a>L2TP&#x2F;IPsec VPN的问题</h2><p>其实一开始的时候，我是打算搭建L2TP服务器的。就个人了解来说，这个用的还比较广，听得比较多，自然认为搭建比较简单，也找到了一些很<a target="_blank" rel="noopener" href="https://linux.cn/article-3409-1.html">官方的教程</a>，但是接下来一堆坑就出现了。</p>
+<p>搭建到一半，<a target="_blank" rel="noopener" href="http://www.linuxdiyf.com/linux/29184.html">IPsec的验证就失败</a>，在百度上查询相应的错误，得知是缺少必要的软件包。 不过我安装了之后依旧无法通过验证，网上也没找到相关的配置教程（可能是不同电脑不一样）。最后发现配置一下软件包<code>rng-tool</code>，将<code>/etc/default/rng-tools</code>的配置改成<code>HRNGDEVICE=/dev/urandom</code>才能正常通过验证。成功搭建完毕后，搭建好的VPN无法成功启动，具体原因是我的系统是Ubuntu14.04的，教程是为12.04设计的，相应的软件包版本不一样，而且Ubuntu 14.04里面的默认源里面的openswan貌似<a target="_blank" rel="noopener" href="http://www.server110.com/linux/201310/2201.html">还有BUG</a>，于是乎进一步在<a target="_blank" rel="noopener" href="https://github.com/xelerance/Openswan/issues/75">Github上</a>找到了这个问题，更改了一下配置才解决该问题。</p>
+<p>终于可以连接后，我发现只有WINDOWS可以100%成功链接，我的安卓机子一个可以连接(MIUI8 ANDROID 5.1)，一个不行(MIUI8 ANDROID 6.0)，这个问题不止我一个人遇到，可以参考<a target="_blank" rel="noopener" href="http://www.miui.com/thread-7026709-1-1.html">这里</a>。搭建好后拿室友的Iphone测试了一下可以连接，结果当我女朋友想用她的手机连接的时候又不知道怎么就挂了，再次拿室友的Iphone测试，竟然也不行了。</p>
+<p>总之，L2TP部署中遇到太多的坑了，于是去网上了解了一下别的VPN，发现IPsec非常符合我的要求，因为我的主要目的就是为我女朋友（苹果系列，不支持PPTP）搭建一个可以使用的VPN服务器。</p>
+<h2 id="IPsec部署-苹果-安卓"><a href="#IPsec部署-苹果-安卓" class="headerlink" title="IPsec部署 - 苹果&amp;安卓"></a>IPsec部署 - 苹果&amp;安卓</h2><p>如果你部署的服务器仅仅想提供给安卓，苹果以及MAC用户使用的话，那其实还是很简单的，因为他们都可以用XAUTH的方式进行认证。</p>
+<p>话不多说，直接开始具体的配置过程。首先，你需要安装一些软件包，使用这个命令即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install strongswan strongswan-plugin-xauth-generic</span><br></pre></td></tr></table></figure>
+<p>安装完之后你的系统应该就可以运行<code>ipsec</code>命令了，这个就是你的VPN服务的控制程序了。不过先别急，为了能提供VPN服务，你还需要进行配置。</p>
+<p>首先配置IPsec连接，利用<code>vim</code>或者其他工具编辑配置文件<code>/etc/ipsec.conf</code>，填入以下配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">config setup</span><br><span class="line">    cachecrls=yes</span><br><span class="line">    uniqueids=yes</span><br><span class="line">conn ios_android</span><br><span class="line">    keyexchange=ikev1</span><br><span class="line">    authby=xauthpsk #支持上述所有客户端，不支持WINDOWS</span><br><span class="line">    xauth=server</span><br><span class="line">    left=xxx.xxx.xxx.xxx  # 外网IP</span><br><span class="line">    leftsubnet=0.0.0.0/0</span><br><span class="line">    right=%any</span><br><span class="line">    rightdns=223.5.5.5</span><br><span class="line">    rightsourceip=10.0.15.0/24 # 别人连接你的VPN，你分配给他的内部IP地址段</span><br><span class="line">    auto=add</span><br></pre></td></tr></table></figure>
+<p>接下来，配置你的连接密钥已经客户的用户名密码信息，编辑文件<code>/etc/ipsec.secrets</code>,填入以下配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">: PSK &quot;miyao&quot;</span><br><span class="line">test : XAUTH &quot;pwd&quot;</span><br></pre></td></tr></table></figure>
+<p>到这里你就完成所有的配置了。是的，你没有听错，真的是相当的简单。接下来，执行命令<code>ipsec start</code>即可启动VPN服务，理论上应该是没有什么错误的。</p>
+<p>对于安卓来说，连接方式可以参考<a target="_blank" rel="noopener" href="https://tieba.baidu.com/p/4330272360">这里</a>，具体要主要类型要选择<code>IPsec XAUTH PSK</code>， 预共享密钥就是miyao，账号密码就是上面的test和pwd，服务器地址你服务器的外网IP。</p>
+<p>对于苹果(MAC IOS)用户来说也是一样的，可以参考<a target="_blank" rel="noopener" href="http://jingyan.baidu.com/article/cb5d610500dcfa005c2fe080.html">这里</a>，填写方法和安卓一样，类型选择<code>Cisco IPsec</code>， 群组名称可以不填。</p>
+<h2 id="兼容-Windows-WP"><a href="#兼容-Windows-WP" class="headerlink" title="兼容 Windows (WP)"></a>兼容 Windows (WP)</h2><p>如果想让你的VPN服务器同时能兼容Windows客户端，这个就很复杂了。Windows要求以证书的形式验证服务器的安全性，想要连接的话还必须要导入一个证书，然后服务端也需要相应的进行一些更改，下面来具体一步步的分析。</p>
+<h3 id="服务端部署-认证方式"><a href="#服务端部署-认证方式" class="headerlink" title="服务端部署 - 认证方式"></a>服务端部署 - 认证方式</h3><p>为了让IPsec能支持Windows，我们还需要安装一个插件，以支持微软的认证方式<code>eap-mschapv2</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install strongswan-plugin-eap-mschapv2</span><br></pre></td></tr></table></figure>
+<p>一开始我以为之前安装的strongswan已经自带了，并且很多教程也没有提到这个事情（因为他们都是直接编译源码安装的strongswan，直接开启了<code>eap-mschapv2</code>支持）。通过查看系统日志<code>/var/log/syslog</code>发现每次连接的时候都会出现<code>error loading eap-mschapv2</code> 才意识到这个问题。</p>
+<p>除了认证方式的问题，还有一大堆关于证书的问题要解决，windows客户端连接不仅仅需要用户密码以及密钥的认证，还需要证书的认证，具体的原理我暂时也没有弄得很清楚，这里引用别人博客里面关于证书配置的内容</p>
+<h3 id="服务端部署-证书配置-转自这里"><a href="#服务端部署-证书配置-转自这里" class="headerlink" title="服务端部署 - 证书配置( 转自这里)"></a>服务端部署 - 证书配置( 转自<a target="_blank" rel="noopener" href="http://blog.csdn.net/fxismonk/article/details/50826452">这里</a>)</h3><p>每一个完整的 ssl 证书都有一个公钥和一个私钥。公钥是在网络上传输的，而私钥是藏好用来和接收到的公钥配对的（因此私钥里也有整个公钥，用来配对）。<br>生成CA证书的私钥，并使用私钥，签名CA证书</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ipsec pki --gen --outform pem &gt; ca.pem</span><br><span class="line">ipsec pki --self --in ca.pem --dn &quot;C=CN, O=VPN, CN=StrongSwan CA&quot; --ca --lifetime 3650 --outform pem &gt;ca.cert.pem</span><br></pre></td></tr></table></figure>
+<p>这里C 表示国家名，同样还有 ST 州&#x2F;省名，L 地区名，STREET（全大写） 街道名。O 表示组织名。CN 为通用名</p>
+<p>生成服务器证书所需的私钥,并用CA证书签发服务器证书</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ipsec pki --gen --outform pem &gt; server.pem</span><br><span class="line">ipsec pki --pub --in server.pem | ipsec pki --issue --lifetime 1200 --cacert ca.cert.pem \</span><br><span class="line">    --cakey ca.pem --dn &quot;C=CN, O=VPN, CN=vpn.linsir.org&quot; \</span><br><span class="line">    --san=&quot;x.x.x.x&quot; --san=&quot;vpn.linsir.org&quot; --flag serverAuth --flag ikeIntermediate \</span><br><span class="line">    --outform pem &gt; server.cert.pem</span><br></pre></td></tr></table></figure>
+<p>这里C、O的值要跟第一步的一致，CN值及–san值是服务器公网地址或url,另外这里可以设置多个–san值。否则会出现错误 13801:IKE身份验证凭证不可接受.</p>
+<p>生成客户端证书</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ipsec pki --gen --outform pem &gt; client.pem</span><br><span class="line">    ipsec pki --pub --in client.pem | ipsec pki --issue --cacert ca.cert.pem \</span><br><span class="line">   --cakey ca.pem --dn &quot;C=CN, O=VPN, CN=VPN Client&quot; \</span><br><span class="line">   --outform pem &gt; client.cert.pem</span><br></pre></td></tr></table></figure>
+<p>这里C、O的值要跟第一步的一致</p>
+<p>生成 pkcs12 证书 pkcs12 证书用来导入手机或电脑的，<strong>这个过程会让你输入密码，到时候客户端导入证书时需要输入</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -export -inkey client.pem -in client.cert.pem -name &quot;VPN Client&quot;\</span><br><span class="line">         -certfile ca.cert.pem -caname &quot;vpn.linsir.org&quot;  -out client.cert.p12</span><br></pre></td></tr></table></figure>
+<p>安装证书<br>把证书复制到strongswan目录下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cp -r ca.cert.pem /etc/strongswan/ipsec.d/cacerts/</span><br><span class="line">cp -r server.cert.pem /etc/strongswan/ipsec.d/certs/</span><br><span class="line">cp -r server.pem /etc/strongswan/ipsec.d/private/</span><br><span class="line">cp -r client.cert.pem /etc/strongswan/ipsec.d/certs/</span><br><span class="line">cp -r client.pem /etc/strongswan/ipsec.d/private/</span><br></pre></td></tr></table></figure>
+<h3 id="服务端部署-配置文件"><a href="#服务端部署-配置文件" class="headerlink" title="服务端部署 - 配置文件"></a>服务端部署 - 配置文件</h3><p>配置完证书后，服务端只需要再增加一个提供给windows的链接以及相应的用户和密码，具体如下。<br>首先在<code>/etc/ipsec.conf</code>中加一个新的连接</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">conn win7</span><br><span class="line">    keyexchange=ikev2</span><br><span class="line">    ike=aes256-sha1-modp1024!</span><br><span class="line">    rekey=no</span><br><span class="line">    left=xxx.xxx.xxx.xxx  # 外网IP</span><br><span class="line">    leftauth=pubkey</span><br><span class="line">    leftsubnet=0.0.0.0/0</span><br><span class="line">    leftcert=server.cert.pem</span><br><span class="line">    right=%any</span><br><span class="line">    rightauth=eap-mschapv2</span><br><span class="line">    rightdns=223.5.5.5</span><br><span class="line">    rightsourceip=10.0.15.0/24</span><br><span class="line">    rightsendcert=never</span><br><span class="line">    eap_identity=%any</span><br><span class="line">    auto=add</span><br></pre></td></tr></table></figure>
+
+<p>其次更改密钥文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">: PSK &quot;miyao&quot;</span><br><span class="line">: RSA server.pem  # 证书验证</span><br><span class="line"></span><br><span class="line">test: XAUTH &quot;pwd&quot;</span><br><span class="line">win: EAP &quot;pwd&quot;  # for windows login</span><br></pre></td></tr></table></figure>
+<p>这样就可以完成所以服务端的配置了。</p>
+<h3 id="Win-系列客户端连接"><a href="#Win-系列客户端连接" class="headerlink" title="Win 系列客户端连接"></a>Win 系列客户端连接</h3><p>Win系列（包括Windows7以上，WP等系统）直接采用内建的ikev2方式进行连接。不过在连接前必须导入之前生成的<code>client.cert.p12</code>文件，具体的配置方式可以参考<a target="_blank" rel="noopener" href="http://www.zhujiceping.com/20148.html">这里</a>。WindowsXp及以下的系统需要借助第三方软件 Shrew Soft VPN Client 。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的来说，Cisco IPSec 的配置还是相对比较简单的，如果只要兼容IOS以及安卓，那么配置可以在10分钟内完成，而且连接速度又快又稳定。为了兼容Windows客户端，也可以在搭建一个PPTP服务器，同时运行两个VPN服务端，教程可以参考<a target="_blank" rel="noopener" href="https://my.oschina.net/isnail/blog/363151">这里</a>。</p>
+<p>在程序运行中，可以随时运行命令<code>ipsec statusall</code>查看当前的连接情况。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a target="_blank" rel="noopener" href="http://blog.csdn.net/zzsfqiuyigui/article/details/39533479">使用 Strongswan 架设 Ipsec VPN CSDN</a><br><a target="_blank" rel="noopener" href="https://zh.opensuse.org/index.php?title=SDB:Setup_Ipsec_VPN_with_Strongswan&variant=zh">使用 Strongswan 架设 Ipsec VPN opensuse </a><br><a target="_blank" rel="noopener" href="http://blog.csdn.net/fxismonk/article/details/50826452">CentOS7下Strongswan架设IPSec-CSDN.NET</a><br><a target="_blank" rel="noopener" href="http://blog.csdn.net/infsafe/article/details/45041969">Ubuntu 14.04 搭建 Cisco IPSec VPN 服务器教程- CSDN.NET</a></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/04/hexo_mathjax/" data-toggle="tooltip" data-placement="top"
+                           title="Hexo 添加 MathJax 支持">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/03/mini_server/" data-toggle="tooltip" data-placement="top"
+                           title="Ubuntu系统配置篇">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#L2TP-IPsec-VPN%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">L2TP&#x2F;IPsec VPN的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IPsec%E9%83%A8%E7%BD%B2-%E8%8B%B9%E6%9E%9C-%E5%AE%89%E5%8D%93"><span class="toc-text">IPsec部署 - 苹果&amp;安卓</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%BC%E5%AE%B9-Windows-WP"><span class="toc-text">兼容 Windows (WP)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2-%E8%AE%A4%E8%AF%81%E6%96%B9%E5%BC%8F"><span class="toc-text">服务端部署 - 认证方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2-%E8%AF%81%E4%B9%A6%E9%85%8D%E7%BD%AE-%E8%BD%AC%E8%87%AA%E8%BF%99%E9%87%8C"><span class="toc-text">服务端部署 - 证书配置( 转自这里)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">服务端部署 - 配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Win-%E7%B3%BB%E5%88%97%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5"><span class="toc-text">Win 系列客户端连接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-text">参考文献</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

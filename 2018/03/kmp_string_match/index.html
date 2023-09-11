@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        KMP字符串匹配算法｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2018/03/kmp_string_match/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>KMP字符串匹配算法</h1>
+                    
+                    <h2 class="subheading">KMP String Match Algorithm</h2>
+                    
+                    <span class="meta">
+                         作者 Hailiang Dong
+                        <span>
+                          日期 2018-03-07
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#algorithm"
+                           title="algorithm">algorithm</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            KMP字符串匹配算法
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>字符串匹配是一个很经典的问题，具体描述如下：</p>
+<blockquote>
+<p>给定两个字符串：主串S和模式串P，判断S中是否包含P，如果包含则返回S中出现的第一个P的位置（ S中出现的所有的P的位置），否则返回-1(NULL)。</p>
+</blockquote>
+<p>在下文中，为了便于分析，我们记主串S的长度为n，模式串P的长度为m。此外，我们用符号i和j分别表示S和P正在匹配的元素所处的位置。</p>
+<p>一个最简单的算法（在下文中称为“简单算法”）是这样做的：</p>
+<ol>
+<li>对于主串S中的每一个位置i，从该位置和模式串P从头开始匹配，每次最多需要进行m次比较操作。</li>
+<li>如果一直比较到P的末尾字符还没有出现mismatch，那么说明S在位置i开始包含了一个模式串P。</li>
+<li>如果没有比较到P的末尾字符便出现mismatch，则从主串S的i+1位重新和模式串P从头开始匹配。</li>
+</ol>
+<p>由于S中一共有n个位置，所以这种算法的时间复杂度为O(nm)。很显然，虽然该算法思想很简单，但是其时间复杂度很高。KMP算法就是一种改进的字符串匹配算法，其时间复杂度只有O(n+m)。</p>
+<h2 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h2><h3 id="简单算法分析"><a href="#简单算法分析" class="headerlink" title="简单算法分析"></a>简单算法分析</h3><p>我们首先分析一下简单算法。假设主串S是abacaabacabac，模式串P是abacab，那么简单算法的第一步是从S的0位（在本文的分析中，为了和程序对应，下标全从0开始）和P开始匹配。在这种情况下，如图1(1)所示，当S和P比较到第5个元素时，发生mismatch。也就是说，当i&#x3D;5,j&#x3D;5时，S和P发生mismatch。简单算法的处理方式是：从主串S的位置1开始重新和模式串P从头进行匹配。也就是说，下一次比较的元素在S和P中的位置分别为i&#x3D;i-(j-1),j&#x3D;0（参考图1(2)）。<br><img src="/figs/kmp/kmp_1.png" alt="next step of traditional alg when mismatch"><br>可以看出，简单算法在发生mismatch时，i和j都要回退。在匹配过程中，回退的次数越多，距离越大，算法耗时越长。最坏的情况下，如果每次都在模式串的最后一位出现mismatch，那么总共需要的比较次数就是n*m。</p>
+<h3 id="KMP算法思想"><a href="#KMP算法思想" class="headerlink" title="KMP算法思想"></a>KMP算法思想</h3><p>简单算法在出现mismatch时，主串比较位置i会回退，导致一些没有意义的比较，那么我们如何优化算法减少无意义的比较呢？我们需要注意一个事实：<strong>当i从位置t退回到t-(j-1)后，在之后的比较中，一定存在某次比较，i的值等于t（暂时不考虑在位置0直接mismatch的情况）</strong>。也就是说，i发生回退后一定会重新回到原位置。<br><img src="/figs/kmp/kmp_2.png" alt="mismatch analysis"><br>举个例子，如图2所示，在(1)中i&#x3D;5,j&#x3D;5时出现了mismatch。接下来，简单算法回退i和j，变成(2)所示的情况继续比较。当比较到(5)所示的情形时，i再次回到5，此时j的值是1。</p>
+<p>既然i发生回退后一定会重新回到原位置，那么能否在发生mismatch时不回退i，直接让S[i]和模式串中的某个字符继续进行比较？这样子可以减少很多无意义的比较（图2中所有红色的部分）。<strong>答案是可以的，这就是KMP算法的核心思想</strong>。具体来说，对于KMP算法，如果S和P在i和j发生mismatch，则下一次比较时，i不变，j回退为某个值x（x &lt; j）。</p>
+<p>现在的问题在于我们如何求x的值。继续观察图2 (1)-(5)，我们可以发现，在(1)中出现mismatch后，算法执行到情况(5)时，i的值第一次重新回到5，此时j为1，就是我们要求的x。在字符串匹配中，有一个重要的性质我们需要注意：**当S和P的第i，j在进行比较时，那么S位于位置i-j到i-1的片段一定和P位于0到j-1的片段完全相同，即S[i-j:i]&#x3D;P[0:j]**（这里的表达方式和python中的切片完全相同）。举个例子来说，在(1)中，i&#x3D;5,j&#x3D;5时，所以S[0:5]&#x3D;P[0:5]成立。</p>
+<p>有了这个性质，当S和P在位置i，j发生mismatch时，应该有S[i-j:i]&#x3D;P[0:j]。此外，当i回到之前mismatch的位置时，假设此时和其匹配的元素在P中的位置为x，则有S[i-x:i]&#x3D;P[0:x]。注意到j &gt; x，那么S[i-j:i]&#x3D;P[0:j]同时也代表S[i-x:i]&#x3D;P[j-x:j]。综合以上两个等式，我们可以得到<br>$$P[0:x]&#x3D;P[j-x:j] \quad (1)$$<br>从图2中，我们也可以清晰的发现，在(5)中i&#x3D;5，j&#x3D;1正在进行匹配，这意味着S[4:5]&#x3D;P[0:1]，即S[4]&#x3D;P[0]。但是我们同时需要注意，在(1)出现mismatch时，S[4]是和P[4]相等的，因此我们可以得到P[0]&#x3D;P[4]。</p>
+<p>公式(1)描述了x必须满足的一个条件，但是凭此还不能确定x的值，这是因为对公式(1)来说，它的解可能不是唯一的。事实上，无论j取何值，x&#x3D;0对公式(1)是恒成立的，这是因为P[0:0]&#x3D;P[j:j]&#x3D;””。对于本例来说，当j&#x3D;5时，x&#x3D;1也可以使上式成立。那为什么x的值应该是1而不是0呢？这是因为我们需要找的是i的值<strong>第一次</strong>回到原位置是，相应模式串的匹配位置。我们知道在简单算法中，发生mismatch时，模式串整体后移一个单位并从头开始重新匹配，如果i的值会多次回到原始值，假设每次i回到原始值时，对应子串的位置分别为$x_1,x_2,…,x_n$，那么$x&#x3D;x_1$一定是这里面的最大值，也就是说</p>
+<p>$$x &#x3D; max{ t | p[0:t]&#x3D;p[j-t:j] , t &lt; j } \quad  (2)$$</p>
+<p>事实上，上述公式就是在求取，对模式串的子串P[0:j]，能使前t个元素和后t个元素相等的t的最大值。例如对模式串abacab，但是在j&#x3D;5时mismatch，子串P[0:5]为abaca，只有前1个元素和最后一个元素相等，因此x&#x3D;1。需要主义的是</p>
+<p>从公式(2)我们可以看出，x的值只和j以及模式串P有关。因此我们可以在匹配算法开始前计算出每一个j所对应的x，形成一个数组，一般称之为next数组。next[j]表示当在P的第j个字母出现mismatch时，下一次P中参与匹配的字母位置。</p>
+<p>需要注意的是，我们刚才所有的讨论都是当mismatch时j不为0的情况。事实上，如果mismatch时j&#x3D;0，那么按照传统算法，下一次匹配时的位置为i&#x3D;i+1，j&#x3D;0。也就是说，i是增加的，反而不会回退。由于KMP的基本思想是mismatch是不改变i的值，那么在这种情况下，我们需要做特殊处理，令下次匹配的位置为i&#x3D;i，j&#x3D;-1，这就符合KMP的基本思想了。说了这么多，我只是像强调next[0]一定为-1，并且需要在KMP算法中做特殊处理。</p>
+<p>说到这儿了，我们就可以开始写代码了，一种python实现的代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">kmp</span>(<span class="params">S,P</span>):</span><br><span class="line">	i = <span class="number">0</span> ; j = <span class="number">0</span></span><br><span class="line">	<span class="built_in">next</span> = get_next(P) <span class="comment">#计算next数组，之后讨论</span></span><br><span class="line">	found_pos = -<span class="number">1</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; <span class="built_in">len</span>(S) <span class="keyword">and</span> j &lt; <span class="built_in">len</span>(P):</span><br><span class="line">		<span class="keyword">if</span> S[i] == P[j] <span class="keyword">or</span> j == -<span class="number">1</span>:</span><br><span class="line">		    <span class="comment"># 匹配成功则继续匹配S和P的下一位</span></span><br><span class="line">		    <span class="comment"># 注意j=-1时，意味着我们应该直接比较S和P的下一位</span></span><br><span class="line">			i += <span class="number">1</span> ; j += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">		    <span class="comment"># 匹配失败时，i不动，j回退到之前计算的next[j]</span></span><br><span class="line">			j = <span class="built_in">next</span>[j]</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 跳出循环时，如果是因为j==len(P)，说明已经匹配了一个完整的模式串</span></span><br><span class="line">	<span class="keyword">if</span> j == <span class="built_in">len</span>(P):</span><br><span class="line">		found_pos = i-j</span><br><span class="line">	<span class="keyword">return</span> found_pos</span><br></pre></td></tr></table></figure>
+<p>如果是求出所有的匹配的位置，改成如下代码即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">kmp_all</span>(<span class="params">S,P</span>):</span><br><span class="line">	i = <span class="number">0</span> ; j = <span class="number">0</span></span><br><span class="line">	<span class="built_in">next</span> = get_next(P)</span><br><span class="line">	found_pos = []</span><br><span class="line">	<span class="keyword">while</span> i &lt; <span class="built_in">len</span>(S):</span><br><span class="line">		<span class="keyword">if</span> S[i] == P[j] <span class="keyword">or</span> j == -<span class="number">1</span>:</span><br><span class="line">			i += <span class="number">1</span> ; j += <span class="number">1</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			j = <span class="built_in">next</span>[j]</span><br><span class="line">		<span class="keyword">if</span> j == <span class="built_in">len</span>(P):</span><br><span class="line">			found_pos.append( i-j )</span><br><span class="line">			i =  i-j+<span class="number">1</span> ;j = <span class="number">0</span></span><br><span class="line">	<span class="keyword">return</span> found_pos</span><br></pre></td></tr></table></figure>
+
+<p>对于KMP算法来说，在其在图2(1)，i&#x3D;5,j&#x3D;5发生mismatch后，它的一下次匹配的位置便是图2(5)，i&#x3D;5,j&#x3D;1，省略了图2中所有的红色比较操作，大大加快了算法的速度。有些读者可能会担心省略了这些比较，算法会不会出错，丢失一些匹配的位置？</p>
+<p>假设主串S和模式串P在图3(1)中位置i，j发生mismatch，根据KMP算法，下次S和P匹配的位置即为图2(2)中i,x。相比于简单算法，图2中虚线框内所有的情况全部跳过，那么这样直接跳过是安全的么？<br><img src="/figs/kmp/kmp_3.png" alt="correctness analysis"><br>我们假设这样做不安全，也就是说在skipped cases中存在一种情况，如图3(3)所示，S的一部分和P完全相同，即存在一个完整匹配。那么在这种情况下，按照简单算法的思路，S和P的位置i和t（t介于j-1和x+1之间）的元素一定会进行比较。因此，主串S的匹配位置<strong>第一次</strong>重回i时所对应的元素在P中位置应该大于或等于t，而不是x。但这和我们的假设矛盾，因此skipped cases中不可能存在图3(3)所示的情况。</p>
+<p>上述性质之所以成立，其主要原因是，我们规定x是主串S的匹配位置第一次重回i时所对应的元素在P中位置，如果不是第一次，算法的正确性是无法保证的。<br><img src="/figs/kmp/kmp_4.png" alt="no name"><br>如图4所示，当S和P在(1)发生mismatch后，i第一次回到位置2的情况如(2)所示，第二次回到位置2的情况如(3)所示。可以看出，如果在(1)发生mismatch后，不回退i的位置，直接让i和j&#x3D;0进行匹配（(3)所示的情况），那么(2)这个完整匹配将被跳过，算法错误。</p>
+<h3 id="next的计算"><a href="#next的计算" class="headerlink" title="next的计算"></a>next的计算</h3><p>接下来我们讨论如何计算next。诚然，我们可以一步步循环，并利用公式算出next，不过这样的效率并不是很高。<br>事实上，我们可以通过将模式串和自身进行匹配计算next的值，具体代码如下。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_next</span>(<span class="params">p</span>):</span><br><span class="line">    <span class="comment"># next数组的前两位一定是-1和0</span></span><br><span class="line">	<span class="built_in">next</span> = [-<span class="number">1</span>,<span class="number">0</span>]</span><br><span class="line">	i = <span class="number">1</span> ; j = <span class="number">0</span></span><br><span class="line">	<span class="comment">#模拟匹配过程求取next</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; (<span class="built_in">len</span>(p)-<span class="number">1</span>):</span><br><span class="line">		<span class="keyword">if</span> p[i]==p[j] <span class="keyword">or</span> j == -<span class="number">1</span>:</span><br><span class="line">			i += <span class="number">1</span> ; j += <span class="number">1</span></span><br><span class="line">			<span class="built_in">next</span>.append(j) <span class="comment"># next[i]=j</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			j = <span class="built_in">next</span>[j]</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">next</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="next的优化：nextval"><a href="#next的优化：nextval" class="headerlink" title="next的优化：nextval"></a>next的优化：nextval</h3><p>KMP算法在S和P的位置i，j发生mismatch后，下一次匹配的位置将是i和next[j]，但是如何next[j]位置的元素和j位置的一样的话，那么i和next[j]的匹配一定会失败，此时i将会和next[next[j]]比较。如果next[next[j]]位置的元素还和j位置的元素相同，这个迭代过程还会重复。</p>
+<p>如图2(1)所示，在i&#x3D;5,j&#x3D;5发生mismatch后，正常情况下j应该退回1，但是我们注意到P<a href="/figs/kmp/kmp_1.png">1</a>&#x3D;P[5],而next<a href="/figs/kmp/kmp_1.png">1</a>&#x3D;0，因此我们可以让j直接退回0。从而减少不必要的比较，进一步加速算法的执行。</p>
+<p>我们可以在算法开始匹配前优化next数组，当计算出next[j]&#x3D;x后，我们判断一下P[j]和P[x]是否相等，如果相等，我们便让next[j]&#x3D;next[x]，否则我们还是另next[j]&#x3D;x。具体的代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_nextval</span>(<span class="params">p</span>):</span><br><span class="line">	<span class="built_in">next</span> = [-<span class="number">1</span>,<span class="number">0</span>]</span><br><span class="line">	i = <span class="number">1</span> ; j = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; (<span class="built_in">len</span>(p)-<span class="number">1</span>):</span><br><span class="line">		<span class="keyword">if</span> p[i]==p[j] <span class="keyword">or</span> j == -<span class="number">1</span>:</span><br><span class="line">			i += <span class="number">1</span> ; j += <span class="number">1</span></span><br><span class="line">			<span class="keyword">if</span> p[i] == p[j]:</span><br><span class="line">				<span class="built_in">next</span>.append(<span class="built_in">next</span>[j])</span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="built_in">next</span>.append(j)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			j = <span class="built_in">next</span>[j]</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">next</span></span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h3><p>KMP算法有两部分组成，即主程序和get_next。这两部分构造是相似的，我们先分析get_next的事件复杂度。<br>在get_next，我们只需要分析while到底循环了几次就可以知道其时间复杂度了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_next</span>(<span class="params">p</span>):</span><br><span class="line">    <span class="built_in">next</span> = [-<span class="number">1</span>,<span class="number">0</span>]</span><br><span class="line">	i = <span class="number">1</span> ; j = <span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> i &lt; (<span class="built_in">len</span>(p)-<span class="number">1</span>):</span><br><span class="line">		<span class="keyword">if</span> p[i]==p[j] <span class="keyword">or</span> j == -<span class="number">1</span>:</span><br><span class="line">			i += <span class="number">1</span> ; j += <span class="number">1</span></span><br><span class="line">			<span class="built_in">next</span>.append(j)</span><br><span class="line">		<span class="comment"># 注意else分支进入的次数一定比if少</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			j = <span class="built_in">next</span>[j]</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">next</span></span><br></pre></td></tr></table></figure>
+<p>首先我们可以很容易分析出，if分支最多进入len(p)次，也就是m次，问题是else分支进了多少次。<br>事实上，我们也不清楚else分支进入了多少次，但是我们可以肯定<strong>进入else的次数一定小于等于进入if 的次数</strong>。这是因为进入else分支时，j的值会减少，至少减少1，最低值为-1；由于j的值只有在if分支才会增加，因为减少的总值不可能大于增加的总值，所以便有了以上的结论。因此我们可以断定get_next的时间复杂度为O(m)。</p>
+<p>同理，我们也可以算出kmp的时间复杂度为O(n)（不包括get_next的情况下），因此算法总得时间复杂度就是O(n+m)。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21923021/answer/281346746">https://www.zhihu.com/question/21923021/answer/281346746</a><br><a target="_blank" rel="noopener" href="http://blog.csdn.net/ghost165/article/details/78231293">http://blog.csdn.net/ghost165/article/details/78231293</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhangtianq/p/5839909.html">https://www.cnblogs.com/zhangtianq/p/5839909.html</a></p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/04/endian_problem/" data-toggle="tooltip" data-placement="top"
+                           title="Endian Problem in Coding">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/05/c_read_unsigned/" data-toggle="tooltip" data-placement="top"
+                           title="C语言无符号数据读取">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KMP%E7%AE%97%E6%B3%95"><span class="toc-text">KMP算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90"><span class="toc-text">简单算法分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KMP%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3"><span class="toc-text">KMP算法思想</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#next%E7%9A%84%E8%AE%A1%E7%AE%97"><span class="toc-text">next的计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#next%E7%9A%84%E4%BC%98%E5%8C%96%EF%BC%9Anextval"><span class="toc-text">next的优化：nextval</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-text">时间复杂度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

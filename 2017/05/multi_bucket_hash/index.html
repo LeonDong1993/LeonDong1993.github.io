@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        多桶哈希的冲突数量分析｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2017/05/multi_bucket_hash/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>多桶哈希的冲突数量分析</h1>
+                    
+                    <h2 class="subheading">Hash Collision Analysis under Multi-Bucket Scenario</h2>
+                    
+                    <span class="meta">
+                         作者 Leon Dong
+                        <span>
+                          日期 2017-05-28
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#math"
+                           title="math">math</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            多桶哈希的冲突数量分析
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>传统的哈希方式采用一个大的连续空间来存储元素，当元素满了之后，它需要将空间的容量扩充为两倍，并将之前所有的元素重新哈希到新的空间里面，这个过程成为Rehash.  现在我们有一个问题是，</p>
+<blockquote>
+<p>如果将数据按照范围等分成K份，将一个大的空间等分成K个桶。然后将每一份数据分别hash到对应的桶里面，这样做的话，hash的冲突数量和之前的相比如何？</p>
+</blockquote>
+<h2 id="传统hash的冲突数量"><a href="#传统hash的冲突数量" class="headerlink" title="传统hash的冲突数量"></a>传统hash的冲突数量</h2><p>假设现在连续空间的大小是M，即它有M个位置。我们在这里面插入N个数据，那么hash冲突的期望值是多少？为了便于数学分析，我们假设hash函数是完美的，也就是hash到每一个位置的概率是相等的。</p>
+<p>hash冲突数量的定义是每一个位置冲突数量的总和，其中每一个位置的冲突数量是有该位置存储元素的个数决定的。对于任意一个位置$p$,定义$n(p)$为该位置实际存储的元素数量。如果$n(p) \ge 2$，则该位置的冲突数量$C_p &#x3D; n(p)-1$，否则该位置的冲突数即为0.</p>
+<p>为了求得hash冲突的期望值，我们令随机变量$X$为hash冲突的总数量。为了求期望$E(X)$，我们同样利用期望的线性性质，将X拆成几个较小的随机变量之和。定义随机变量$Y_i$为第$i$个位置的冲突数量，则随机变量$X$和$Y_i$的关系为<br>$$<br>X &#x3D; Y_1 + Y_2 + … + Y_M<br>$$</p>
+<p>接下来，我们讨论如何求随机变量$Y_i$的期望。首先$Y_i$的取值范围为$[0,N-1]$. 对于每一个元素，它被放到第$i$个位置的概率为$p &#x3D; \frac{1}{M}$，放到了其他位置的概率为$q&#x3D; \frac{M-1}{M}$。定义$b_i$为该位置中放入了$i$个元素的概率，则$b_i&#x3D; C_{M}^{i} \cdot p^i \cdot q^{N-i}$。则变量$Y_i$的期望$E(Y_i)$为<br>$$<br>E(Y_i) &#x3D; 0 (b_0 +b_1) + 1b_2 + 2b_3 + … + (N-1)b_N<br>$$<br>这个二项分布的期望非常类似，也就是说我们已经知道<br>$$<br>Np &#x3D; 0b_0 + 1 b_1 + 2b_2 + 3b_3 + … + Nb_N<br>$$<br>所以，把两个式子相减，我们就得到<br>$$<br>Np - E(Y_i) &#x3D; b_1 + b_1 + b_2 + b_3 + … + b_N &#x3D; 1-b_0 &#x3D; 1 - q^N<br>$$<br>所以，$E(Y_i) &#x3D; \frac{N}{M} + (\frac{M-1}{M})^N -1$，可以看出，这个期望和位置$i$是没有任何关系的，因此我们可以得到随机变量$X$的期望<br>$$<br>E(X) &#x3D; M \cdot E(Y_i) &#x3D; N - M + M \cdot (\frac{M-1}{M})^N<br>$$<br>至此，我们就从数学上分析了，对于传统哈希来说，他的理论冲突数量是多少。那么现在的问题是，如果我把分成多个较小的桶进行hash，会导致理论冲突数量增多么？</p>
+<h2 id="多桶hash的冲突数量"><a href="#多桶hash的冲突数量" class="headerlink" title="多桶hash的冲突数量"></a>多桶hash的冲突数量</h2><p>多桶hash，也就是说现在hash的空间不再是一个，而是多个大小相同的桶，比如说一共$K$个。那么，对于任意一个数来说，首先我们决定它要哈希到的桶$B_i$，然后在$B_i$中进行hash。我们假设每一个元素去每一个桶的概率和每一个元素到桶里面的每一个位置的概率都是相同的。那么在这种情况下，总hash冲突数量会有变化么。</p>
+<p>我们考虑相同的情况，也就是说这K个桶的总大小也为M，所需插入的总量也为N。那么平均每一个桶的容量为$M_B &#x3D; \frac{M}{K}$,每一个桶的插入数量为$N_B &#x3D; \frac{N}{K}$。在这种情况下，我们套用上面推导出来的公式，得到其冲突数的期望为<br>$$<br>E(B) &#x3D; \frac{N}{K} - \frac{M}{K} + \frac{M}{K} \cdot (\frac{M-K}{M})^{\frac{N}{K}}<br>$$<br>同样，每一个桶的冲突数量的期望都是一样的，而我们一共有K个桶，所以最终总的冲突数为<br>$$<br>E(X) &#x3D;N- M+ M \cdot (\frac{M-K}{M})^{\frac{N}{K}}<br>$$</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>通过上面的分析我们可以发现，多桶hash和单桶hash的冲突数量的唯一差别在于$f(K)&#x3D; (\frac{M-K}{M})^{\frac{N}{K}}$这一项上，由于函数$f(K)$不是单调的，所以单桶hash和多桶hash的冲突数量关系是不确定的。可能多个桶的情况下，hash出来的冲突数量会更少也是完全有可能的。</p>
+<p>事实上，由于$M,N$一般都是比较大的数，而$K$一般数值较小，因此$f(K)&#x3D; (\frac{M-K}{M})^{\frac{N}{K}}$的值都差不多，也就是说多桶hash并不会导致冲突数量的明显增加。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/05/expected_elevator_stops/" data-toggle="tooltip" data-placement="top"
+                           title="电梯的停留楼层数量分析">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/05/alibaba_date_problem/" data-toggle="tooltip" data-placement="top"
+                           title="阿里笔试编程题-相亲的次数问题">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9Fhash%E7%9A%84%E5%86%B2%E7%AA%81%E6%95%B0%E9%87%8F"><span class="toc-text">传统hash的冲突数量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E6%A1%B6hash%E7%9A%84%E5%86%B2%E7%AA%81%E6%95%B0%E9%87%8F"><span class="toc-text">多桶hash的冲突数量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-text">结论</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>
