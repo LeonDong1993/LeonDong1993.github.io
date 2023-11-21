@@ -91,6 +91,22 @@
 							
 						
                     
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
+                        </li>
+							
+						
+                    
 					
 					
                 </ul>
@@ -140,7 +156,7 @@
                     <div class="about-me">
                         <!--移动端头部显示-->
                         <img src="/imgs/head.jpg"/>
-                        <h5><a href="/">Leon Dong</a></h5>
+                        <h5><a href="/about/">Leon Dong</a></h5>
                         <p>Stay Hungry, Stay Foolish.</p>
                     </div>
                 </div>
@@ -164,23 +180,23 @@
             Ubuntu系统配置篇
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             Set up a Mini Ubuntu Personal Server
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2017-03-01
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 基本配置有一些软件和事情基本上装完系统是必须需要装的，个人的习惯如下
 
 sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop gitsudo apt-get dist-upgrade #升级..
             </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -215,7 +231,7 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
                     
                     <img src="/imgs/head.jpg"/>
                     
-                    <h5><a href="/">Leon Dong</a></h5>
+                    <h5><a href="/about/">Leon Dong</a></h5>
                     
                     <p>Stay Hungry, Stay Foolish.</p>
                     
@@ -285,6 +301,8 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
                        rel="4">tutorial</a>
                     
                     
+                    
+                    
                 </div>
             </section>
             
@@ -297,6 +315,12 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
                 <li><a href="https://leetcode.com/LeonDong1993/" target="_blank">Leetcode US</a></li>
                 
                 <li><a href="https://leetcode.cn/u/topo1993/" target="_blank">Leetcode CN</a></li>
+                
+                <li><a href="https://scholar.google.com/citations?user=lf_b1aYAAAAJ&amp;hl=en" target="_blank">Google Scholar</a></li>
+                
+                <li><a href="https://www.linkedin.com/in/hailiang-dong-b344b3b7/" target="_blank">LinkedIn</a></li>
+                
+                <li><a href="https://github.com/LeonDong1993" target="_blank">Github</a></li>
                 
             </ul>
             
@@ -404,7 +428,34 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
     })
 </script>
 
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 
 <!-- Google Analytics -->
 

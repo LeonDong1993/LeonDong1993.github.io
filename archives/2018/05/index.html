@@ -91,6 +91,22 @@
 							
 						
                     
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
+                        </li>
+							
+						
+                    
 					
 					
                 </ul>
@@ -140,7 +156,7 @@
                     <div class="about-me">
                         <!--移动端头部显示-->
                         <img src="/imgs/head.jpg"/>
-                        <h5><a href="/">Leon Dong</a></h5>
+                        <h5><a href="/about/">Leon Dong</a></h5>
                         <p>Stay Hungry, Stay Foolish.</p>
                     </div>
                 </div>
@@ -164,21 +180,21 @@
             Understanding the Pointers Advanced
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             理解C/C++指针类型进阶
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2018-05-06
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 IntroductionThis blog is the second one that talking about the pointers. In the previous one, I talked about what is the pointer and why the type of..
             </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -213,7 +229,7 @@
                     
                     <img src="/imgs/head.jpg"/>
                     
-                    <h5><a href="/">Leon Dong</a></h5>
+                    <h5><a href="/about/">Leon Dong</a></h5>
                     
                     <p>Stay Hungry, Stay Foolish.</p>
                     
@@ -283,6 +299,8 @@
                        rel="4">tutorial</a>
                     
                     
+                    
+                    
                 </div>
             </section>
             
@@ -295,6 +313,12 @@
                 <li><a href="https://leetcode.com/LeonDong1993/" target="_blank">Leetcode US</a></li>
                 
                 <li><a href="https://leetcode.cn/u/topo1993/" target="_blank">Leetcode CN</a></li>
+                
+                <li><a href="https://scholar.google.com/citations?user=lf_b1aYAAAAJ&amp;hl=en" target="_blank">Google Scholar</a></li>
+                
+                <li><a href="https://www.linkedin.com/in/hailiang-dong-b344b3b7/" target="_blank">LinkedIn</a></li>
+                
+                <li><a href="https://github.com/LeonDong1993" target="_blank">Github</a></li>
                 
             </ul>
             
@@ -402,7 +426,34 @@
     })
 </script>
 
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 
 <!-- Google Analytics -->
 

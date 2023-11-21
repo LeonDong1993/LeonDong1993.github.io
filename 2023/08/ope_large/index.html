@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        Offline Policy Evaluation in Large Action Space｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2023/08/ope_large/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>Offline Policy Evaluation in Large Action Space</h1>
+                    
+                    <span class="meta">
+                         作者 Leon Dong
+                        <span>
+                          日期 2023-08-01
+                         </span>
+                    </span>
+                    
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#summary"
+                           title="summary">summary</a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            Offline Policy Evaluation in Large Action Space
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>In this article, I present a comprehensive literature review of existing research works on Offline Policy Evaluation (OPE). I have incorperated a lot of understandings and interpretations of existing methods that can help you better understand the theory behind. OPE is very useful for estimating the business KPIs such as click rate, it sits between the offline model development and online A&#x2F;B test, aims to solve the problem of inconsistent evaluation metric between offline development and online deployment.</p>
+<blockquote>
+<p>The draft of this article is completed during my 2023 summer intern at Wayfair.</p>
+</blockquote>
+<h1 id="Tutorials"><a href="#Tutorials" class="headerlink" title="Tutorials"></a>Tutorials</h1><p>These tutorials are very similar and are good places to start, it covers latest researches up to 2022.</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://sites.google.com/cornell.edu/recsys2021tutorial">RecSys2021 Tutorial</a> : slides, codes, video included as well!</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://counterfactual-ml.github.io/kdd2022-tutorial/">KDD2022 Tutorial</a>: slides, codes included (Includes the introduction of the new MIPS estimator) (Highly Recommended!).</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://drive.google.com/file/d/1ORptVOsM6zDImhRhJsoTpMdKiAhu2I7x/view?pli=1">RecSys 2022</a>: slides only.</p>
+</li>
+</ul>
+<h1 id="List-of-Papers"><a href="#List-of-Papers" class="headerlink" title="List of Papers"></a>List of Papers</h1><p>Here are some related papers I found (with a focus on recent publications and model-free methods ).</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2202.06317">Off-Policy Evaluation for Large Action Spaces via Embeddings</a> (Feb 2022) : introduces the Marginal IPS (MIPS) estimator.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.08062">Off-Policy Evaluation for Large Action Spaces via Conjunct Effect Modeling</a> (May 2023) : introduces the OffCEM estimator.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2207.05836">Contextual Bandits with Large Action Spaces: Made Practical</a> (Jul 2022) : this paper discuss a new type of estimator for OPE with continuous and linear structured action space. NOT so align with our current interest.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.03954.pdf">Learning Action Embeddings for Off-Policy Evaluation</a> (May 2023) : MIPS estimators requires the action embed data, which may not be available in practice. This paper improve MIPS estimator by learning the action embeddings from data.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2008.07146">Open Bandit Dataset and Pipeline: Towards Realistic and Reproducible Off-Policy Evaluation</a> (Aug. 2020): the open bandit pipeline for evaluating the estimators.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://drive.google.com/file/d/1oaM5Fu2bJ0GzMC09yyqjA7eZD9axzSKb/view">Recap: Designing a more Efficient Estimator for Off-policy Evaluation in Bandits with Large Action Spaces</a> (2019): introduce the recap estimator, it estimates the importance weight via the reciprocal rank of the logged action according to the scores assigned by the new policy. It is also less sensitive to large action space as well. CURRENTLY IMPLEMENTED in ranker-eva library.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3543507.3583448">Offline Policy Evaluation in Large Action Spaces via Outcome-Oriented Action Grouping</a> (Apr 2023) : improve the large action space evaluation performance by grouping actions.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2211.13904">Policy-Adaptive Estimator Selection for Off-Policy Evaluation</a> (Nov 2022): Introduce a new way to select the best estimator using logged data only, may be useful for meta-evaluation.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1907.09623.pdf">Doubly robust off-policy evaluation with shrinkage</a> (Sep 2020) : Introduced a way to estimate the bias of DRos estimator using logging data and true evaluation policy and logging policy. (The formula is on top of the page 17.)</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2021/hash/4476b929e30dd0c4e8bdbcc82c6ba23a-Abstract.html">Subgaussian and Differentiable Importance Sampling for Off-Policy Evaluation and Learning</a> (Year 2021): introduced the Sub-Gaussian IPS estimator through Power-Mean Correction of importance sampling.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1906.03694">Balanced off-policy evaluation in general action spaces</a> (Jun 2019): Introduced the Balanced-OPE estimator, it changes the vanilla importance weight in IPS using the output from a trained model to distinguish between logging policy and new policy given context and action pair.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/hanjuku-kaso/awesome-offline-rl/tree/main#off-policy-evaluation-contextual-bandits">A complete list of papers related to offline reinforcement learning</a> (Topics about OPE also included)</p>
+</li>
+</ul>
+<h1 id="The-OPE-Problem"><a href="#The-OPE-Problem" class="headerlink" title="The OPE Problem"></a>The OPE Problem</h1><p>Offline Policy Evaluation (OPE) aims to estimate the performance of new stochastic (deterministic policy is  just a special case) policy $\pi(a|x)$, given the logging data ${x_i, a_i, r_i}$ generated by logging policy $\pi_0(a|x)$. It avoids the costly and time-consuming A&#x2F;B test process and thus can creates great business value.</p>
+<h2 id="Data-Generation-Process"><a href="#Data-Generation-Process" class="headerlink" title="Data Generation Process"></a>Data Generation Process</h2><p>Formally, the data is assume to be generated by policy $\pi_0$ with the following procedure.</p>
+<ol>
+<li>we observe some contextual information $x_i \sim p(x)$, where distribution $p$ is unknown to us.</li>
+<li>the policy $\pi_0$ take an action $a_i \sim \pi_0(a|x)$, this is what we can control.</li>
+<li>we observe a reward $r_i \sim q(r|x,a)$, $q$ is also unknown.</li>
+</ol>
+<p>The whole logging data ${x_i, a_i, r_i}$ can be treated as samples generated from the joint distribution $p(x) \pi_0(a|x) q(r|x,a)$. <strong>One important note here is that we only observe the reward for the action we take.</strong></p>
+<p>For example, let’s consider a case of treating heart attacks (image from <a target="_blank" rel="noopener" href="https://counterfactual-ml.github.io/kdd2022-tutorial/">kdd2022 tutorial</a>). When a patient comes (the context $x$), we can have different treatments (the action $a$), and we can observe the result that whether the treatment is successful (the reward $r$).</p>
+<img src="/figs/ope/ope_example.png"  width="60%" height="30%">
+
+<p>As you can see from above table, we don’t know the outcome of having <code>Drug</code> treatment for patient $x_1$ and so are the other cases.</p>
+<h2 id="Policy-Value"><a href="#Policy-Value" class="headerlink" title="Policy Value"></a>Policy Value</h2><p>At the end of the day, what we care in business is the value of a policy, or mathematically the expected reward we can get, which can be formulated as</p>
+<p>$$V(\pi_0) &#x3D; E_{p(x) \pi_0(a|x) q(r|x,a)}[r]$$</p>
+<p>This can be estimated easily and accurately (provided with the large amount of logging data) using Monte-Carlo method as<br>$$ \frac{1}{n} \sum_i r_i $$</p>
+<p>This is actually what A&#x2F;B testing is doing. We put our policy online and gathering the logging of the policy and then we can estimate the business KPI such as click rate ($r_i$ here is binary 0&#x2F;1).</p>
+<h2 id="Goal"><a href="#Goal" class="headerlink" title="Goal"></a>Goal</h2><p>Our goal is here to estimate the expect reward we would have if we deploy policy $\pi$ instead of $\pi_0$ using just the logging data, which can be formulated as<br>$$V(\pi) &#x3D; E_{p(x) \pi(a|x) q(r|x,a)}[r]$$<br>where $V(\pi)$ denotes the value of policy $\pi$. It is not immediately clear how to estimate this, because we don’t have the logging data from the new policy $\pi$.</p>
+<h2 id="Challenges"><a href="#Challenges" class="headerlink" title="Challenges"></a>Challenges</h2><p>The existing estimators such as IPS, SNIPS can have very high variance and bias in practice when the number of actions is large.</p>
+<p>How can we develop a good evaluation metric that is accurate in the case of large action space is very challenging and important.</p>
+<h1 id="OPE-for-Ranking-System"><a href="#OPE-for-Ranking-System" class="headerlink" title="OPE for Ranking System"></a>OPE for Ranking System</h1><p>The above definition of OPE works for both ranking system (where the action is ordered list of actions from the whole action space, the reward in this case will be also be vector) as well traditional recommendation system (where we choose only one action from the whole space, both action and reward is a scalar in this case).</p>
+<p>That being said, <strong>the following sections mainly focus on the case of single action. But all methods can be adapted into ranking system as well (especially when independence assumption is used)</strong></p>
+<p>When conducting OPE for ranking system, we usually have assumptions on how customers interactive the ranking system (called user behavior model).</p>
+<ul>
+<li><p>independence, this basically means the customer interact with recommend list of items independently, i.e. whether the customer will click the item (action) only depends on the customer (context) and the item itself.</p>
+</li>
+<li><p>cascade, which is quite popular in research community now. It assumes customer interact with the recommend items one-by-one, from position 1 to position n. In this case, whether the customer will click the item at position $i$ only depends on the customer (context) and all the previous item $j &#x3D; {1,…,i-1}$.</p>
+</li>
+</ul>
+<p>For more information regard the OPE in ranking systems, you can  refer to the <a target="_blank" rel="noopener" href="https://counterfactual-ml.github.io/kdd2022-tutorial/">KDD 2022 Tutorial</a> (at least a good start point). For all future contents, I will mainly focuses on single action recommendation system.</p>
+<h1 id="Summary-of-Classical-Estimators"><a href="#Summary-of-Classical-Estimators" class="headerlink" title="Summary of Classical Estimators"></a>Summary of Classical Estimators</h1><p>It is always good to see how the classical estimators work. This is also what most existing works based on.</p>
+<h2 id="Preliminary"><a href="#Preliminary" class="headerlink" title="Preliminary"></a>Preliminary</h2><p>We usually consider the following properties of an estimators.</p>
+<ul>
+<li>Bias</li>
+<li>Variance</li>
+<li>Hyperparameters</li>
+<li>Stableness</li>
+<li>Running time</li>
+<li>Extra Assumptions</li>
+</ul>
+<p>The existing estimators can be roughly divided into three categories:</p>
+<ul>
+<li>model based method, such as Direct Method (DM) and its variants.</li>
+<li>model free method, such as Inverse Propensity Score (IPS) and its variants.</li>
+<li>the hybrid of above two, or called hybrid methods, such as Doubly Robust (DR) and its variants.</li>
+</ul>
+<p>I will go over these three baseline methods first and then some latest estimators that are improved version of these 3 baseline estimators.</p>
+<h2 id="Direct-Method-DM"><a href="#Direct-Method-DM" class="headerlink" title="Direct Method (DM)"></a>Direct Method (DM)</h2><p>This is perhaps the most intuitive method, recalled that the OPE is in general hard because we only observe the reward of the action we take. If we can somehow know the rewards of all actions we take, estimating the reward for new policy would be very easy.</p>
+<p>In direct method, the idea is impute these missing values (the reward that is not observed) by training a reward model $\widehat r$, such that $r_i &#x3D; \widehat r (x_i, a_i)$.</p>
+<p>Taking the previous heart attack treating example, if we have estimated the unobserved reward as follows (the red values),</p>
+<p><img src="/figs/ope/ope_example_filled.png"></p>
+<p>then we can use this model to directly estimate the reward for any action $a$ and context $x$, even the new policy is taking different actions against the logging policy.<br>$$V_{DM}(\pi) &#x3D; \frac{1}{n} \sum_i \sum_a \pi(a|x_i) \times \widehat r(x_i,a) $$<br>where $n$ is total number of logging data we have.</p>
+<p>Pros</p>
+<ul>
+<li>very low variance</li>
+</ul>
+<p>Cons</p>
+<ul>
+<li>biased and not consistent (very terrible property, this means even we have infinite amount of logging data, we cannot accurately estimate the true value of new policy)</li>
+<li>potentially many hyper-parameters, because we need to train a regression model (which may also have a lot of hyper-parameters as well).</li>
+<li>because of the regression model $\hat r$, the evaluation is slow.</li>
+<li>it is in general very hard to get a accurate reward model in industrial recommend system</li>
+</ul>
+<p>No assumption is made in this estimator.</p>
+<h2 id="Inverse-Propensity-Score-IPS"><a href="#Inverse-Propensity-Score-IPS" class="headerlink" title="Inverse Propensity Score (IPS)"></a>Inverse Propensity Score (IPS)</h2><p>Another method is to directly estimated the expectation via importance sampling. Specifically,<br>$$E_{p(x) \pi(a|x) q(r|x,a)}[r]  &#x3D; \int_x \int_a \int_r  p(x) \pi(a|x) q(r|x,a)  r  dr da dx \\<br>&#x3D; \int_x \int_a \int_r  p(x) \pi(a|x) q(r|x,a)  r  \frac{\pi_0(a|x) }{\pi_0(a|x) }  dr da dx \\<br>&#x3D; \int_x \int_a \int_r  p(x) \pi_0 (a|x) q(r|x,a)  r  \times \frac{\pi(a|x) }{\pi_0(a|x) } dr da dx \\<br>&#x3D; E_{p(x) \pi_0 (a|x) q(r|x,a) } \left [\frac{\pi(a|x) }{\pi_0(a|x) } r \right] $$</p>
+<p>Because we already have samples (the log data) drawn from joint distribution $p(x) \pi_0 (a|x) q(r|x,a)$, we can estimate the expectation using Monte-Carlo method and this will give us the formula of IPS method as<br>$$<br>V_{IPS}(\pi) &#x3D;  \frac{1}{n} \sum_i \frac{\pi(a_i|x_i) }{\pi_0(a_i|x_i) } r_i<br>$$<br>where $w(a_i,x_i) &#x3D;  \frac{\pi(a_i|x_i) }{\pi_0(a_i|x_i) }$ is usually called the vanilla importance weight (i.e. the inverse propensity).</p>
+<h3 id="Intuitive-Explanation"><a href="#Intuitive-Explanation" class="headerlink" title="Intuitive Explanation"></a>Intuitive Explanation</h3><p>Let’s say for some certain customer $x_i$, the old policy chose action $a$ with probability $p$ and observed a reward $r&#x3D;1$. Now the new policy comes and for the same customer $x_i$, it has probability $q&#x3D;2p$ of choosing action $a$. This means we have double chance of recommending $a$ to $x_i$, and we would expect we can gain $2r$ reward <strong>in the long run</strong>.</p>
+<p>Pros</p>
+<ul>
+<li>unbiased and consistent (very nice) !</li>
+<li>very fast to evaluate, only O(n) time, do not need to sum over action spaces.</li>
+<li>hyper-parameter free !</li>
+<li>you don’t need to save the full distribution over actions, you only need to save the probability of taking $a_i$ for $x_i$.</li>
+</ul>
+<p>Cons</p>
+<ul>
+<li>high variance if low number of samples or large action spaces</li>
+<li>Spoiler Alert: the high variance mainly because the vanilla importance weight is not robust, almost all advanced research works on IPS based model-free methods focuses on how to derive robust estimation of this importance weight.</li>
+</ul>
+<p>Assumptions</p>
+<ul>
+<li>need to satisfy the common support assumption (because of importance sampling), in other words, $\pi(a|x_i) &gt;0 \rightarrow \pi_0(a|x_i) &gt;0$.</li>
+</ul>
+<h2 id="Doubly-Robust-DR"><a href="#Doubly-Robust-DR" class="headerlink" title="Doubly Robust (DR)"></a>Doubly Robust (DR)</h2><p>The above two methods can be seen as two extremes (DM with high bias but low variance, IPS is low bias but high variance), doubly robust tries to combine them into a single estimator to achieve low bias and low variances.</p>
+<p>The key idea is to use the IPS method to correct the error of predict reward from DM method. In other words, we use the idea of IPS to estimate the expected difference of true reward against the predict reward, the formula is given as follows<br>$$<br>V_{DR}(\pi) &#x3D; \frac{1}{n} \sum_i \sum_a \pi(a|x_i) \widehat r(x_i,a)  + \frac{1}{n} \sum_i \frac{\pi(a_i|x_i) }{\pi_0(a_i|x_i) } (r_i - \widehat r(x_i,a) )<br>$$<br>It mainly consists of two parts: (1) the estimation from DM method, and (2) the estimation of deviation $r_i - \widehat r(x_i,a)$  using the idea of IPS method.</p>
+<p>Pros</p>
+<ul>
+<li>low bias and variance</li>
+<li>unbiased and consistent</li>
+<li>works well with small samples</li>
+</ul>
+<p>Cons</p>
+<ul>
+<li>potentially many hyper-parameters (less sensitive compared to DM)</li>
+<li>slow to evaluate</li>
+<li>can still fail in challenge cases (you can think it combines the advantages of two methods, but also have weakness of both methods as well)</li>
+</ul>
+<p>Assumption</p>
+<ul>
+<li>need to satisfy common support assumption as well</li>
+</ul>
+<h2 id="Self-Normalized-IPS-SNIPS-and-Clip-IPS-CIPS"><a href="#Self-Normalized-IPS-SNIPS-and-Clip-IPS-CIPS" class="headerlink" title="Self-Normalized IPS (SNIPS) and Clip IPS (CIPS)"></a>Self-Normalized IPS (SNIPS) and Clip IPS (CIPS)</h2><p>SNIPS is an improved version of IPS method and it is widely used by industrial practitioners because it is very simple and hyper-parameter free, and can also have very good performance (close to doubly robust) when the action space is small.</p>
+<p>Recall that the main problem of IPS method is the variance can be very high. This is because that, for the vanilla sampling weight $w(a_i,x_i) &#x3D;  \frac{\pi(a_i|x_i) }{\pi_0(a_i|x_i) }$, it can be way too large if the logging policy $\pi_0$ has very little probability to conduct the action $a$. This phenomenon is even serious in the case of large action space.</p>
+<p>One possible approach (Called Clip IPS) is to cut-off the importance weight that are too large, i.e.,<br>$$<br>w’(a_i,x_i) &#x3D;  \min \left ( \frac{\pi(a_i|x_i) }{\pi_0(a_i|x_i) } , \lambda\right)<br>$$<br>where $\lambda$ is the upper bound on the weight.  Although appealing and simple, this method is biased and not consistent, and it introduce an extra hyper parameter to tune, which is hard to deal with in practice.</p>
+<p>SNIPS avoid the potential large weights by normalize each weights respect to their own average, specifically, the importance weight is now<br>$$<br>w_s &#x3D; w(a_i,x_i) &#x2F; \frac{1}{n} \sum_i w(a_i,x_i)<br>$$<br>and we will have the SNIPS estimator as<br>$$<br>V_{SNIPS} (\pi) &#x3D; \frac{1}{n} \sum_i w_s(a_i, x_i) r_i &#x3D; \frac{\sum_i w(x_i, a_i) r_i}{ \sum_i w(x_i,a_i)}<br>$$</p>
+<p>Another way to think about this is, instead of dividing by the sample number $n$, the denominator now becomes the sum of all importance weights. (A difference way of estimate weighted average).</p>
+<p>Pros</p>
+<ul>
+<li>low bias, biased but consistent (still favorable)</li>
+<li>relatively low variance</li>
+<li>works very well when the number of actions is small</li>
+<li>parameter-free and very fast in practice</li>
+</ul>
+<p>Cons</p>
+<ul>
+<li>not good in challenge case (small sample, large action space, etc.)</li>
+</ul>
+<p>Assumption</p>
+<ul>
+<li>the same common support assumption</li>
+</ul>
+<h1 id="Why-Large-Action-Space-is-Hard"><a href="#Why-Large-Action-Space-is-Hard" class="headerlink" title="Why Large Action Space is Hard"></a>Why Large Action Space is Hard</h1><p>With large action space, it is very easy to encounter the challenge problems, some of the cases may include:</p>
+<ul>
+<li>In the logging data, the policy $\pi_0$ may only conducted a small subset of actions, which make it very hard to estimate the distribution for logging policy over all actions. This will also cause the estimation the performance of new policy to be highly inaccurate, because the new policy can have high probability conduct a action that is never appeared in the logging for any context.</li>
+<li>It is more likely the new policy $\pi$ is heavily deviated from the original policy $\pi_0$. This is because that for large action space, typically the distribution over action can have long tail (in other words, most of probability mass is concentrated small amount of actions.) In such a case, if the user interacted with something new, the new policy might be quite different from the original, make it challenging .</li>
+<li>It also increase the time for evaluation, especially for direct method based estimators (need to collect more data).</li>
+</ul>
+<h1 id="Summary-on-Recent-Estimators-by-Jul-2023"><a href="#Summary-on-Recent-Estimators-by-Jul-2023" class="headerlink" title="Summary on Recent Estimators (by Jul. 2023)"></a>Summary on Recent Estimators (by Jul. 2023)</h1><p>In this section, I present some latest research works related to OPE estimators in large action space with a focus on IPS variants (model-free methods) because it is usually more practical and easier to use in industrial.</p>
+<p>Each section title is associated with corresponding paper. if you are interested, you can check the original paper for more details.</p>
+<h2 id="Doubly-Robust-optimal-shrinkage-DRos"><a href="#Doubly-Robust-optimal-shrinkage-DRos" class="headerlink" title="Doubly Robust optimal shrinkage (DRos)"></a><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1907.09623">Doubly Robust optimal shrinkage (DRos)</a></h2><p>One of the issues with DR method is that, when comes to challenge settings where the new policy $\pi$ is highly different from the logging policy $\pi_0$, then almost all previous mentioned IPS based method (including DR because it uses IPS idea to correct bias) will fail and DM will be the best in such cases.</p>
+<p>It is easy to see that IPS methods fails because that the values of importance weight $w(x_i, a_i)$ can be very different if $\pi$ deviates a lot from $\pi_0$. DRos approach tries to derive a different way of estimating the weight by introducing an extra hyper-parameter $\lambda$ and minimize a MSE upper bound. The detailed theory is somewhat complicated and you can check it <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1907.09623">here</a> in the original paper (<strong>section 3.1</strong>). Here I will show the final formula for the estimator and it is very similar to DR method where only the estimation of importance weight is changed.<br>$$<br>V_{DRos}(\pi) &#x3D; \frac{1}{n} \sum_i \sum_a \pi(a|x_i) \hat r(x_i,a)  + \frac{1}{n} \sum_i \frac{ \lambda w(x_i, a_i)}{\lambda + w(x_i,a_i) ^2} (r_i - \widehat r(x_i,a) )<br>$$</p>
+<p>Pro</p>
+<ul>
+<li>Works well with small amount of data</li>
+<li>Good performance in the challenge setting</li>
+</ul>
+<p>Cons</p>
+<ul>
+<li>biased and inconsistent, but still very useful in challenge settings.</li>
+<li>Many hyper-parameters: $\lambda$ and the reward model $\widehat r$</li>
+<li>slow to evaluate as well</li>
+</ul>
+<p>No assumptions needed, because now the denominator can never be zero.</p>
+<h2 id="SubGaussian-IPS"><a href="#SubGaussian-IPS" class="headerlink" title="SubGaussian IPS"></a><a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2021/hash/4476b929e30dd0c4e8bdbcc82c6ba23a-Abstract.html">SubGaussian IPS</a></h2><p>Recall that the IPS method have very high variance because the vanilla importance weight can be really large when the evaluation policy (new policy) distribution is heavily deviated from the logging policy. SNIPS and CIPS try to resolve this problem through self-normalization and hard threshing. <strong>This work aims to solve this high weight problem through the notion of power mean</strong>.</p>
+<p>Given the vanilla importance weight $w(a_i,x_i) &#x3D;  \frac{\pi(a_i|x_i) }{\pi_0(a_i|x_i) }$, we can define a $\lambda ,s$-corrected importance weight as</p>
+<p>$$<br>w_{\lambda,s}(a,x) &#x3D; \left[ \lambda + (1- \lambda) * w(a,x) ^ s \right] ^ {\frac{1}{s}}<br>$$</p>
+<p>It can be treated as the weighted power mean between $w(a,x)$ and constant $1$, where the weights are controlled by $\lambda$.</p>
+<p>By manually set $s&#x3D;1$, we get the formula<br>$$<br>w_{SG}(a,x) &#x3D; \frac{w(a,x)}{ \lambda * w(a,x) + 1-\lambda }<br>$$</p>
+<p>By plugging this estimation of importance weight into IPS, we get Sub-Gaussian IPS as</p>
+<p>$$<br>V_{SG-IPS} (\pi) &#x3D; \frac{1}{n} \sum_i \frac{w(a,x)}{ \lambda * w(a,x) + 1-\lambda } r_i<br>$$</p>
+<p>Note that we can also have self-normalization version of this estimator and the derivation is almost same just as SNIPS.</p>
+<p>Pros</p>
+<ul>
+<li>More robust and lower variance compared to IPS.</li>
+<li>The bias is no longer unbiased (not sure if it is consistent, no proof is given by the authors).</li>
+<li>the hyper-parameter $\lambda$ has real meaning, this is the confidence you believe that new policy should have exact same expected reward as old policy.</li>
+</ul>
+<p>Cons</p>
+<ul>
+<li>an extra parameters introduced.</li>
+</ul>
+<p>No assumption is made in this estimator</p>
+<h2 id="Marginal-IPS-MIPS"><a href="#Marginal-IPS-MIPS" class="headerlink" title="Marginal IPS (MIPS)"></a><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2202.06317">Marginal IPS</a> (MIPS)</h2><p>This is one of the latest works that aim to develop accurate estimators for large action space. The main idea of this work is to make use of some extra information produced when some action is executed by the recommendation system.</p>
+<p>For example, when the some furniture is recommended (usually through product id, this is one action), we can also get the type, color, size of this furniture. This is called the action embedding $e$ by the authors, and it let us to rethink the recommendation system in the following way: instead of thinking the recommendation system conducted the action <em>recommended a furniture with certain id</em>, we can think it <em>recommended a furniture with certain type and color</em>.</p>
+<p>With this idea in mind, we might be able to use action embedding as a surrogate for actions, and develop a more robust estimator that make use the of the extra information about actions.</p>
+<p>The following understanding may not be true after careful reading.</p>
+<blockquote>
+<p>the assumption behind this is that, <em>compared to the number of actions, the different combinations of action embedding is small</em>, which will lead us a more robust estimator even if the action is very large.</p>
+</blockquote>
+<blockquote>
+<p>This understanding is may not be true in practice, we can easily have multiple categorical variable that have a lot of possible values. In addition, we may also continuous variables in our action embedding.</p>
+</blockquote>
+<p>One very important intuition behind this approach is that, <strong>the action embedding allows us to somehow evaluate the similarity and correlation between actions</strong>.</p>
+<h2 id="Reformulate-the-Data-Generation-Process"><a href="#Reformulate-the-Data-Generation-Process" class="headerlink" title="Reformulate the Data Generation Process"></a>Reformulate the Data Generation Process</h2><p>Since we assume there is action embedding $e$ available in our data, the author reformulated the data generation process as follows:</p>
+<ol>
+<li>we observe some contextual information (user profile) $x_i \sim p(x)$, where distribution $p$ is unknown to us.</li>
+<li>the policy $\pi_0$ take an action $a_i \sim \pi_0(a|x_i)$.</li>
+<li><strong>we observe some action embedding $e_i \sim p(e|x_i,a_i)$</strong>, this distribution is unknown as well.</li>
+<li>we observe a reward $r_i \sim q(r|x_i,a_i,e_i)$, the distribution $q$ is unknown.</li>
+</ol>
+<p>Because of the Therefore, under this data generation process, the logging data can be treated as<br>$$<br>{ x_i, a_i, e_i, r_i}_{i&#x3D;1}^n<br>$$</p>
+<p>Now, the OPE problem can be formulated as<br>$$V(\pi) &#x3D; E_{p(x) \pi(a|x) p(e|x,a) q(r|x,a,e)} \hspace{4pt} [r]$$</p>
+<p>It seems that the problem becomes more complicated after introducing extra variables but actually it can be simplified with appropriate assumption. Specifically, the author made an assumption called <strong>no direct effect from $a$ to $r$</strong>. In other words, the uncertainty of reward $r$ should be fully explained by just user profile $x$ and the action embedding $e$, statistically, this means $r \perp a | x,e$.</p>
+<p>Taking our previous example, it basically assumes that whether the customer will buy (or click) our furniture is only depend the type and color of a furniture, not some specific product. Note that in practice,  we can have better and more action embedding, but you can see that this assumption is usually not true in practice.</p>
+<p>Nevertheless, with this assumption, we can derive the MIPS estimators as follows<br>$$<br>E_{p(x) \pi(a|x) p(e|x,a) q(r|x,a,e)} \hspace{4pt} [r] \\<br>&#x3D; E_{p(x) \pi(a|x) p(e|x,a) q(r|x,e)} \hspace{4pt} [r]<br>&#x3D; E_{p(x)  p(e|x,\pi) q(r|x,e)} \hspace{4pt} [r] \\<br>&#x3D; E_{p(x)  p(e|x,\pi_0) q(r|x,e)} \hspace{4pt} \left [r \frac{p(e|x,\pi)}{p(e|x,\pi_0)} \right ]<br>$$</p>
+<p>where $p(e|x,\pi) &#x3D; \sum_a \pi(a|x) p(e|x,a)$ is the marginal distribution.  From the first step to second step, we use the assumption and sum out action $a$ (only two terms involved after using the assumption) to get a new conditional distribution over just $e$. From the second step to third step, we use the same trick of deriving IPS formula.</p>
+<hr>
+<p>Bias and Variance Trade-Off</p>
+<p>As mentioned before, the assumption made by the authors can never be fully true in practice. However, this won’t limit the practical use of this estimator as the authors find.</p>
+<ol>
+<li><p>If this assumption is fully satisfied (no bias in this case), then it is very likely that the embedding space is large as well, and thus incurs a lot of variances.</p>
+</li>
+<li><p>If this assumption is violated, the variance decrease and bias would increase as well.</p>
+</li>
+<li><p>The best performance achieved when we deliberately violate the assumption to some extent (i.e. determine the number and which features should be considered in embedding space).</p>
+</li>
+</ol>
+<hr>
+<p>Practical Implementation Concerns</p>
+<p>Calculate $w(x,e) &#x3D; \frac{p(e|x,\pi)}{p(e|x,\pi_0)}$ is typically very hard in practice, this is because we don’t know the distribution $p(e|a,x)$ and we can only estimate through the data. But in fact, estimate this distribution through data is also very hard, because there might be multiple variables in $e$ and it can be continuous or categorical, the joint space over the $e$ is very large and hard to regression onto in practice.</p>
+<p>The authors provided an alternative way to estimate this value through the Bayes rule.</p>
+<p>$$<br>w(x,e) &#x3D; \sum_a \pi_0(a|x,e) \frac{\pi(a|x)}{\pi_0(a|x)} &#x3D;E_{\pi_0(a|x,e)} [w(x,a)]<br>$$</p>
+<p>The detailed derivation is shown here (this proof is located at page 19 of the original <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2202.06317">paper</a>.).</p>
+<img src=/figs/ope/mips_derivation.png  width="60%" height="30%">
+
+<p>where $w(x,a) &#x3D; \frac{\pi(x|a)} {\pi_0(x|a)}$ is the vanilla importance weight. In addition, from step 2 to 3, the following formula is used for transformation.</p>
+<p>$$<br>p(e|x,a) &#x3D; \frac{\pi_0(a|x,e) p(e|x,\pi_0)}{\pi_0(a|x)}<br>$$</p>
+<hr>
+<p>With this new way of calculating of $w(x,e)$, what we need is to estimate $\pi_0(a|x,e)$. Because action is nothing but a single categorical variable which can take multiple values, this is relatively easy to do with an regression model in most cases (e.g. Logistic Regression, or any other model can output distribution over labels), with customer features and embedding features as input.</p>
+<p>You may want to use very complicated model such as deep neural network (with soft max layer at the end) for this regression problem. However, from my personal understanding, <strong>a simple regression model is usually preferred in this case.</strong></p>
+<p>To understand why, we need to have a better understanding of the relationship between action $a$ and embedding $e$. Specially, in practice, once the action $a$ is determined, $e$ will be determined as well (think the product recommendation example, the color, type, size of given a product id is determined).</p>
+<p>Now let’s consider the reverse, if the embedding $e$ is given, can we uniquely identify the action $a$ ? The answer is yes when the assumption is true, and no otherwise. However, in practice, if there is continuous variable present in the embedding, this is usually true as well (e.g. there will be little chance that two same objects have exact same size).</p>
+<p>This is not a typical learning problem where the we will have different values of some features but have the same label. In our case, if label is the same, then the embedding feature is exactly same as well.</p>
+<p>So what are we doing here? Given some features that determines the action to predict the action ?</p>
+<blockquote>
+<p>the following is just my own intuitive understanding, nothing to do what stated in the original paper.</p>
+</blockquote>
+<p>It is true we can predict the action exactly, but only when we have a very sophisticated model such as a very deep neural work or a decision tree with unlimited depth. In this case, the output distribution over action put all mass into the target action, which is not we want (falls back to previous vanilla importance weight).</p>
+<p>This is why I conclude that a slightly simpler model is preferred here. A linear model such as logistic regression won’t have the ability to remember input cases and distinguish between the minor difference between continuous values. Instead, because the limited ability, it will <strong>distribute the whole probability mass 1.0 over all action that have similar action embedding as the one of target action</strong>, and this distribution is used to smooth the vanilla importance sampling weight, make it more robust.</p>
+<p>Discussion over this understanding is welcome (by Leon).</p>
+<hr>
+<p>Pros</p>
+<ul>
+<li>low variance and unbiased when the assumption is true</li>
+<li>Good performance in large action space, can beat Direct Method, and it converges fast.</li>
+<li>Good practical performance even if the assumption is break</li>
+<li>We can have self-normalized version of MIPS as well.</li>
+</ul>
+<p>Cons</p>
+<ul>
+<li>need extra feature in your data, i.e. the action embeddings</li>
+<li>Need to determine the number of features and which feature (action embedding) you want to use, just like the hyper-parameter search</li>
+<li>Slow evaluation speed because now you need to sum over the action space.</li>
+<li>need to train a regression model over the action space</li>
+<li>need to save the distribution over all actions for single context $x_i$. If action space is large (e.g. 5000), we essentially need 5k times the memory.</li>
+</ul>
+<p>Assumption</p>
+<ul>
+<li>It has the no direct impact assumption, in other words, give the action embedding $e$ and user profile $x$, the reward $r$ is independent of $a$, i.e., $r \perp a | x,e$. More action embedding features, more likely the above assumption is true. But too many features can greatly increase the variance as well (it basically falls back to vanilla weight cases where there might be large number of different combination of action embedding $e$).</li>
+<li>Common embedding support assumption.</li>
+</ul>
+<h2 id="Learned-MIPS-AutoMIPS"><a href="#Learned-MIPS-AutoMIPS" class="headerlink" title="Learned-MIPS (AutoMIPS)"></a><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2305.03954.pdf">Learned-MIPS</a> (AutoMIPS)</h2><p>As discussed in the above section, although the no direct impact assumption can hardly be satisfied in practice, it won’t affect the practical performance of the MIPS estimator. The major issue is that we may not have any action embedding features or the action embedding is too bad or too little (if too many, we can always use part of them).</p>
+<p>So can we learn the action embedding through data directly? The answer is Yes, and it actually work pretty like a direct method.</p>
+<p>So our goal is find some embedding $e$ that can be served as surrogate for action $a$. Specifically, the author assumes that there exist embedding $e \in R^d$ for each action $a$, such that $p(r|x,e) \approx p(r|x,a)$, for every context. This assumption is very similar to the previous one, but is more stronger where we also assumes that give action $a$, the reward is also independent of embedding $e$ as well.</p>
+<h3 id="Design-Heuristics-and-Algorithms"><a href="#Design-Heuristics-and-Algorithms" class="headerlink" title="Design Heuristics and Algorithms"></a>Design Heuristics and Algorithms</h3><p>The idea authors used through out the paper is that if $e$ is a very good representation of $a$, then it should be able to used to estimated the reward model very well.</p>
+<p>Mathematically, we want to learn a function $f$ that take action $a$ as input and output the embedding $e &#x3D; f(a)$, such that<br>$$<br>\sum_i  \left (  r_i - G(x_i, e &#x3D; f(a_i))  \right ) ^2<br>$$<br>is minimized. Where $G$ is the reward model to estimate the rewards (this is basically what we did in direct method). After this model is trained, we can simply use function $f$ the generate the action embedding for all action we have.</p>
+<p>For example, in the paper, the author use a linear layer with input dimension $u &#x3D; |A|$ (number of actions) and output dimension $v$ (the number of customer features) as the function $f$ (parameter size $W_{u \times v}$) and $\widehat r &#x3D; G(x,f(a)) &#x3D; x^Tf(a)$. Note that the input $a$ is in the one hot representation.</p>
+<blockquote>
+<p>Side note, we can have bias parameter in the dot product as well. By append a constant 1 to all $x$ and increase the output dimension as $v+1$.</p>
+</blockquote>
+<p><img src="/figs/ope/mips_learn_overview.png" alt="learn_mips_method_overview"></p>
+<p>From a different view, because the input is one hot, when we use this linear layer as a function to generate our action embedding, it basically spit out one of the rows of its weight matrix $W_{u \times v}$. Therefore, we can think that, for each action $a_i$, we fitted a linear model with parameters $W_{i,\cdot }$ which take $x$ as input and try to predict the reward $r$. <strong>This allow us to think this whole framework of learning from a different point of view</strong>.</p>
+<blockquote>
+<p>Again, we can see that action determines embedding, and it is almost true that the embedding determines actions as well. It almost impossible to have two exact same rows in the weight matrix $W_{u \times v}$.</p>
+</blockquote>
+<p>Recall that for reward model $p(r|x,a)$, we know that if action $a$ is fixed, then r only depends $x$, so if we can train a model $r &#x3D; G_{\theta}(x)$ where $\theta$ is the parameters, then we can use $\theta$ as the action embedding for $a$.</p>
+<p>Once the action embedding is generated, we can use it in MIPS for estimation.</p>
+<p>This estimator is an extension of MIPS, so I think it share similar pro and cons as MIPS, so details are omitted here.</p>
+<hr>
+<p>Practical Concern</p>
+<p>Because we need train a  model that takes $x$ to predict $r$ for each action, the number of parameters in this model must be great than the dimension of $x$ (unless you only use partial information from x, which is a waste of computation and information).</p>
+<p>In this case, how can we learn action embedding that is of arbitrary size. The solution I came up with is to train an encoder jointly with these linear models. Because the encoder parameters are same for all actions, we don’t need to contain them in our action embedding.</p>
+<h2 id="Group-IPS"><a href="#Group-IPS" class="headerlink" title="Group-IPS"></a><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/3543507.3583448">Group-IPS</a></h2><p>Because we have the action embedding, and it can be used to estimator and similarity and relation between the actions. Why not do clustering over the action embedding space and group similar action together? In such way, we can significantly reduce the number of actions and then we can directly use IPS or SNIPS for estimation.</p>
+<p>Specifically, let’s say we divided the whole action space $A$ into $k$ groups $g_1, …g_k$. Then for each logging row $(x_i, a_i, r_i)$, we change into  $(x_i, g_i, r_i)$ where $a_i \in g_i$. Then the importance weight becomes<br>$$<br>w(g_i, x_i) &#x3D; \frac{\pi(g_i|x_i)}{\pi_0(g_i | x_i)}<br>$$<br>where $\pi(g_i|x_i) &#x3D; \sum_{a \in g_i} \pi(a|x_i)$.</p>
+<p>Here, we can treat $g_i$ as the surrogate action and we transform our distribution over original action space $a$ into group space $g$, and then we can directly apply IPS or SNIPS for estimation.</p>
+<h2 id="Balanced-IPS"><a href="#Balanced-IPS" class="headerlink" title="Balanced IPS"></a><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1906.03694">Balanced IPS</a></h2><p>Balanced IPS replace the vanilla importance sampling weight with a density ratio estimation using classifiers, it works as follows.</p>
+<p>Let’s say we have a new policy $\pi$, thus given any context $x_i$, we can generate an action $a_i$ from $\pi(a|x_i)$, and we can mark this pair with label $C &#x3D; 1$, i.e. ${x_i,a_i,1}$. We also have a lot of ${x_i,a_i,r_i}$ pairs from the logging policy, we extract the context and action from them and mark these pairs with label $C&#x3D;0$ as ${x_i,a_i,0}$.</p>
+<p>With these data, we can train a model that takes $x$ and $a$ as input and output a distribution over labels (0,1). This means we train a classifier to predict $p_0 &#x3D; p(0|x,a)$ and $p_1 &#x3D; p(1|x,a) &#x3D; 1 - p(0|x,a)$.</p>
+<p>Then we can estimate the importance weight as<br>$$<br>\frac{\pi(x,a)}{\pi_0(x,a)}<br>&#x3D; \frac{p(x,a|C&#x3D;1)p(C&#x3D;1)}{p(x,a|C&#x3D;0) p( C&#x3D;0)}<br>&#x3D; \frac{p(C&#x3D;1|x,a)}{p(C&#x3D;0|x,a)}<br>&#x3D; \frac{p_1}{p_0}<br>$$</p>
+<p>where $P(C&#x3D;1) &#x3D; P(C&#x3D;0)$ by picking same amount of training samples from both policy, with this design, we can get the formula of Balanced IPS as</p>
+<p>$$<br>V_{B-IPS} (\pi) &#x3D; \frac{1}{n} \sum_i \frac{p_1}{p_0} r_i<br>$$</p>
+<p>where $p_1$ anad $p_0$ is the probabilities we get the from the classification model.</p>
+<h3 id="Improvement"><a href="#Improvement" class="headerlink" title="Improvement"></a>Improvement</h3><p>The original BIPS uses action itself to train the model. Because action is usually the categorical variable and there is no relation between each of them. I proposed to use action embedding to train the classification model and it can significantly boost the performance of BIPS.</p>
+<h1 id="Evaluation-of-Estimators-Meta-Evaluation"><a href="#Evaluation-of-Estimators-Meta-Evaluation" class="headerlink" title="Evaluation of Estimators (Meta-Evaluation)"></a>Evaluation of Estimators (Meta-Evaluation)</h1><p>Our task of meta evaluation is to estimate the bias and variance of each estimators under large action space cases through simulation experiments.</p>
+<p>To this end, we need the following components and data:</p>
+<ol>
+<li>the action space should be large</li>
+<li>the old policy $\pi_0$ (usually the policy that already been put into production)</li>
+<li>the logging data generated by the old policy $D_0$.</li>
+<li>the new policy $\pi$</li>
+<li>the A&#x2F;B test&#x2F;logging data of new policy $D$.</li>
+</ol>
+<p>Note that we won’t have the logging data for the policy we are currently developing in practice. In such cases, we can treat the new policy as current policy in production, and the old policy as the previous policy just before that one, which enables us to conduct meta-evaluation of estimators.</p>
+<h2 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a>Steps</h2><p>In order to estimate the bias and variance of an estimator (e.g. snips), we can follow these steps.</p>
+<ul>
+<li><p>Compute the true policy value (the expectation of reward) $v_{\pi}$ of the new policy $\pi$ . this is usually estimated using its own logging data $D$, we treat this estimation as the true value (this is the best we can do, unless we have infinite number of logging data or we know the true distribution of context and reward model).</p>
+</li>
+<li><p>Build $N$ bootstrap dataset $D_0^i, i &#x3D; 1..N$ from the dataset $D_0$, which is the logging dataset generated by the old policy.</p>
+</li>
+<li><p>For each estimator, using the bootstrap dataset $D_0^i, i &#x3D; 1..N$ to estimate the expected reward of new policy $N$ times, and now we would have $N$ different estimation of this estimator. Based on these values, we can estimate the bias, variance and MSE as usual.</p>
+</li>
+<li><p>Repeat for all estimators being tested.</p>
+</li>
+</ul>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2019/01/find_majority_linear/" data-toggle="tooltip" data-placement="top"
+                           title="Find Majority Element in Linear Time">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg==">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Tutorials"><span class="toc-text">Tutorials</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#List-of-Papers"><span class="toc-text">List of Papers</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The-OPE-Problem"><span class="toc-text">The OPE Problem</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Generation-Process"><span class="toc-text">Data Generation Process</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Policy-Value"><span class="toc-text">Policy Value</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Goal"><span class="toc-text">Goal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Challenges"><span class="toc-text">Challenges</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#OPE-for-Ranking-System"><span class="toc-text">OPE for Ranking System</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Summary-of-Classical-Estimators"><span class="toc-text">Summary of Classical Estimators</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Preliminary"><span class="toc-text">Preliminary</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Direct-Method-DM"><span class="toc-text">Direct Method (DM)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Inverse-Propensity-Score-IPS"><span class="toc-text">Inverse Propensity Score (IPS)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Intuitive-Explanation"><span class="toc-text">Intuitive Explanation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Doubly-Robust-DR"><span class="toc-text">Doubly Robust (DR)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Self-Normalized-IPS-SNIPS-and-Clip-IPS-CIPS"><span class="toc-text">Self-Normalized IPS (SNIPS) and Clip IPS (CIPS)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Why-Large-Action-Space-is-Hard"><span class="toc-text">Why Large Action Space is Hard</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Summary-on-Recent-Estimators-by-Jul-2023"><span class="toc-text">Summary on Recent Estimators (by Jul. 2023)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Doubly-Robust-optimal-shrinkage-DRos"><span class="toc-text">Doubly Robust optimal shrinkage (DRos)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SubGaussian-IPS"><span class="toc-text">SubGaussian IPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Marginal-IPS-MIPS"><span class="toc-text">Marginal IPS (MIPS)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reformulate-the-Data-Generation-Process"><span class="toc-text">Reformulate the Data Generation Process</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Learned-MIPS-AutoMIPS"><span class="toc-text">Learned-MIPS (AutoMIPS)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Design-Heuristics-and-Algorithms"><span class="toc-text">Design Heuristics and Algorithms</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Group-IPS"><span class="toc-text">Group-IPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Balanced-IPS"><span class="toc-text">Balanced IPS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Improvement"><span class="toc-text">Improvement</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Evaluation-of-Estimators-Meta-Evaluation"><span class="toc-text">Evaluation of Estimators (Meta-Evaluation)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Steps"><span class="toc-text">Steps</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+</body>
+
+</html>

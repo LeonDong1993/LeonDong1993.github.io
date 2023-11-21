@@ -91,6 +91,22 @@
 							
 						
                     
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
+                        </li>
+							
+						
+                    
 					
 					
                 </ul>
@@ -140,7 +156,7 @@
                     <div class="about-me">
                         <!--移动端头部显示-->
                         <img src="/imgs/head.jpg"/>
-                        <h5><a href="/">Leon Dong</a></h5>
+                        <h5><a href="/about/">Leon Dong</a></h5>
                         <p>Stay Hungry, Stay Foolish.</p>
                     </div>
                 </div>
@@ -164,54 +180,24 @@
             小米路由器Mini配置汇总
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             Management and Configuration for Xiaomi Router Mini
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2016-10-07
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 刷入 Openwrt小米路由器要刷openwrt的话，主要分成以下几步：
 
 首先去小米路由器官网下载最新的开发版固件，把路由器固件升级成开发版系统，只要在你的路由器设置菜单里面选择手动升级系统即可，具体请参考这里
 刷好开发版后，用手机连接路由器，下载小米路由器APP，安装打开，按步骤绑定你的路由..
             </p>
-        </div> -->
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  "
-     style="background-image: url('/imgs/background.jpg')">
-    <a href="/2016/10/binary_search_analysis/">
-        <h2 class="post-title">
-            Analysis of Binary Search
-        </h2>
-
-        
-        <h3 class="post-subtitle">
-            二分查找性质分析
-        </h3>
-        
-
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-10-03
-        </p>
-
-        <!-- <div class="post-content-preview">
-            <p>
-                BackgroundDays before, I was studying the tree structure. In tree search operation, we need to find a minimum element in a node that is bigger (in t..
-            </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -246,7 +232,7 @@
                     
                     <img src="/imgs/head.jpg"/>
                     
-                    <h5><a href="/">Leon Dong</a></h5>
+                    <h5><a href="/about/">Leon Dong</a></h5>
                     
                     <p>Stay Hungry, Stay Foolish.</p>
                     
@@ -316,6 +302,8 @@
                        rel="4">tutorial</a>
                     
                     
+                    
+                    
                 </div>
             </section>
             
@@ -328,6 +316,12 @@
                 <li><a href="https://leetcode.com/LeonDong1993/" target="_blank">Leetcode US</a></li>
                 
                 <li><a href="https://leetcode.cn/u/topo1993/" target="_blank">Leetcode CN</a></li>
+                
+                <li><a href="https://scholar.google.com/citations?user=lf_b1aYAAAAJ&amp;hl=en" target="_blank">Google Scholar</a></li>
+                
+                <li><a href="https://www.linkedin.com/in/hailiang-dong-b344b3b7/" target="_blank">LinkedIn</a></li>
+                
+                <li><a href="https://github.com/LeonDong1993" target="_blank">Github</a></li>
                 
             </ul>
             
@@ -435,7 +429,34 @@
     })
 </script>
 
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 
 <!-- Google Analytics -->
 

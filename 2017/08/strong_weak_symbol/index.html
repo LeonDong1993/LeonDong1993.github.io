@@ -22,7 +22,7 @@
         
     </title>
 
-    <link rel="canonical" href="https://leondong1993.github.io/2017/04/strong_weak_symbol/">
+    <link rel="canonical" href="https://leondong1993.github.io/2017/08/strong_weak_symbol/">
 
     <!-- Bootstrap Core CSS -->
     
@@ -87,6 +87,22 @@
 							
                         <li>
                             <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
                         </li>
 							
 						
@@ -158,9 +174,10 @@
                     <span class="meta">
                          作者 Hailiang Dong
                         <span>
-                          日期 2017-04-15
+                          日期 2017-08-15
                          </span>
                     </span>
+                    
                     <div class="tags text-center">
                         
                         <a class="tag" href="/tags/#coding"
@@ -170,6 +187,7 @@
                            title="c/c++">c/c++</a>
                         
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -242,14 +260,14 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/05/linear_discriminant_analysis/" data-toggle="tooltip" data-placement="top"
-                           title="线性判别分析的原理与实践">&larr; Previous Post</a>
+                        <a href="/2017/10/binary_search_analysis/" data-toggle="tooltip" data-placement="top"
+                           title="Analysis of Binary Search">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/04/hexo_mathjax/" data-toggle="tooltip" data-placement="top"
-                           title="Hexo 添加 MathJax 支持">Next Post &rarr;</a>
+                        <a href="/2017/05/c_read_unsigned/" data-toggle="tooltip" data-placement="top"
+                           title="C语言无符号数据读取">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -400,7 +418,34 @@
     })
 </script>
 
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 
 <!-- Google Analytics -->
 

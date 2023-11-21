@@ -848,7 +848,8 @@ img::-moz-selection {
 
 .one-tag-list .post-preview > a .post-title {
     font-size: 16px;
-    margin-top: 20px;
+    margin-top: 0px;
+    margin-bottom: 15px;
 }
 
 .one-tag-list .post-preview > a .post-subtitle {

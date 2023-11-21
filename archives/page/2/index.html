@@ -91,6 +91,22 @@
 							
 						
                     
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
+                        </li>
+							
+						
+                    
 					
 					
                 </ul>
@@ -140,7 +156,7 @@
                     <div class="about-me">
                         <!--移动端头部显示-->
                         <img src="/imgs/head.jpg"/>
-                        <h5><a href="/">Leon Dong</a></h5>
+                        <h5><a href="/about/">Leon Dong</a></h5>
                         <p>Stay Hungry, Stay Foolish.</p>
                     </div>
                 </div>
@@ -159,28 +175,121 @@
 
 <div class="post-preview  "
      style="background-image: url('/imgs/background.jpg')">
+    <a href="/2017/08/strong_weak_symbol/">
+        <h2 class="post-title">
+            Strong and Weak Symbols in GCC
+        </h2>
+
+        <!-- 
+        <h3 class="post-subtitle">
+            GCC里面的强符号和弱符号
+        </h3>
+         -->
+
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-08-15
+        </p>
+
+        <div class="post-content-preview">
+            <p>
+                MotivationGlobal variables are powerful but have the risk of being altered carelessly. Under most cases, we can add static modifier on this global v..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2017/05/c_read_unsigned/">
+        <h2 class="post-title">
+            C语言无符号数据读取
+        </h2>
+
+        <!-- 
+        <h3 class="post-subtitle">
+            Truncation of Signed Numbers In C
+        </h3>
+         -->
+
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-29
+        </p>
+
+        <div class="post-content-preview">
+            <p>
+                背景像C语言这种语言对输入输出的要求极其严格，你必须要制定你读取的数据类型以及格式。现在的问题是如果你读取的时候指定了错误的数据类型，会发生什么？
+案例分析加入说你要读取64位无符号整数类型数据，所以你的程序可能大概是这样子的。
+12unsigned long val=0;scanf(&quot..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2017/05/expected_elevator_stops/">
+        <h2 class="post-title">
+            电梯的停留楼层数量分析
+        </h2>
+
+        <!-- 
+        <h3 class="post-subtitle">
+            Expection of Elevator Stops
+        </h3>
+         -->
+
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-29
+        </p>
+
+        <div class="post-content-preview">
+            <p>
+                问题描述假设现在一个楼栋共有M层，有一个电梯一次性最多能装N个人。问题是，假如说现在该电梯在一楼进入了N个乘客，不考虑从中间楼层上的乘客问题，那么该电梯大概需要停留几次才能将所有的乘客送到目的地。也就是说，这N个乘客选出不同楼层的数量X的期望是多少？
+按照定义求解首先，我们可以分析出随机变量X可..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
     <a href="/2017/05/multi_bucket_hash/">
         <h2 class="post-title">
             多桶哈希的冲突数量分析
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             Hash Collision Analysis under Multi-Bucket Scenario
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-28
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 介绍传统的哈希方式采用一个大的连续空间来存储元素，当元素满了之后，它需要将空间的容量扩充为两倍，并将之前所有的元素重新哈希到新的空间里面，这个过程成为Rehash.  现在我们有一个问题是，
 
 如果将数据按照范围等分成K份，将一个大的空间等分成K个桶。然后将每一份数据分别hash到对应的桶里面，..
             </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -196,22 +305,22 @@
             阿里笔试编程题-相亲的次数问题
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             Expection of Dating Problem (From Alibaba)
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-28
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 问题描述一个未婚男青年要和N个女孩相亲，由于他不记录已经相亲过的女孩，而是每一次随机从这N个女孩中挑选一个进行相亲。由于相亲的女孩可能是已经相亲过的，那么现在的问题就是他平均要相亲多少次，才能将所有的女孩都相亲一遍（期望）。
 问题分析其实呢，这道题只是一道披着编程外表的数学题。他就是要求男孩相亲..
             </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -227,22 +336,22 @@
             阿里算法工程师编程小测试-取石子游戏
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             Alibaba Stone Taking Problem (Dynamic Programming)
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-27
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 问题描述现在有一堆石子，共有N个。两个人轮流取石子，先拿完的人获胜。规定第一次不能拿N个，并且每一次拿的石子数量介于1和上一次拿的数量之间。现在的问题是，如果你作为先手，对于给定的N个石子，在保证能获胜的情况下，你最多能拿多少个？如果先手不能获胜，输出0即可。
 问题分析这个题有意思的地方就在于每..
             </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -258,22 +367,22 @@
             计算二项分布的期望
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             Expection of Binomal Distribution
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-27
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 基本概念二项分布即重复N次独立的伯努利试验。在每次试验中只有两种可能的结果（成功和失败），而且两种结果发生与否互相对立，并且相互独立，与其它各次试验结果无关，事件发生与否的概率在每一次独立试验中都保持不变。设随机变量X为N次实验中成功的次数，则如何求X的期望？
 按照定义求解假设成功的概率为$p$..
             </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -289,22 +398,22 @@
             内核程序访问用户地址空间
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             Access User Address Space in Kernel Mode
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-27
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 背景由于做实验需要在Linux内核中添加一些系统调用，我们在一台机器上完成了系统调用的编写，并顺利通过了所有的测试，用户程序的运行也完全正常。不够由于实验数据的增大，我们需要一台内存更大的电脑。为了方便，我们直接把那台机器的硬盘拆下来，放到别的机器上，然后从那块硬盘启动进入系统做实验。
 然后神奇..
             </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -320,17 +429,17 @@
             K-Means 算法基础
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             K-Means Algorithm Basics
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-26
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 基本原理K-Means 作为一种最简单的聚类算法，在数据挖掘中有着比较广泛的应用。如下图所示，给你一批数据（绿色的点），让你将数据划分成2类，这就是K-Means要解决的问题。
 
@@ -339,7 +448,7 @@
 随机选取K个中心点 图（b）
 遍历所有数据，将每个数据划分..
             </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -355,113 +464,22 @@
             主成分分析的原理与实践
         </h2>
 
-        
+        <!-- 
         <h3 class="post-subtitle">
             Principal Components Analysis Algorithm
         </h3>
-        
+         -->
 
         <p class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-16
         </p>
 
-        <!-- <div class="post-content-preview">
+        <div class="post-content-preview">
             <p>
                 介绍主成分分析（Principal Components Analysis， PCA）和之前说到的线性判别分析一样，都是一种广泛使用的数据将维方法。PCA是一个和LDA非常相关的算法，从推导、求解、到算法最终的结果，都有着相当的相似，不过它和LDA也有一些不同的地方。
 首先，PCA是一种无监督的..
             </p>
-        </div> -->
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  "
-     style="background-image: url('/imgs/background.jpg')">
-    <a href="/2017/05/linear_discriminant_analysis/">
-        <h2 class="post-title">
-            线性判别分析的原理与实践
-        </h2>
-
-        
-        <h3 class="post-subtitle">
-            Linear Discriminant Analysis Algorithm
-        </h3>
-        
-
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-14
-        </p>
-
-        <!-- <div class="post-content-preview">
-            <p>
-                介绍线性判别分析（Linear Discriminant Analysis, LDA）是一种有监督式的数据降维方法，是在机器学习和数据挖掘中一种广泛使用的经典算法。LDA的希望将带上标签的数据（点），通过投影的方法，投影到维度更低的空间中，使得投影后的点，按类别区分成一簇一簇的情况，并且相同类别..
-            </p>
-        </div> -->
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  "
-     style="background-image: url('/imgs/background.jpg')">
-    <a href="/2017/04/strong_weak_symbol/">
-        <h2 class="post-title">
-            Strong and Weak Symbols in GCC
-        </h2>
-
-        
-        <h3 class="post-subtitle">
-            GCC里面的强符号和弱符号
-        </h3>
-        
-
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-15
-        </p>
-
-        <!-- <div class="post-content-preview">
-            <p>
-                MotivationGlobal variables are powerful but have the risk of being altered carelessly. Under most cases, we can add static modifier on this global v..
-            </p>
-        </div> -->
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview  "
-     style="background-image: url('/imgs/background.jpg')">
-    <a href="/2017/04/hexo_mathjax/">
-        <h2 class="post-title">
-            Hexo 添加 MathJax 支持
-        </h2>
-
-        
-        <h3 class="post-subtitle">
-            Add the Support of MathJax in Hexo
-        </h3>
-        
-
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-04-09
-        </p>
-
-        <!-- <div class="post-content-preview">
-            <p>
-                背景介绍HEXO是一个基于Node.Js的静态个人博客软件，可以将自己写的Markdown形式的文章渲染成静态网页。通过和Github结合，可以很方便的搭建自己的博客，具体可以参考这篇文章搭建。
-在我们写博客的时候，难免要遇到公式，尤其是在写一些理论性比较强的博客的时候，这个时候我们就需要在网页..
-            </p>
-        </div> -->
+        </div>
     </a>
 
 </div>
@@ -504,7 +522,7 @@
                     
                     <img src="/imgs/head.jpg"/>
                     
-                    <h5><a href="/">Leon Dong</a></h5>
+                    <h5><a href="/about/">Leon Dong</a></h5>
                     
                     <p>Stay Hungry, Stay Foolish.</p>
                     
@@ -574,6 +592,8 @@
                        rel="4">tutorial</a>
                     
                     
+                    
+                    
                 </div>
             </section>
             
@@ -586,6 +606,12 @@
                 <li><a href="https://leetcode.com/LeonDong1993/" target="_blank">Leetcode US</a></li>
                 
                 <li><a href="https://leetcode.cn/u/topo1993/" target="_blank">Leetcode CN</a></li>
+                
+                <li><a href="https://scholar.google.com/citations?user=lf_b1aYAAAAJ&amp;hl=en" target="_blank">Google Scholar</a></li>
+                
+                <li><a href="https://www.linkedin.com/in/hailiang-dong-b344b3b7/" target="_blank">LinkedIn</a></li>
+                
+                <li><a href="https://github.com/LeonDong1993" target="_blank">Github</a></li>
                 
             </ul>
             
@@ -693,7 +719,34 @@
     })
 </script>
 
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 
 <!-- Google Analytics -->
 
