@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        Hexo添加代码片段复制功能｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2023/12/hexo_code_block_copy/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>Hexo添加代码片段复制功能</h1>
+                    
+                    <span class="meta">
+                         作者 Leon Dong
+                        <span>
+                          日期 2023-12-07
+                         </span>
+                    </span>
+                    
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#tutorial"
+                           title="tutorial">tutorial</a>
+                        
+                        <a class="tag" href="/tags/#hexo"
+                           title="hexo">hexo</a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            Hexo添加代码片段复制功能
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>本文主要介绍如何给自己的Hexo博客内的代码片段添加“全部复制”的功能，这样可以很好的方便自己或者别人来对代码进行实验，并在此基础上改进。目前网上已经有较多的解决方案了，不过很多都是限定主题的（例如Next主题）。经过一番仔细搜索，我发现有些博主提供方案还是很通用的，在理解大致原理的基础上稍作修改就可以达成目标。</p>
+<h1 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h1><p>最近， 我把自己多年前写博客的习惯给捡回来了。一般来讲，在技术博客里面有点代码是很正常的事情，这不仅可以让别人更好的理解你的思路，也能让别人直接复制你的代码然后去实验和改进。不过对于一些比较长的代码片段，如果从头到尾用鼠标进行选中复制，还是比较麻烦且容易误操作的（选中的不完全或者太多等等）。因此，我觉得添加一个能直接复制整个代码块的按钮能大大提升这方便的使用体验。</p>
+<p>本来以为这个事情挺复杂的（个人对前端开发经验较少），不过谷歌之后发现现有的解决方案还是很多的。我挑了一个比较通用的方法，在这位博主发表的<a target="_blank" rel="noopener" href="https://www.ikaqiu.top/posts/f623adca.html">博文</a>的基础上进行<strong>理解并加以改进</strong>，直至最终完成。具体的步骤记录在以下几个小节当中。</p>
+<blockquote>
+<p>最终代码复制的效果可以这篇博文进行参考。</p>
+</blockquote>
+<h1 id="详细步骤"><a href="#详细步骤" class="headerlink" title="详细步骤"></a>详细步骤</h1><h2 id="为代码片段添加复制按钮"><a href="#为代码片段添加复制按钮" class="headerlink" title="为代码片段添加复制按钮"></a>为代码片段添加复制按钮</h2><p>该部分可以说是整个功能的核心，大概的思路是利用JavaScript在页面加载完成后，在每个代码片段中添加一个复制按钮。在点击按钮时，会调用clipboard对象来完成对整个代码块的复制。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>详细的JavaScript代码如下。该代码基于<a target="_blank" rel="noopener" href="https://www.ikaqiu.top/posts/f623adca.html">原博文</a>中提出的方法，稍作修改而来。值得一提的是，原博主认为他提出的方法适用于所有的Hexo主题，但事实上并非如此，他对代码快附近元素的结构是有一定假设的 （具体假设详见步骤3，一般情况）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">!<span class="keyword">function</span> (<span class="params">e, t, a</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> initCopyCode = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> copyHtml = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">        copyHtml += <span class="string">&#x27;&lt;button class=&quot;btn-copy&quot; data-clipboard-snippet=&quot;&quot;&gt;&#x27;</span>;</span><br><span class="line">        copyHtml += <span class="string">&#x27;&lt;i class=&quot;fa fa-clipboard&quot;&gt;&lt;/i&gt;&#x27;</span>;</span><br><span class="line">        copyHtml += <span class="string">&#x27;&lt;/button&gt;&#x27;</span>;</span><br><span class="line">        $(<span class="string">&quot;figure.highlight table&quot;</span>).<span class="title function_">before</span>(copyHtml);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> clipboard = <span class="keyword">new</span> <span class="title class_">ClipboardJS</span>(<span class="string">&#x27;.btn-copy&#x27;</span>, &#123;</span><br><span class="line">                <span class="attr">target</span>: <span class="keyword">function</span> (<span class="params">trigger</span>) &#123;</span><br><span class="line">                    <span class="keyword">var</span> table = trigger.<span class="property">nextElementSibling</span>.<span class="property">firstElementChild</span>;</span><br><span class="line">                    <span class="keyword">return</span> table.<span class="property">firstElementChild</span>.<span class="property">firstElementChild</span>.<span class="property">firstElementChild</span>.<span class="property">nextElementSibling</span>;</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        clipboard.<span class="title function_">on</span>(<span class="string">&#x27;success&#x27;</span>, <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">            e.<span class="property">trigger</span>.<span class="property">innerHTML</span> = <span class="string">&quot;&lt;span&gt;Done&lt;/span&gt;&quot;</span></span><br><span class="line">            <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">                    e.<span class="property">trigger</span>.<span class="property">innerHTML</span> = <span class="string">&quot;&lt;i class=&#x27;fa fa-clipboard&#x27;&gt;&lt;/i&gt;&quot;</span></span><br><span class="line">                &#125;, <span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">            e.<span class="title function_">clearSelection</span>();</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        clipboard.<span class="title function_">on</span>(<span class="string">&#x27;error&#x27;</span>, <span class="keyword">function</span> (<span class="params">e</span>) &#123;</span><br><span class="line">            e.<span class="property">trigger</span>.<span class="property">innerHTML</span> = <span class="string">&quot;&lt;span&gt;Failed&lt;/span&gt;&quot;</span></span><br><span class="line">            <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">                    e.<span class="property">trigger</span>.<span class="property">innerHTML</span> = <span class="string">&quot;&lt;i class=&#x27;fa fa-clipboard&#x27;&gt;&lt;/i&gt;&quot;</span></span><br><span class="line">                &#125;, <span class="number">1000</span>)</span><br><span class="line">            e.<span class="title function_">clearSelection</span>();</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_">initCopyCode</span>();</span><br><span class="line">&#125;(<span class="variable language_">window</span>, <span class="variable language_">document</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我简单的对以上代码进行一下解析。</p>
+<ol>
+<li><p>首先，我们创建一个HTML按钮元素 （3-6行）。</p>
+</li>
+<li><p>接下来，当页面加载完成时，我们将该按钮放置在<code>figure.highlight</code> 元素所包含的<code>table</code>元素之前（第7行）。如下图所示，箭头所示的位置就是我们想要插入的地方。值得一提的是，这种通过<code>table</code>元素而不是code本身的位置来添加按钮是原博主的方法，目的在于解决长代码下按钮位置不合理的问题。<br><img src="/figs/hexo_copycode/before.png"></p>
+</li>
+<li><p>定义剪贴板对象，需要传入的参数有你的按钮元素和target函数（9-14行）。其中target函数的实现需要你根据按钮元素（也就是传进来的trigger参数）来定位code元素并返回。也就是说，该函数需要根据你博客页面实际的结构来实现。</p>
+<ul>
+<li>一般情况：如上图所示，插入button按钮之后，页面元素的结构应该如下图所示。在这种情况下，我们可以利用代码<code>trigger.nextElementSibling</code> 来得到table元素，然后以table元素为基准，依次调用<code>firstElementChild</code> (tbody), <code>firstElementChild</code> (tr), <code>firstElementChild</code> (td.gutter), <code>nextElementSibling</code> (td.code), 来得到我们的目标元素.<br> <img src="/figs/hexo_copycode/after.png"></li>
+<li>我的特殊情况：我的博客主题使用了响应式布局，且具体的实现方法是在代码块所在的<code>table</code>元素上嵌套一个<code>table-responsive</code>类型的<code>div</code>，而且这个行为是发生在按钮添加之后的。所以最终的页面布局就会像下图这样。这时候，上面那个定位<code>table</code>的代码就不再正确了。<code>trigger.nextElementSibling</code> 指向的是<code>div</code>元素，所以我们需要再加一个<code>firstElementChild</code>调用来找到正确的元素（见上述代码11行）。<br> <img src="/figs/hexo_copycode/special.png"></li>
+</ul>
+</li>
+<li><p>后面的代码比较简单，就是定义复制成功或失败后的行为，简单来说就是在按钮的位置显示一下成功或者失败的消息，然后把按钮恢复原样。</p>
+</li>
+</ol>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><ol>
+<li><p>在Hexo博客根目录下的<code>themes/[主题名称]/source/js</code> 目录下创建一个新的JavaScript文件并填入上述代码内容（你可能需要更改target 函数中定位table的那一行代码），假设名字就叫做<code>clipboard_use.js</code>.</p>
+</li>
+<li><p>找到Hexo博客根目录下的<code>themes/[主题名称]/layout/layout.ejs</code>， 在body标签内部的最后加上如下代码</p>
+ <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;/js/clipboard_use.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p> 如果你的博客已经引入了jquery库，那第一行可以不需要。同理，上述代码中的jquery和clipboard源也可以自行更换。</p>
+</li>
+</ol>
+<h2 id="为按钮定义CSS样式"><a href="#为按钮定义CSS样式" class="headerlink" title="为按钮定义CSS样式"></a>为按钮定义CSS样式</h2><p>这部分比较简单，主要就是利用CSS定义按钮的位置和样式。</p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><p>我对原作者的代码进行了一点点的的修改，取消了自动隐藏和鼠标移上时显示。 另外只保留的图标，去掉了文字。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.btn-copy</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: inline-block;</span><br><span class="line">    <span class="attribute">cursor</span>: pointer;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#eee</span>;</span><br><span class="line">    <span class="attribute">background-image</span>: <span class="built_in">linear-gradient</span>(<span class="number">#fcfcfc</span>, <span class="number">#eee</span>);</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#d5d5d5</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">3px</span>;</span><br><span class="line">    -webkit-user-select: none;</span><br><span class="line">    -moz-user-select: none;</span><br><span class="line">    -ms-user-select: none;</span><br><span class="line">    user-select: none;</span><br><span class="line">    -webkit-appearance: none;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">13px</span>;</span><br><span class="line">    <span class="attribute">font-weight</span>: <span class="number">700</span>;</span><br><span class="line">    <span class="attribute">line-height</span>: <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#333</span>;</span><br><span class="line">    -webkit-<span class="attribute">transition</span>: opacity .<span class="number">3s</span> ease-in-out;</span><br><span class="line">    -o-<span class="attribute">transition</span>: opacity .<span class="number">3s</span> ease-in-out;</span><br><span class="line">    <span class="attribute">transition</span>: opacity .<span class="number">3s</span> ease-in-out;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">2px</span> <span class="number">6px</span>;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">15px</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">7px</span>;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.btn-copy</span> <span class="selector-tag">span</span> &#123;</span><br><span class="line">    <span class="attribute">margin-left</span>: <span class="number">5px</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用方法-1"><a href="#使用方法-1" class="headerlink" title="使用方法"></a>使用方法</h3><ol>
+<li><p>在<code>themes/[主题名称]/source/css/style.css</code> 中添加上述代码即可。如果目录里面没有<code>style.css</code>文件，那应该会有类似的其他文件。例如在我的主题中，该文件叫做<code>blog_style.css</code>。</p>
+</li>
+<li><p>引入Font-Awesome CSS库。这个按钮的外形是通过这个库来定义的。具体方法是在<code>themes/[主题名称]/layout/_partial/head.ejs</code> 的<code>head</code>标签内加上如下代码。</p>
+ <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p> 如果你的博客已经引入了该css库，那可以跳过这个步骤。</p>
+</li>
+</ol>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2023/12/lc2954_comb_modular/" data-toggle="tooltip" data-placement="top"
+                           title="LC2954 - Combinatorics and Modular Multiplicative Inverse">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2023/08/ope_large/" data-toggle="tooltip" data-placement="top"
+                           title="Offline Policy Evaluation in Large Action Space">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg==">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A2%8E%E7%A2%8E%E5%BF%B5"><span class="toc-text">碎碎念</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4"><span class="toc-text">详细步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%A3%E7%A0%81%E7%89%87%E6%AE%B5%E6%B7%BB%E5%8A%A0%E5%A4%8D%E5%88%B6%E6%8C%89%E9%92%AE"><span class="toc-text">为代码片段添加复制按钮</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-text">代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-text">使用方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E6%8C%89%E9%92%AE%E5%AE%9A%E4%B9%89CSS%E6%A0%B7%E5%BC%8F"><span class="toc-text">为按钮定义CSS样式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="toc-text">代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95-1"><span class="toc-text">使用方法</span></a></li></ol></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+<!-- code copy function -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.js"></script>
+<script type="text/javascript" src="/js/clipboard_use.js"></script>
+</body>
+
+</html>

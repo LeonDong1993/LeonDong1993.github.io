@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        LC2954 - Combinatorics and Modular Multiplicative Inverse｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2023/12/lc2954_comb_modular/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>LC2954 - Combinatorics and Modular Multiplicative Inverse</h1>
+                    
+                    <span class="meta">
+                         作者 Leon Dong
+                        <span>
+                          日期 2023-12-10
+                         </span>
+                    </span>
+                    
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#math"
+                           title="math">math</a>
+                        
+                        <a class="tag" href="/tags/#algorithm"
+                           title="algorithm">algorithm</a>
+                        
+                        <a class="tag" href="/tags/#competitive programming"
+                           title="competitive programming">competitive programming</a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            LC2954 - Combinatorics and Modular Multiplicative Inverse
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>In this post, I will dive into a hard question that involves combinatorics, modular operations of the division among two large numbers. The original question can be found <a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-the-number-of-infection-sequences/description/">here</a>, and it is actually the last question of LeetCode Weekly Contest 374.</p>
+<h1 id="Problem-Analysis"><a href="#Problem-Analysis" class="headerlink" title="Problem Analysis"></a>Problem Analysis</h1><p>An important observation is that</p>
+<blockquote>
+<p>Given an infected child at position i, the infection sequence of the children left to i <strong>has nothing to do with</strong> the infection sequence of the children right to i.</p>
+</blockquote>
+<p>In other words, given a list of infected positions <code>sick</code>, it essentially divides all of the children into several independent groups and we can first consider how the infection sequence would look like inside each group and then consider how the final whole sequence can be when the infection sequence inside groups are determined.</p>
+<p>There are two types of groups, and let us first consider how many possible infection sequence in each group (assume the group size is k).</p>
+<ul>
+<li>Groups that between two infected children. In such cases, at any time, we have two possible choices (infect the left most or right most uninfected child) until the last 1 left. Therefore, the total number of possible infection sequences is $2^{k-1}$. Note that this number can be really large, and python allows us to compute the modular of this number efficiently using <code>pow(2,k-1,modv)</code> where <code>modv = 10 ** 9 + 7</code> in our case.</li>
+<li>Groups at the beginning or end (i.e., adjacent to only one infected child). In this case, at any time, we have only 1 choice to infect. Therefore, there is only 1 possible infection sequence.</li>
+</ul>
+<p>The python code for this part is</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">modv = <span class="number">10</span> ** <span class="number">9</span> + <span class="number">7</span></span><br><span class="line">m = <span class="built_in">len</span>(sick)</span><br><span class="line"><span class="comment"># records all sizes of groups</span></span><br><span class="line">size = [sick[<span class="number">0</span>]] <span class="keyword">if</span> sick[<span class="number">0</span>] &gt; <span class="number">0</span> <span class="keyword">else</span> [] <span class="comment"># group at beginning</span></span><br><span class="line">ans = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,m):</span><br><span class="line">    l = sick[i] - sick[i-<span class="number">1</span>] - <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> l &gt; <span class="number">0</span>:</span><br><span class="line">        size.append(sick[i] - sick[i-<span class="number">1</span>] - <span class="number">1</span>)</span><br><span class="line">        ans = (ans * <span class="built_in">pow</span>(<span class="number">2</span>, l -<span class="number">1</span>, modv)) % modv</span><br><span class="line"></span><br><span class="line"><span class="comment"># group at end</span></span><br><span class="line"><span class="keyword">if</span> sick[-<span class="number">1</span>] &lt; n-<span class="number">1</span>:</span><br><span class="line">    size.append(n-sick[-<span class="number">1</span>] -<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h1 id="The-Combinatorial-Problem"><a href="#The-Combinatorial-Problem" class="headerlink" title="The Combinatorial Problem"></a>The Combinatorial Problem</h1><p>Now, we know the size of each group and how many possible ways to infect the children within each group. The next question is</p>
+<blockquote>
+<p>Given one certain infection sequence of each group, how many ways we can formulate the final sequence. In other words, if the total size is $t$, the question is asking how many possible permutation of t children, such that the order of element inside each group is retained.</p>
+</blockquote>
+<p>Assume the size of all groups are $s_1,s_2,…,s_n$, then we can solve the above using two different ways (the final answer is the same).</p>
+<h2 id="Merge-One-by-One"><a href="#Merge-One-by-One" class="headerlink" title="Merge One by One"></a>Merge One by One</h2><p>Let’s first compute the answer when there is only two groups. In this case, it is quite straight forward. Because the group size are $s_1$ and $s_2$, the final sequence length would be $s_1 + s_2$, and we can first choose $s_1$ positions from them and fill in the infection sequence of $s_1$ with the same order, then we can fill the remaining positions with the infection sequence of $s_2$. Therefore, the answer is</p>
+<p>$$C_{s_1+s_2}^{s_1} &#x3D; \frac{(s_1+s_2)!}{s_1 ! s_2 !}$$</p>
+<p>Similarly, we can further merge with the above results with new group $s_3$. The total length would be $s_1 + s_2 + s_3$, and we can first choose $s_1+s_2$ positions out of them and fill in the previous result sequence, then we fill the remaining positions with the infection sequence of $s_3$. The number of ways is now</p>
+<p>$$C_{s_1+s_2+s_3}^{s_1 + s_2} &#x3D; \frac{(s_1+s_2 + s_3)!}{(s_1 + s_2) ! s_3 !}$$</p>
+<p>We can keep doing this and then product everything together and cancel some terms in the middle, and we have</p>
+<p>$$<br>\frac{(s_1+s_2)!}{s_1 ! s_2 !} * \frac{(s_1+s_2 + s_3)!}{(s_1 + s_2) ! s_3 !} * …* \frac{(s_1+s_2 + … + s_n)!}{(s_1 + …+ s_{n-1}) ! s_n !} \\<br>&#x3D; \frac{(s_1+s_2 + … + s_n)!}{s_1 ! s_2 ! … s_n!}<br>$$</p>
+<h2 id="Consider-all-Permutation"><a href="#Consider-all-Permutation" class="headerlink" title="Consider all Permutation"></a>Consider all Permutation</h2><p>The total number of elements is $s_1 + … + s_n$, thus the total number of permutation is $(s_1+s_2 + … + s_n)!$.</p>
+<p>However, we can easily see that, not all sequence satisfied the given element order in each group. Specifically, for the first group, among all the sequences, only $\frac{1}{s_1 !}$ of them satisfies the given order for group one. Similarly, for group 2, among all the <strong>remaining</strong> sequences, only $\frac{1}{s_2 !}$ satisfies the conditions.</p>
+<p>Therefore, at the end, the number of sequences that satisfy all the order within each group is</p>
+<p>$$<br>\frac{(s_1+s_2 + … + s_n)!}{s_1 ! s_2 ! … s_n!}<br>$$</p>
+<p>Note that the above analysis is not a rigorous proof, but I believe you can get the idea.</p>
+<p>Now the problem is</p>
+<blockquote>
+<p>How can we compute $\frac{(s_1+s_2 + … + s_n)!}{s_1 ! s_2 ! … s_n!} \%  (10^9 +7)$ without having integer overflow!</p>
+</blockquote>
+<blockquote>
+<p>Although python support large integers and there is no overflow. However, give that $s_1 + s_2  + … + s_n$ can up to $10^5$, the direct computation would be very slow because of handling very large integers, which leads to TLE.</p>
+</blockquote>
+<h1 id="Division-Modular-and-Modular-Multiplicative-Inverse"><a href="#Division-Modular-and-Modular-Multiplicative-Inverse" class="headerlink" title="Division Modular and Modular Multiplicative Inverse"></a>Division Modular and Modular Multiplicative Inverse</h1><p>We know that<br>$$(a+b) \% m &#x3D; (a \% m + b \% m) \% m$$<br>and<br>$$(a \cdot b) \% m &#x3D; (a \% m \cdot b \% m) \% m$$</p>
+<p>However<br>$$(a&#x2F;b) \% m \ne (a \% m &#x2F; b \% m) \% m$$</p>
+<p>So the question is</p>
+<blockquote>
+<p>how can we compute $\frac{a}{b} \% m$ when it is impossible to compute $\frac{a}{b}$ first?</p>
+</blockquote>
+<h2 id="Modular-Multiplicative-Inverse"><a href="#Modular-Multiplicative-Inverse" class="headerlink" title="Modular Multiplicative Inverse"></a>Modular Multiplicative Inverse</h2><p>Let us consider the following equation</p>
+<p>$$bx + my &#x3D; 1$$</p>
+<p>if we can find $x,y$ such that the above formula holds, then we will have</p>
+<p>$$\frac{a}{b} \% m &#x3D; (ax) \% m$$</p>
+<p>The proof is as follows.<br>$$<br>\frac{a}{b} \% m &#x3D; z \Rightarrow \frac{a}{b} &#x3D; km + z \Rightarrow a&#x3D;kmb+bz  \Rightarrow ax &#x3D; kbxm + bx z \\<br>ax \% m &#x3D; (bxz) \% m &#x3D; ( (bx \% m) \cdot (z \% m ) ) \% m &#x3D; (1 \cdot z) \% m &#x3D; z<br>$$</p>
+<p>Note that <code>bx%m = 1</code> because we assume that equation <code>bx+my = 1</code> holds. In addition, $z &lt; m$ because it is the residual after modular m.</p>
+<p>Now the question is</p>
+<blockquote>
+<p>How can we compute the coefficient x and y ?</p>
+</blockquote>
+<h2 id="Extended-Euclidean-Algorithm"><a href="#Extended-Euclidean-Algorithm" class="headerlink" title="Extended Euclidean Algorithm"></a>Extended Euclidean Algorithm</h2><p>Euclidean algorithm is often used to compute the Greatest Common Divisor (GCD) of two numbers, it works as follows.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_gcd</span>(<span class="params">a,b</span>):</span><br><span class="line">    <span class="keyword">if</span> b == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> a</span><br><span class="line">    <span class="keyword">return</span> get_gcd(b, a % b)</span><br></pre></td></tr></table></figure>
+
+<p>Now, in addition to find the GCD of the two numbers $a,b$, we are also interested in the coefficients $x,y$ such that we have<br>$$<br>ax+by &#x3D; gcd(a,b)<br>$$</p>
+<p>The problem can be solved using <a target="_blank" rel="noopener" href="https://cp-algorithms.com/algebra/extended-euclid-algorithm.html">extended Euclidean algorithm</a>, it works as follows.</p>
+<ul>
+<li>Base Case<br>When <code>b == 0</code>, we know the GCD is a, we return the coefficients as <code>x=1,y=0</code>.</li>
+<li>Recursive<br>When we go up one level through the recursion tree, assume $x’,y’$ is the coefficients returned from the base case. We now have<br>$$<br>bx’ + (a \% b)y’ &#x3D; bx’ + (a - (a&#x2F;&#x2F;b) * b)y’ &#x3D; ay’ + b(x’ - (a&#x2F;&#x2F;b)y’) &#x3D;  gcd(a,b)<br>$$<br>From above formula, we find the new coefficient<br>$$<br>x &#x3D; y’, y &#x3D; x’ - (a&#x2F;&#x2F;b)y’<br>$$</li>
+</ul>
+<p>The recursive python implementation is shown as follows.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">egcd</span>(<span class="params">a,b</span>):</span><br><span class="line">    <span class="keyword">if</span> b == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> a, <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    d,x,y = egcd(b, a % b)</span><br><span class="line">    <span class="keyword">return</span> d, y, x - (a//b) * y</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>In our case, the b here is our modular number $10^9 +7$, which is prime. So for any $a$, we have $gcd(a,b) &#x3D; 1$. Therefore, we can simply call <code>egcd(a, modv)</code> to get the modular multiplicative number of a.</p>
+</blockquote>
+<h1 id="Solution-of-the-Combinatorial-Problem"><a href="#Solution-of-the-Combinatorial-Problem" class="headerlink" title="Solution of the Combinatorial Problem"></a>Solution of the Combinatorial Problem</h1><p>Now the way of compute<br>$$<br>\frac{(s_1+s_2 + … + s_n)!}{s_1 ! s_2 ! … s_n!} \%  (10^9 +7)<br>$$<br>should be quite clear.</p>
+<ol>
+<li>Let $S &#x3D; s_1 + s_2 + … +s_n$ and <code>modv = 10 ** 9 +7</code>.</li>
+<li>Compute <code>factorial(i) % modv</code> for all i from 1 to S.</li>
+<li>Initialize <code>ans</code> to be <code>factorial(S) % modv</code></li>
+<li>For each group size s, we first compute the modular inverse of <code>factorial(s) % modv</code> as <code>x</code> using function <code>egcd</code> (note that <code>factorial(s) % modv</code> has same modular inverse as <code>factorial(s)</code>), then we update <code>ans</code> as <code>(ans * x) % modv</code>.</li>
+<li>return the final answer.</li>
+</ol>
+<h1 id="Python-Solution"><a href="#Python-Solution" class="headerlink" title="Python Solution"></a>Python Solution</h1><p>We still need to multiple the answers from two sub problems (ways inside&#x2F;outside group) to get the final answer, details are shown below.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">numberOfSequence</span>(<span class="params">self, n: <span class="built_in">int</span>, sick: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    modv = <span class="number">10</span> ** <span class="number">9</span> + <span class="number">7</span></span><br><span class="line">    m = <span class="built_in">len</span>(sick)</span><br><span class="line">    size = [sick[<span class="number">0</span>]] <span class="keyword">if</span> sick[<span class="number">0</span>] &gt; <span class="number">0</span> <span class="keyword">else</span> []</span><br><span class="line">    ans = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,m):</span><br><span class="line">        l = sick[i] - sick[i-<span class="number">1</span>] - <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> l &gt; <span class="number">0</span>:</span><br><span class="line">            size.append(sick[i] - sick[i-<span class="number">1</span>] - <span class="number">1</span>)</span><br><span class="line">            ans = (ans * <span class="built_in">pow</span>(<span class="number">2</span>, l -<span class="number">1</span>, modv)) % modv</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> sick[-<span class="number">1</span>] &lt; n-<span class="number">1</span>:</span><br><span class="line">        size.append(n-sick[-<span class="number">1</span>] -<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># now it is a combinatorial problem</span></span><br><span class="line">    total = <span class="built_in">sum</span>(size)</span><br><span class="line">    fac_mod = [<span class="number">0</span>,<span class="number">1</span>]</span><br><span class="line">    p = <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, total +<span class="number">1</span>):</span><br><span class="line">        p = (p*i) % modv</span><br><span class="line">        fac_mod.append(p)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">egcd</span>(<span class="params">a,b</span>):</span><br><span class="line">        <span class="keyword">if</span> b == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> a, <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">        d,x,y = egcd(b, a % b)</span><br><span class="line">        <span class="keyword">return</span> d, y, x - (a//b) * y</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">module_inverse</span>(<span class="params">a</span>):</span><br><span class="line">        d,x,y = egcd(a,modv)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    ans = (ans  * fac_mod[total]) % modv</span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> size:</span><br><span class="line">        ans = (ans * module_inverse(fac_mod[s])) % modv</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2023/12/hexo_code_block_copy/" data-toggle="tooltip" data-placement="top"
+                           title="Hexo添加代码片段复制功能">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg==">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Problem-Analysis"><span class="toc-text">Problem Analysis</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The-Combinatorial-Problem"><span class="toc-text">The Combinatorial Problem</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Merge-One-by-One"><span class="toc-text">Merge One by One</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Consider-all-Permutation"><span class="toc-text">Consider all Permutation</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Division-Modular-and-Modular-Multiplicative-Inverse"><span class="toc-text">Division Modular and Modular Multiplicative Inverse</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Modular-Multiplicative-Inverse"><span class="toc-text">Modular Multiplicative Inverse</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Extended-Euclidean-Algorithm"><span class="toc-text">Extended Euclidean Algorithm</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Solution-of-the-Combinatorial-Problem"><span class="toc-text">Solution of the Combinatorial Problem</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Python-Solution"><span class="toc-text">Python Solution</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+<!-- code copy function -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.js"></script>
+<script type="text/javascript" src="/js/clipboard_use.js"></script>
+</body>
+
+</html>
