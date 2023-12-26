@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="/imgs/favicon.png">
     <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
-    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>
         
         Leon&#39;s Blog
@@ -189,6 +189,32 @@
         <div class="post-content-preview">
             <p>
                 本文主要介绍如何给自己的Hexo博客内的代码片段添加“全部复制”的功能，这样可以很好的方便自己或者别人来对代码进行实验，并在此基础上改进。目前网上已经有较多的解决方案了，不过很多都是限定主题的（例如Next主题）。经过一番仔细搜索，我发现有些博主提供方案还是很通用的，在理解大致原理的基础上稍作修..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview  "
+     style="background-image: url('/imgs/background.jpg')">
+    <a href="/2023/08/ope_large/">
+        <h2 class="post-title">
+            Offline Policy Evaluation in Large Action Space
+        </h2>
+
+        <!--  -->
+
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2023-08-01
+        </p>
+
+        <div class="post-content-preview">
+            <p>
+                In this article, I present a comprehensive literature review of existing research works on Offline Policy Evaluation (OPE). I have incorperated a lo..
             </p>
         </div>
     </a>
@@ -398,18 +424,20 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
                 <div class="tags">
                     
                     
-                    <a href="/Tags/#coding" title="coding"
-                       rel="5">coding</a>
+                    
+                    
+                    <a href="/Tags/#system" title="system"
+                       rel="2">system</a>
                     
                     
                     
                     <a href="/Tags/#math" title="math"
-                       rel="5">math</a>
+                       rel="6">math</a>
                     
                     
                     
                     <a href="/Tags/#algorithm" title="algorithm"
-                       rel="9">algorithm</a>
+                       rel="7">algorithm</a>
                     
                     
                     
@@ -418,8 +446,13 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
                     
                     
                     
+                    <a href="/Tags/#coding" title="coding"
+                       rel="3">coding</a>
+                    
+                    
+                    
                     <a href="/Tags/#tutorial" title="tutorial"
-                       rel="5">tutorial</a>
+                       rel="6">tutorial</a>
                     
                     
                     
@@ -427,6 +460,14 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
                        rel="2">hexo</a>
                     
                     
+                    
+                    <a href="/Tags/#machine learning" title="machine learning"
+                       rel="4">machine learning</a>
+                    
+                    
+                    
+                    <a href="/Tags/#competitive programming" title="competitive programming"
+                       rel="3">competitive programming</a>
                     
                     
                     
@@ -499,7 +540,7 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
                 <p class="copyright text-muted">
                     Copyright &copy; Leon 2023
                     <br>
-                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">Page View: <span id="busuanzi_value_site_pv"></span> Times</span>
                 </p>
 
             </div>
@@ -548,13 +589,6 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
     }
 </script>
 
-<!--fastClick.js -->
-<script>
-    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
-</script>
 
 <!-- mathjax -->
 <script type="text/x-mathjax-config">
@@ -592,18 +626,7 @@ sudo apt-get install updatesudo apt-get install g++ vim ssh-server screen iftop 
 <!-- Baidu Tongji -->
 
 
-<!-- swiftype -->
-<script type="text/javascript">
-  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
-  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
-  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
-  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
-
-  _st('install','','2.0.0');
-</script>
-
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
 <!--wechat title img-->
 <img class="wechat-title-img" src="/imgs/head.jpg">
 <!-- code copy function -->

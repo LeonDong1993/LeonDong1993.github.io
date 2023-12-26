@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="/imgs/favicon.png">
     <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
-    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>
         
         Find Majority Element in Linear Time｜Leon&#39;s Blog
@@ -223,7 +223,6 @@
 <p>For the first case, it is obvious that the first element is the majority we want to find. For the second case, we begin with analyze the first time that the counter decrease to zero. Assume this event occurs at step t.  In this case, the number of $M$ in array[1:t] is at most $\frac{t}{2}$. This can be proved by contradiction.</p>
 <p>Therefore, when the counter goes to zero at first time, the length of the rest array is $N-t$, while there exists at least $\lfloor \frac{N}{2}\rfloor+1 - \frac{t}{2}$ elements. Note that $t$ must be an even number, we have<br>$$<br>\lfloor \frac{N}{2}\rfloor+1 - \frac{t}{2} &#x3D; \lfloor \frac{N-t}{2}\rfloor+1<br>$$<br>This means $M$ is still the majority for the  array[t+1..N].</p>
 <p>When the counter goes to zero for the second time, we will have the same analysis as above. Finally, there must exist $i$, such that the counter is 0 at step $i$, but the counter will never goes to zero again at array[i+1:N].</p>
-<h2 id="A-Similar-Problem"><a href="#A-Similar-Problem" class="headerlink" title="A Similar Problem"></a>A Similar Problem</h2><p>The above problem asks you to find the majority element in a given array, where each element is known by advance.<br>**What if we are give a bunch of elements that are unknow (but we can determine whether two of them are same in constant time) ? **<br>Actually, the same strategy can be applied here, we just randomly pick an element to start with and determine whether the rest is  same with this element.</p>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
 <li><a target="_blank" rel="noopener" href="https://www.cs.utexas.edu/~moore/best-ideas/mjrty/example.html">https://www.cs.utexas.edu/~moore/best-ideas/mjrty/example.html</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.quora.com/What-is-the-proof-of-correctness-of-Moores-voting-algorithm">https://www.quora.com/What-is-the-proof-of-correctness-of-Moores-voting-algorithm</a></li>
@@ -280,7 +279,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Problem-Description"><span class="toc-text">Problem Description</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linear-Time-Algorithm"><span class="toc-text">Linear Time Algorithm</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Proof-of-Correctness"><span class="toc-text">Proof of Correctness</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Similar-Problem"><span class="toc-text">A Similar Problem</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Problem-Description"><span class="toc-text">Problem Description</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linear-Time-Algorithm"><span class="toc-text">Linear Time Algorithm</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Proof-of-Correctness"><span class="toc-text">Proof of Correctness</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-text">Reference</span></a></li></ol>
                 </div>
             </div>
         </div>
@@ -336,7 +335,7 @@
                 <p class="copyright text-muted">
                     Copyright &copy; Leon 2023
                     <br>
-                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">Page View: <span id="busuanzi_value_site_pv"></span> Times</span>
                 </p>
 
             </div>
@@ -385,13 +384,6 @@
     }
 </script>
 
-<!--fastClick.js -->
-<script>
-    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
-        var $nav = document.querySelector("nav");
-        if($nav) FastClick.attach($nav);
-    })
-</script>
 
 <!-- mathjax -->
 <script type="text/x-mathjax-config">
@@ -429,18 +421,7 @@
 <!-- Baidu Tongji -->
 
 
-<!-- swiftype -->
-<script type="text/javascript">
-  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
-  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
-  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
-  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
-
-  _st('install','','2.0.0');
-</script>
-
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
 <!--wechat title img-->
 <img class="wechat-title-img" src="/imgs/head.jpg">
 <!-- code copy function -->

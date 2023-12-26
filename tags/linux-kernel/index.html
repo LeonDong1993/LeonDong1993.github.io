@@ -22,7 +22,7 @@
         
     </title>
 
-    <link rel="canonical" href="https://leondong1993.github.io/archives/2019/01/">
+    <link rel="canonical" href="https://leondong1993.github.io/tags/linux-kernel/">
 
     <!-- Bootstrap Core CSS -->
     
@@ -49,7 +49,7 @@
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="" class="animated fadeIn">
 <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "false" data-istags="false
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "false" data-istags="true
 " data-ishome = "false" >
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -175,24 +175,25 @@
 
 <div class="post-preview  "
      style="background-image: url('/imgs/background.jpg')">
-    <a href="/2019/01/find_majority_linear/">
+    <a href="/2017/05/access_user_space_in_kernel_mode/">
         <h2 class="post-title">
-            Find Majority Element in Linear Time
+            内核程序访问用户地址空间
         </h2>
 
         <!-- 
         <h3 class="post-subtitle">
-            线性Majority查找算法
+            Access User Address Space in Kernel Mode
         </h3>
          -->
 
         <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2019-01-08
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-27
         </p>
 
         <div class="post-content-preview">
             <p>
-                Problem DescriptionInput: an array of elements with size $N​$, and there exists an element $M​$ accounts for more than 50% of the array (called Majo..
+                背景由于做实验需要在Linux内核中添加一些系统调用，我们在一台机器上完成了系统调用的编写，并顺利通过了所有的测试，用户程序的运行也完全正常。不够由于实验数据的增大，我们需要一台内存更大的电脑。为了方便，我们直接把那台机器的硬盘拆下来，放到别的机器上，然后从那块硬盘启动进入系统做实验。
+然后神奇..
             </p>
         </div>
     </a>
