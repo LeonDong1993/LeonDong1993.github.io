@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>
+        
+        A List of Interesting LeetCode Problems｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2023/12/interesting_problems/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>A List of Interesting LeetCode Problems</h1>
+                    
+                    <span class="meta">
+                         作者 Leon Dong
+                        <span>
+                          日期 2023-12-29
+                         </span>
+                    </span>
+                    
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/Tags/#competitive programming"
+                           title="competitive programming">competitive programming</a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            A List of Interesting LeetCode Problems
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>This post contains a list of LeetCode problems that I found interesting during my time practicing Data Structures and Algorithms (DSA) questions and learning competitive programming knowledge. Although I have been continuously practicing LeetCode questions since April 2022, the list is comprised only of my recent experiences in the last 1-2 months (from the date of 12-26-2023). I will keep updating this list, and it also serves as a useful memo for me to look back on some key knowledge related to each question.</p>
+<blockquote>
+<p>The first version of this list is build on 12-26-2023. The date of this post shows the time of last update.</p>
+</blockquote>
+<blockquote>
+<p>The content of this post is better to be viewed along with the <code>search</code> function in your browser (keyboard shortcut <code>ctrl+f</code> or <code>f3</code>)!</p>
+</blockquote>
+<h2 id="Patterns-and-Experiences"><a href="#Patterns-and-Experiences" class="headerlink" title="Patterns and Experiences"></a>Patterns and Experiences</h2><ul>
+<li>For questions that ask us to answer multiple queries for a fixed input and return the answer of all queries, monotonicity usually plays an important role in it. In other words, we should process the queries in certain order and keep a part of input information to make decisions on the fly.</li>
+<li>If a question asks for the minimum number of steps for applying some operations to reach a certain final state, we can usually apply the reversal thinking if the operations are all invertible. In order words, we think how can we start from final state to reach the original input state.</li>
+<li>If the answer to certain question is just an integer, and there is monotonicity respect to the answer, then we can probably binary search the answer and check the answer in linear time.</li>
+<li>When we are required to find the minimum of maximums OR the maximum of minimums, this is also an common case involves binary search the results.</li>
+<li>In some problem involves string or integer with binary bit representation, we need to find the next input string&#x2F;integer satisfy certain given condition. Instead of going through the whole input list, we can also directly construct the candidates that satisfy the constraints and then check if it is inside the input. For example, <a target="_blank" rel="noopener" href="https://leetcode.com/problems/word-ladder-ii/">126. Word Ladder II</a>.</li>
+<li>For questions like <a target="_blank" rel="noopener" href="https://leetcode.com/problems/partition-equal-subset-sum">subset sum partition</a> or <a target="_blank" rel="noopener" href="https://leetcode.com/problems/coin-change-ii">coin changes</a>, we need to be careful about the order of outter&#x2F;inner loop variables when implement the iterative dynamic programming.</li>
+<li>The pre and post order traversal of tree along with the empty nodes can uniquely identify the tree structure, however this is not true for inorder traversal.</li>
+</ul>
+<h2 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h2><ul>
+<li>During the binary search, if you shrink left&#x2F;right, you should calculate mid towards left&#x2F;right, In the case you need to calculate mid toward right, use <code>mid = (l+r+1) // 2</code>.</li>
+<li>The ceil&#x2F;floor of an integer division <code>x/y</code> can be rewrite in the following way: <code>(x+y-1)//y</code> and <code>x//y</code>.</li>
+<li>Python <code>@cache</code> decorator make the implementation of top-down dynamic programming much easier. However, we need to be careful about input arguments, make sure there is no redundant argument and all of them is hash compatible. In addition, call <code>func.clear_cache()</code> at the end to avoid memory limitation exceed error on LeetCode.</li>
+<li>Trie can be useful for bit XOR related problems. For example, we can find a $y$ in Trie that maximize $y \oplus x$ (e.g. <a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-strong-pair-xor-ii/">2935. Maximum Strong Pair XOR II</a>). In addition, we can count the number of elements satisfy $y \oplus x \le v$ (see <a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-pairs-with-xor-in-a-range/">1803. Count Pairs With XOR in a Range</a>).</li>
+<li>Scanline algorithm do not need full size array to be allocated, we can also use a dictionary for implementation.</li>
+</ul>
+<h2 id="List-of-Problems"><a href="#List-of-Problems" class="headerlink" title="List of Problems"></a>List of Problems</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-well-performing-interval/">1124. Longest Well-Performing Interval</a><br>Monotonic stack, not asking for shortest but for longest pattern, the iteration order matters.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximize-score-after-n-operations/">1799. Maximize Score After N Operations</a><br>State compression dynamic programming.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/delivering-boxes-from-storage-to-ports/">1687. Delivering Boxes from Storage to Ports</a><br>Dynamic programming and monotonic queue for maintaining the smallest value in certain range.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/soup-servings/">808. Soup Servings</a><br>A statistical probability question that has limit when input n is large enough, we can have if statement for these case.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/reach-a-number/">754. Reach a Number</a><br>Analysis, logical thinking question.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/distinct-subsequences-ii/">940. Distinct Subsequences II</a><br>Dynamic programming, the definition of states here are important, and there is no choice to be made at each step.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/description/">1806. Minimum Number of Operations to Reinitialize a Permutation</a><br>Permutation related problem, a good practice of analysis and math.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/paths-in-matrix-whose-sum-is-divisible-by-k/description/">2435. Paths in Matrix Whose Sum Is Divisible by K</a><br>Dynamic programming, table compression, implicit flip to optimize over along smaller dimension through lambda function.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/">947. Most Stones Removed with Same Row or Column</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/satisfiability-of-equality-equations/">990. Satisfiability of Equality Equations</a><br>Typical union find.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/mirror-reflection/">858. Mirror Reflection</a><br>An interesting math question.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/search-a-2d-matrix-ii/">240. Search a 2D Matrix II</a><br>Sometime, the start point matters. in this case, among the four corners, start from off diagonal works.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/string-transformation/">2851. String Transformation</a><br>Very hard question from MathWorks. Need KMP to find all rotated string in the original string (double trick again), find DP recursive formula and it is actually a set of state transitions. And finally implement the DP through fast matrix power.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/rotate-string/">796. Rotate String</a><br>The idea of adding another copy of original string to find the rotated string is very helpful.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-total-cost-to-make-arrays-unequal/">2499. Minimum Total Cost to Make Arrays Unequal</a><br>Analysis, two array problem, good practice of non stereotypical questions.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-deletions-on-a-string/">2430. Maximum Deletions on a String</a><br>Longest common substring, two different dynamic programmings together.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/number-of-good-paths/">2421. Number of Good Paths</a><br>Actually an union find problem, make use of monotonicity and gradually add more nodes into graph.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-increasing-subsequence-ii/">2407. Longest Increasing Subsequence II</a><br>Segment tree and dynamic programming.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-segment-sum-after-removals/">2382. Maximum Segment Sum After Removals</a><br>Reversal thinking, guarantee the monotonicity (the segment sum can only increase).</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-special-integers/">2376. Count Special Integers</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-stepping-numbers-in-range/">2801. Count Stepping Numbers in Range</a><br>Digit based dynamic programming.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/number-of-excellent-pairs/">2354. Number of Excellent Pairs</a><br>Simplifying the bit operation conditions, reformat the condition makes things clear.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/the-latest-time-to-catch-a-bus/">2332. The Latest Time to Catch a Bus</a><br>An annoying simulation based question, too many corner cases, try if you can accept with only one try.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/stone-game-vi/">1686. Stone Game VI</a><br>Looks like dynamic programming, but it is actually greedy with priority queue, after some mathematical analysis.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/cheapest-flights-within-k-stops/">787. Cheapest Flights Within K Stops</a><br>Weighted shortest distance, with limitation on maximum jumps. Can solve through SPFS or Dijkstra.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/linked-list-random-node/">382. Linked List Random Node</a><br>Reservoir sampling, in the case that we cannot directly access the element by index, and the size of list is actually changing.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/remove-duplicate-letters/">316. Remove Duplicate Letters</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/remove-k-digits/description/">402. Remove K Digits</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-the-most-competitive-subsequence/">1673. Find the Most Competitive Subsequence</a><br>A very good practice of stack based question, also a hint that we need stack when we have to revert some of previous choices. Better to use deque to solve it when there is requirement on the final size (2nd, 3rd).</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/binary-tree-right-side-view/">199. Binary Tree Right Side View</a><br>Interesting tree based question, can be solved quite easily using the idea of greedy and depth.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-performance-of-a-team/">1383. Maximum Performance of a Team</a><br>Monotonicity, with priority queue.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-edge-weight-equilibrium-queries-in-a-tree">2846. Minimum Edge Weight Equilibrium Queries in a Tree</a><br>Tree based two point path problem. Binary lifting, LCA with binary lifting (instead of classical two point LCA)!!</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/step-by-step-directions-from-a-binary-tree-node-to-another/">2096. Step-By-Step Directions From a Binary Tree Node to Another</a><br>A simpler two point path related problem, also involves find the (Least Common Ancestor) LCA.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-total-distance-traveled">2463. Minimum Total Distance Traveled</a><br>Linear sum assignment optimization problem, minimum weight matching in bipartite graphs.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/meeting-rooms-iii/description">2402. Meeting Rooms III</a><br>Magic of priority queues, as well as monotonicity.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/number-of-ways-to-reach-a-position-after-exactly-k-steps/description">2400. Number of Ways to Reach a Position After Exactly k Steps</a><br>The beauty of math, specifically combinatorics and analysis of the sufficient conditions.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/steps-to-make-array-non-decreasing">2289. Steps to Make Array Non-decreasing</a><br>Dynamic programming with monotonic stack, DP happens at the time of popping as well as inserting!!</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/the-number-of-weak-characters-in-the-game">1996. The Number of Weak Characters in the Game</a><br>Keep only the Pareto points, sorting then linear scan.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/check-if-a-string-contains-all-binary-codes-of-size-k/description">1461. Check If a String Contains All Binary Codes of Size K</a><br>Rolling hash, fixed size sliding window hashing.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit">1438. Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit</a><br>Monotonic queue, and sliding window.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/construct-target-array-with-multiple-sums">1354. Construct Target Array With Multiple Sums</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-original-array-from-doubled-array/">2007. Find Original Array From Doubled Array</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/move-pieces-to-obtain-a-string/">2337. Move Pieces to Obtain a String</a><br>Analyze form the boundary, minimum or maximum.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/description">1130. Minimum Cost Tree From Leaf Values</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/construct-smallest-number-from-di-string/description">2375. Construct Smallest Number From DI String</a><br>Question with inappropriate constraints. A very tricky question! Analyze how element is being used by focusing on two elements.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/koko-eating-bananas">875. Koko Eating Bananas</a><br>Binary search the possible results and check the validity of middle point in the search range.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/score-of-parentheses">856. Score of Parentheses</a><br>Parentheses expression is related to recursive!</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/asteroid-collision">735. Asteroid Collision</a><br>A very interesting stack related question.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/remove-boxes">546. Remove Boxes</a><br>The hardest DP question I have ever seen. The choice and state definition of this problem is quite enlightening.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/reconstruct-itinerary">332. Reconstruct Itinerary</a><br>Eulerian graph, try connecting with post-order dfs (node focused where in this case we are edge focused), something like post-order edge visit.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-increasing-path-in-a-matrix">329. Longest Increasing Path in a Matrix</a><br>Matrix grid based DP.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-of-smaller-numbers-after-self">315. Count of Smaller Numbers After Self</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/reverse-pairs/">493. Reverse Pairs</a><br>Application of Binary Indexed Tree (BIT), with input rank mapping.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/burst-balloons">312. Burst Balloons</a><br>Matrix chain multiplication variant. A good practice of dynamic programming.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-the-duplicate-number">287. Find the Duplicate Number</a><br>Slow, fast pointer for cycle detection.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/different-ways-to-add-parentheses">241. Different Ways to Add Parentheses</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/24-game/">679. 24 Game</a><br>Backtrack.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/course-schedule/description">207. Course Schedule</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/course-schedule-ii/">210. Course Schedule II</a><br>topological sort.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/kth-largest-element-in-an-array">215. Kth Largest Element in an Array</a><br>Quick select, partition algorithm, or priority queue.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/shortest-palindrome/description">214. Shortest Palindrome</a><br>KMP string matching, and trick of adding a reversed copy of original string, and then use kmp to find the longest palindrome starting from the beginning (also works for prefix&#x2F;suffix related questions).</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/word-search-ii/description">212. Word Search II</a><br>Trie, and DP.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-consecutive-sequence">128. Longest Consecutive Sequence</a><br>Sliding window, or union find.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/binary-tree-maximum-path-sum">124. Binary Tree Maximum Path Sum</a><br>Tree DP problem. Path related, typically consider each node as begin&#x2F;end or middle point of the path.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-window-substring">76. Minimum Window Substring</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-number-of-operations-to-make-array-continuous/">2009. Minimum Number of Operations to Make Array Continuous</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-subarrays-with-score-less-than-k/">2302. Count Subarrays With Score Less Than K</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/number-of-people-aware-of-a-secret/">2327. Number of People Aware of a Secret</a><br>Classical sliding window.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-subarray">53. Maximum Subarray</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-product-subarray">152. Maximum Product Subarray</a><br>Interesting problem, try solve it through dynamic programming.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array">34. Find First and Last Position of Element in Sorted Array</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array">153. Find Minimum in Rotated Sorted Array</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/peak-index-in-a-mountain-array/">852. Peak Index in a Mountain Array</a><br>Binary search lower&#x2F;upper bound or related practice question.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string">28. Find the Index of the First Occurrence in a String</a><br>KMP string matching problem.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/sum-of-distances-in-tree/">834. Sum of Distances in Tree</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/difference-between-maximum-and-minimum-price-sum">2538. Difference Between Maximum and Minimum Price Sum</a><br>Root-change problem, the result for one given root can easily be answered through bfs&#x2F;dfs, but now we want the result when every node can be treated as root with same amount of time. This is message-passing alike question and can be solved use belief propagation or just 2 rounds of dfs if the graph is tree (in most cases it is).</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-the-number-of-ideal-arrays/description/">2338. Count the Number of Ideal Arrays</a><br>Combinatorics question, can be solved by stars and bars theory.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/build-array-from-permutation/">1920. Build Array from Permutation</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/first-missing-positive/">41. First Missing Positive</a><br>Use one cell to save multiple informations. The key here is the modulo operations with a large enough number not going to appear in the input or based on the size of input.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-the-k-sum-of-an-array/">2386. Find the K-Sum of an Array</a><br>Ordered arbitrary size subset enumeration, this is not like LC982, which is binary mask based. Specifically, define the two subsets of current set <code>S</code> as <code>S + next(max(S))</code> and <code>S - max(S) + next(max(S))</code>, we can form an recursive tree that involves all subsets of given array. Here, $next(\cdot)$ means the immediate next element that is larger than the input in the array. The <code>+/-</code> here means set union or difference. More information can be found <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/33219712/find-k-th-minimum-sum-of-every-possible-subset">here</a>.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/triples-with-bitwise-and-equal-to-zero/">982. Triples with Bitwise AND Equal To Zero</a><br>Binary subset enumeration.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-interval-to-include-each-query/">1851. Minimum Interval to Include Each Query</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-building-where-alice-and-bob-can-meet/">2940. Find Building Where Alice and Bob Can Meet</a><br>Make use of monotonicity in hard questions is a very useful trick. To be more specific, if we process the queries in certain order, we can keep a set of candidates easily by make use of monotonicity.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/container-with-most-water">11. Container With Most Water</a><br>Monotonicity questions also usually involves monotonic queue or monotonic stack.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/super-egg-drop/">887. Super Egg Drop</a><br>A dynamic programming question that treats the output value as part of its state.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/last-substring-in-lexicographical-order/">1163. Last Substring in Lexicographical Order</a><br>I would like to award this question as the one of the hardest two pointer related questions. The correct way of moving two points needs to be carefully analyzed.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/">1639. Number of Ways to Form a Target String Given a Dictionary</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/make-array-strictly-increasing/">1187. Make Array Strictly Increasing</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/jump-game-v/description">1340. Jump Game V</a><br>Good practices of dynamic programming problem, the definition of choice here are very important.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/erect-the-fence/description/">587. Erect the Fence</a><br>A 2D convex hall problem, also reminds me something important about cross product between two vectors. The results vector is perpendicular to both input vectors and the length of the resultant vector is the size of parallelogram formed by the input vectors. Also the sign the of results indicate the direction of final vector and it can be used to determine whether rotation direction is clockwise between the two vectors.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/online-majority-element-in-subarray/description/">1157. Online Majority Element In Subarray</a><br>Show you the power of randomized algorithm.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximize-value-of-function-in-a-ball-passing-game/">2836. Maximize Value of Function in a Ball Passing Game</a><br>Binary lifting (make use of the fact that any number can be represented as the sum of powers of two), the graph structure here are inward tree with cyclic base, so solving through topological sort and analysis are also possible.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/stamping-the-grid/">2132. Stamping the Grid</a><br>This question makes me realize the relation between prefix sum, first-order difference of an array, and scan line algorithms. To put it simple, we can construct the result of scan line algorithm that equals a given prefix sum array by taking first-order difference of that array. This problem requires the prefix sum, and first-order difference techniques to be conducted in the 2D dimension.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/number-of-submatrices-that-sum-to-target">1074. Number of Submatrices That Sum to Target</a><br>Prefix sum technique in 2D matrix.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/largest-submatrix-with-rearrangements/description/">1727. Largest Submatrix With Rearrangements</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximal-rectangle/">85. Maximal Rectangle</a><br>Sub matrix related question. Involves an technique of converting 2D problem into multiple 1D problems, with the values in 1D array represents some information of the matrix. Solve LC85 also involves LC1793 as a sub problem.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/knight-dialer/">935. Knight Dialer</a><br>State transition based dynamic programming problem. Each step we have multiple fixed states, and each of them is computed as the linear combination of previous states results. For DP problem like this, we can express the full transition in matrix form and use fast matrix power to compute the results in only $O(\log n)$ time.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-score-of-a-good-subarray/description/">1793. Maximum Score of a Good Subarray</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/subarray-with-elements-greater-than-varying-threshold">2334. Subarray With Elements Greater Than Varying Threshold</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/largest-rectangle-in-histogram/">84. Largest Rectangle in Histogram</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-subarray-min-product/">1856. Maximum Subarray Min-Product</a><br>Practice of monotonic stack for finding the next smaller&#x2F;greater element. The standard solution needs two passes of the array using monotonic stack. We can also solve this problem in one pass by doing the analysis and work at the time of popping.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-of-sub-multisets-with-bounded-sum/description/">2902. Count of Sub-Multisets With Bounded Sum</a><br>The ultimate knapsack problem. Compared with standard knapsack problem where each item only appear ones, how would you efficiently evaluate the recursive dynamic programming formula when each item can appear multiple times? The trick here is to use evenly-spaced sliding window technique multiple times, keeping final time complexity is still linear to number of entries.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/avoid-flood-in-the-city/">1488. Avoid Flood in The City</a><br>An interesting problem for priority queue, good logical questions for thinking the condition of push and pop from the queue.  Note that this question can be easily solved using ordered data structures like <code>SortedList</code> in python.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-employees-to-be-invited-to-a-meeting/description/">2127. Maximum Employees to Be Invited to a Meeting</a><br>内向基环树 (A cycle with multiple inward tree connected to its vertex) related problem, a good practice of using iterative topological sort to remove the trees from base cycle.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-repeating-character-replacement/">424. Longest Repeating Character Replacement</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-the-longest-equal-subarray/description">2831. Find the Longest Equal Subarray</a><br>An example of Type II sliding window questions. Compared to standard sliding window that we increase right boundary one at a time and shrink the left to make the window valid (in other words, the size of window keeps reducing or increasing during the process), type II sliding window never decrease the size of window, when the window of size s is valid, we try size of s+1. If it does not work, we move the whole window with size s+1 right one step at a time. This can be useful for questions that only ask for longest subarrays, not some score of valid subarrays.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/description/">395. Longest Substring with At Least K Repeating Characters</a><br>Type III sliding window questions. You will need to <strong>add more constraint to the sliding window being considering</strong> (e.g., limiting the number of unique elements in the window) such that standard sliding window technique can be applied. Then we can enumerate all possible constraints to get the final solution. In the case of alphabet strings, the number of unique elements inside window is limited.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-students-taking-exam/">1349. Maximum Students Taking Exam</a><br>State compression dynamic programming, binary masking subset enumeration, bit operations for checking overlaps. The first problem I see that treat the assignment of whole row&#x2F;col as the state.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-one-bit-operations-to-make-integers-zero/description/">1611. Minimum One Bit Operations to Make Integers Zero</a><br>Dynamic programming, with reversal thinking since two operations are invertible. Also the idea of starting from the boundary.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-a-peak-element-ii/">1901. Find a Peak Element II</a><br>Analysis, logical, math proof related question, good practice of binary search and mathematical proof.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/subarrays-distinct-element-sum-of-squares-ii/description/">2916. Subarrays Distinct Element Sum of Squares II</a><br>Dynamic programming, and lazy segment trees with range sum query and range addition update.</p>
+</li>
+</ul>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2023/12/prime_fac/" data-toggle="tooltip" data-placement="top"
+                           title="Smallest Perfect Square Number that Modulo K">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg==">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Patterns-and-Experiences"><span class="toc-text">Patterns and Experiences</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Tricks"><span class="toc-text">Tricks</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#List-of-Problems"><span class="toc-text">List of Problems</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2023
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">Page View: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+<!-- code copy function -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.js"></script>
+<script type="text/javascript" src="/js/clipboard_use.js"></script>
+</body>
+
+</html>
