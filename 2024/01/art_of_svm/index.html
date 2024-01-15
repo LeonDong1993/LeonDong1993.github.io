@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leon Dong&#39;s Blog">
+    <meta name="keyword" content="Hailiang Dong, LeonDong1993, Leon Dong&#39;s Blog">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="/imgs/favicon.png">
+    <link rel="alternate" type="application/atom+xml" title="Leon" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>
+        
+        The Art of Support Vector Machines - Part I｜Leon&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://leondong1993.github.io/2024/01/art_of_svm/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/blog-style.css">
+
+
+    <!-- Pygments Github CSS -->
+    
+<link rel="stylesheet" href="/css/syntax.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Leon
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/picks/">Top Picks</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="/imgs/background.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('/imgs/background.jpg')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>The Art of Support Vector Machines - Part I</h1>
+                    
+                    <span class="meta">
+                         作者 Leon Dong
+                        <span>
+                          日期 2024-01-03
+                         </span>
+                    </span>
+                    
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/Tags/#machine learning"
+                           title="machine learning">machine learning</a>
+                        
+                        <a class="tag" href="/Tags/#optimization"
+                           title="optimization">optimization</a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            The Art of Support Vector Machines - Part I
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>Support Vector Machines (SVMs) stand out as an exceptionally elegant model that has captivated me over the years. Although it is not widely employed after the advent of neural networks, it still plays an important part in machine learning, such as in cases with limited data.</p>
+<p>I have studied the SVM model for over four years and still find myself fascinated by the theory behind it. In this post, I will delve into the theoretical foundations of SVM, coupled with practical implementation. I will begin with the naive SVM in primal space, and then extend to slack SVM. After that, we will talk about SVM in dual space and introduce the kernel trick that makes SVM an incredibly powerful model in practice.</p>
+<h1 id="Motivation-and-Formulation"><a href="#Motivation-and-Formulation" class="headerlink" title="Motivation and Formulation"></a>Motivation and Formulation</h1><p>Linear classifiers such as Perceptron have been widely employed, but one of the disadvantages is that it cannot distinguish between two lines (or decision boundaries) if they can both perfectly separate the input data.</p>
+<p>Specifically, as shown in the following figure, both line A and B are the same from the perspective of Perceptron. However, we usually believe that B is a better decision boundary because it is further “away” from the training data points. This means B generalize better than A and is usually more robust in practice. For example, if we add some noise to the data, model A can change its prediction easier compared to model B.<br><img src="/figs/svm/perceptron.png" alt="Limitation of Perceptron"></p>
+<p>SVM is developed with this idea of “max margin” in mind. Specifically, as shown in the following figure, SVM tries to find a decision hyper plane $w^T x +b &#x3D; 0$ such that</p>
+<ol>
+<li>for all positive training instances (square in the figure, with label $y^{(i)}$ &#x3D; 1), we have $w^T x^{(i)} + b &gt;&#x3D; c$</li>
+<li>for all negative training instances (circle in the figure, with label $y^{(i)}$ &#x3D; -1), we have $w^T x^{(i)} + b &lt;&#x3D; -c$</li>
+</ol>
+<p>where the $\{x^{(i)}, y^{(i)} \}$ here denotes the $i^{th}$ input training instance.<br><img src="/figs/svm/svm.png" alt="Illustration of SVM"></p>
+<blockquote>
+<p>In Perceptron, we only care about the sign (which side). But in SVM, we care not only the sign, but also the distance to the decision boundary, which is also called the margin.</p>
+</blockquote>
+<p>The objective of SVM is to maximize the margin, as indicated by the distance between these parallel lines (i.e., the $d$ in the figure). To calculate the distance $d$, we arbitrarily pick two points $p,q$ on the line $w^T x + b &#x3D; c$ and $w^T x + b &#x3D; 0$, respectively.</p>
+<p><img src="/figs/svm/svm-margin.png" alt="Illustration of Margin"></p>
+<p>Then, because the vector $w$ is perpendicular to the hyper plane, the projection of the vector $p-q$ on $w$ would have its norm equal to $d$, i.e.<br>$$<br>d &#x3D;  \frac{ w \cdot (p-q)}{\lVert  w \rVert} &#x3D; \frac{w^T p + b - w^T q - b}{\lVert  w \rVert} &#x3D; \frac{c}{\lVert  w \rVert}<br>$$</p>
+<p>Note that there will be only one line that achieves the maximum margin. However, this does NOT mean there is only one unique solution to the parameters $w,b,c$. In fact, if $w,b,c$ solves the problem, then $kw, kb, kc$ is also a valid solution for any $k \ne 0$. Therefore, without loss of generality and by the property of scale invariant, we manually set $c &#x3D; 1$.</p>
+<p>With all of the analysis above, the optimization problem of SVM can be formulated as<br>$$<br>\min_{w,b} \quad \frac{1}{2} \lVert w \rVert ^ 2 \\<br>s.t. \quad y^{(i)} (w^T x^{(i)}+b) \ge 1, \forall i<br>$$</p>
+<p>Note that the original objective function $\max \frac{1}{\lVert w \rVert}$ is replaced with an equivalent objective function $\min \frac{1}{2} \lVert w \rVert ^ 2$ for the ease of optimization. In fact, the above problem is a <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Quadratic_programming">Quadratic Programming</a> problem and can be solved using existing solvers such as <code>quadprog</code> in MATLAB or <code>cvxopt</code> in Python. And we will talk about the implementation in detail in the later sections.</p>
+<h1 id="Limitations-of-Naive-SVM"><a href="#Limitations-of-Naive-SVM" class="headerlink" title="Limitations of Naive SVM"></a>Limitations of Naive SVM</h1><p>The naive SVM is formulated under the assumption that data is separable. However, this is rarely the cases in practice, and there are two commonly employed approaches to tackle this issue. What’s more, you can combine the following two methods and use them together when developing the SVM on real-world dataset.</p>
+<h2 id="Slack-SVM"><a href="#Slack-SVM" class="headerlink" title="Slack SVM"></a>Slack SVM</h2><p>The first approach make use the idea of slackness. To be more specific, for each data instances in the training set, we introduce a new parameter $\xi_i$ to denote the amount of violation allowed in the constraint. In other words, we replace the constraint<br>$$<br>y^{(i)} (w^T x^{(i)}+b) \ge 1, \forall i<br>$$<br>with<br>$$<br>y^{(i)} (w^T x^{(i)}+b) \ge 1 - \xi_i, \forall i  \\<br>\xi_i \ge 0, \forall i<br>$$</p>
+<p>In addition, we penalize each of the violations in the new objective function as follows.<br>$$<br>\min_{w,b, \xi_i} \quad  \frac{1}{2} \lVert w \rVert ^ 2 + \lambda \sum_i \xi_i<br>$$<br>The hyper parameter $\lambda$ here denotes the amount of penalty we have to pay for each unit violation of constraints. With all the modifications discussed above, the soft slack SVM problem is<br>$$<br>\min_{w,b, \xi_i} \quad  \frac{1}{2} \lVert w \rVert ^ 2 + \lambda \sum_i \xi_i \\<br>s.t. \quad y^{(i)} (w^T x^{(i)}+b) \ge 1 - \xi_i, \forall i  \\<br>\quad \xi_i \ge 0, \forall i<br>$$</p>
+<p>The above optimization problem is also in the Quadratic Programming (QP) form and therefore can be solved in the same way as the naive SVM. In addition, due to the extra $\xi_i$ parameters, we can transform this problem in to an unconstrained optimization problem. This is because that when we reach the optimal solution, the value of $\xi_i$ must be<br>$$<br>\xi_i &#x3D; \max \{ 0, 1- y^{(i)} (w^T x^{(i)} +b) \}<br>$$<br>This is also known as the hinge loss (or max-margin) loss of SVM.</p>
+<blockquote>
+<p>Here is the proof sketch of the above conclusion. We denote $D_i &#x3D; y^{(i)} (w^T x^{(i)} +b)$.</p>
+<ul>
+<li>If we already have $D_i \ge 1$ for the optimal $w,b$, then $\xi_i$ must be zero in order to minimize the objective.</li>
+<li>Otherwise, we would have $D_i &lt; 1$, and in order to satisfy the constraint, we must have $\xi_i \ge 1-D_i$. Because the objective penalize larger $\xi_i$, therefore the optimal value for $\xi_i$ must be $1-D_i$.</li>
+</ul>
+</blockquote>
+<p>With this key observation, we can plug this equation back into the objective and we will now have an unconstrained optimization problem as follows.<br>$$<br>\min_{w,b} \quad  \frac{1}{2} \lVert w \rVert ^ 2 + \lambda \sum_i  \max \{ 0, 1- y^{(i)} (w^T x^{(i)} +b) \}<br>$$<br>And this problem can be solved easily using gradient based methods such as stochastic gradient descent (SGD). Note that the parameter $\xi_i$ is gone in this formulation.</p>
+<p>One side note is that, when we have imbalanced data, we can modify the objective function to account for the data imbalance in the case of SVM. For example, we can modify the objective function as<br>$$<br>\min_{w,b, \xi_i} \quad  \frac{1}{2} \lVert w \rVert ^ 2 + \lambda \left( \frac{N_{-1}}{N}  \sum_{i, y^{(i)} &#x3D; 1} \xi_i + \frac{N_{1}}{N}  \sum_{i, y^{(i)} &#x3D; -1} \xi_i \right)<br>$$<br>where $N_{-1}, N_{1}, N$ denotes the number of negative, positive and total training instances. If we have much more negative instances (i.e. $N_{1} \ll N_{-1}$), the penalty we pay for the negative instances is low while the penalty for positive instances is high. Therefore, the model will pay more attention to positive example and try to classify all of them right with large enough distance to the decision boundary.</p>
+<h2 id="Data-Feature-Mapping"><a href="#Data-Feature-Mapping" class="headerlink" title="Data Feature Mapping"></a>Data Feature Mapping</h2><p>Another approach to overcome the separable assumption is to employ a feature mapping function $\phi(x)$, such that the data becomes linear separable after mapping all the training data into the feature space.</p>
+<p>For example, assume we have a set of 2D points $x^{(i)} &#x3D; (x^{(i)}_1,x^{(i)}_2)$ that are not linear separable in the original space. One example feature mapping we can use here is<br>$$<br>\phi(x^{(i)}) &#x3D; (x_1^{(i)} x_1^{(i)}, x_2^{(i)} x_2^{(i)} , x_1^{(i)} x_2^{(i)})<br>$$<br>, and fitting a linear decision plane in the feature space would correspond to fitting a second-order polynomial in original space, which helps separating the data.</p>
+<blockquote>
+<p>We can see that $w^T \phi(x) +b &#x3D; w_1 x_1^2 + w_2 x_2^2 + w_3 x_1 x_2 + b$, which corresponds the geometry equation of second order polynomial in the original space.</p>
+</blockquote>
+<p>Although simple and appealing, one biggest disadvantage is that data feature mapping usually increase the dimension of input data, make the whole optimization problem more complex and increase the time for solving the Quadratic programming (the size of $w$ increase). In addition, it also increase the inference time because we have to apply the feature mapping to the input data first. This issue can be quite significant if we are using high order of polynomial feature mapping.</p>
+<h1 id="Implementation-of-SVM"><a href="#Implementation-of-SVM" class="headerlink" title="Implementation of SVM"></a>Implementation of SVM</h1><p>Although there are already quadratic programming solvers, apply them to solve the optimization problem in SVM is not a trivial task. In this section, I will walk you through the process of reformatting the optimization problem of slack SVM into the standard form required by the standard quadratic programming solver. Note that different solvers may have slightly different standard form, and for this blog post, I will mainly focus on the <code>cvxopt</code> solver in Python.</p>
+<p>From the official <a target="_blank" rel="noopener" href="https://cvxopt.org/userguide/coneprog.html#quadratic-programming">API document</a> of quadratic programming in <code>cvxopt</code>, we can see that the standard form is<br>$$<br>\min_{x} \frac{1}{2} x^T P x + q^T x \\<br>s.t. \quad Gx \le h, \quad Ax &#x3D; b<br>$$<br>while the formulation of slack SVM is<br>$$<br>\min_{w,b, \xi_i} \quad  \frac{1}{2} \lVert w \rVert ^ 2 + \lambda \sum_i \xi_i \\<br>s.t. \quad y^{(i)} (w^T x^{(i)}+b) \ge 1 - \xi_i, \forall i  \\<br>\quad \xi_i \ge 0, \forall i<br>$$</p>
+<p>Because we don’t have equality constraints in our case, therefore we just need to find $P, q, G, h$ and pass these matrix as the arguments for the solver.</p>
+<p>Let’s assume we have $N$ training instances with $F$ features, then the total number of unknown parameters $x$ here is of size $K &#x3D; F+1+N$, i.e.<br>$$<br>x &#x3D; [w_1,…,w_F,b,\xi_1,…, \xi_N]^T<br>$$</p>
+<p>The first thing we need to figure out is the value of $P_{K \times K}$ and $q_{K \times 1}$, such that<br>$$<br>\frac{1}{2} x^T P x &#x3D; \frac{1}{2} \lVert w \rVert ^ 2, \quad q^T x &#x3D; \lambda \sum_i \xi_i<br>$$</p>
+<p>From the first equation, because $\lVert w \rVert ^ 2 &#x3D; w_1^2 + … + w_F^2$, we can set $P_{K \times K}$ as<br>$$<br>\begin{bmatrix}<br>I_F &amp; 0 \\<br>0 &amp; 0<br>\end{bmatrix}<br>$$</p>
+<p>where $I_F$ is the identity matrix of size $F \times F$. From the second equation, we can easily see that<br>$$<br>q_{K \times 1} &#x3D; [0_{1 \times F}, 0, \lambda_{1 \times N}] ^ T<br>$$</p>
+<p>Now we have found the coefficient matrix $P,q$, and the next two matrix to figure out is $G,h$. First, let’s figure out the size of these two matrix. From the formulation of slack SVM, we can see that we have two types of inequality constraints and each of them have $N$ constraints inside. Therefore, the total number of inequality constrains is $2N$, and the size of $G,h$ is $2N \times K$ and $2N \times 1$, respectively.</p>
+<p>For matrix $G$, the upper half should represent the constraint $y^{(i)} (w^T x^{(i)}+b) \ge 1 - \xi_i$, for a more clear looking at the coefficient, we can transform it into<br>$$<br>-y^{(i)} (x^{(i)})^T w - y^{(i)} b - \xi_i \le -1<br>$$</p>
+<p>Therefore, we can conclude the upper half of $G,h$ as<br>$$<br>G_u &#x3D;\left [ [-y^{(i)} (x^{(i)})^T] _{N \times F}, [- y^{(i)}] _{N \times 1}, - I _N  \right] \\<br>h_u &#x3D; [-1_{N \times 1}]<br>$$</p>
+<p>For the bottom half of the matrix $G,h$, it corresponds to constraint $- \xi_i \le 0$, and we can easily find<br>$$<br>G_b &#x3D; [0_{N \times F}, 0_{N \times 1}, - I_N] \\<br>h_b &#x3D; [0_{N \times 1}]<br>$$</p>
+<p>Finally, we just need to stack the up and bottom half of these two matrix.</p>
+<h2 id="Python-Code"><a href="#Python-Code" class="headerlink" title="Python Code"></a>Python Code</h2><p>With the above analysis, in the implementation phase, what we need to do is just create these four matrix based on the given data. However, because the for loop in python is extremely slow, we need to make use of vectorized operations in <code>numpy</code> to construct these matrix. One example of Python implementation is shown as follows.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> cvxopt <span class="keyword">import</span> solvers,matrix</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SlackSVM</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, lmda</span>):</span><br><span class="line">        self.lmda = lmda</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">fit</span>(<span class="params">self, X, y</span>):</span><br><span class="line">        <span class="comment"># X is a 2D array with shape N x F</span></span><br><span class="line">        <span class="comment"># y is a 1D array with size N, contains only &#123;1, -1&#125;</span></span><br><span class="line"></span><br><span class="line">        N, F = X.shape</span><br><span class="line">        <span class="keyword">assert</span>(N == y.size), <span class="string">&#x27;Wrong input, size mismatch!&#x27;</span></span><br><span class="line">        n_paras = F+<span class="number">1</span>+N</span><br><span class="line">        <span class="comment"># construct P</span></span><br><span class="line">        P = np.zeros(n_paras)</span><br><span class="line">        P[:F] = <span class="number">1</span></span><br><span class="line">        P = np.diag(P)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># construct q</span></span><br><span class="line">        q = np.zeros(n_paras)</span><br><span class="line">        q[F+<span class="number">1</span>:] = self.lmda</span><br><span class="line"></span><br><span class="line">        <span class="comment"># construct G upper</span></span><br><span class="line">        G = np.zeros( shape = (N&lt;&lt;<span class="number">1</span> , n_paras) )</span><br><span class="line">        y_r = y.reshape(N,<span class="number">1</span>)</span><br><span class="line">        G[:N, :F] = -y_r * X <span class="comment"># numpy auto broadcasting</span></span><br><span class="line">        G[:N, F:(F+<span class="number">1</span>)] = -y_r</span><br><span class="line">        G[:N, F+<span class="number">1</span>:] = -np.identity(N)</span><br><span class="line">        <span class="comment"># construct G bottom</span></span><br><span class="line">        G[N:, F+<span class="number">1</span>:] = -np.identity(N)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># construct h</span></span><br><span class="line">        h = np.zeros( N&lt;&lt;<span class="number">1</span> )</span><br><span class="line">        h[:N] = -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># call solver</span></span><br><span class="line">        ret = solvers.qp(matrix(P),matrix(q),matrix(G),matrix(h))</span><br><span class="line">        solution = np.array(ret[<span class="string">&#x27;x&#x27;</span>]).flatten()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># extract w,b from solution</span></span><br><span class="line">        W = solution[<span class="number">0</span>:F].reshape(F,<span class="number">1</span>)</span><br><span class="line">        b = solution[F]</span><br><span class="line"></span><br><span class="line">        self.W  = W</span><br><span class="line">        self.b = b</span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">predict</span>(<span class="params">self, X</span>):</span><br><span class="line">        <span class="comment"># X should be a 2D array of size N x F</span></span><br><span class="line">        preds = (X @ self.W + self.b).flatten()</span><br><span class="line">        <span class="keyword">return</span> np.where(preds &gt; <span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>The above implementation is in <code>scikit-learn</code> style, and we can define and train the SVM model using the similar syntax like other models in <code>scikit-learn</code>.</p>
+<p>In addition, there are some other things in the implementation that are worth noting:</p>
+<ol>
+<li>the input to the <code>qp</code> solver must be of <code>matrix</code> type defined in <code>cvxopt</code>, not <code>numpy.ndarray</code>. Therefore, we need to convert these matrix before passing into the solver.</li>
+<li>the <code>n_paras</code> is the $K$ we used in the above analysis.</li>
+<li>the values of $\xi_i$ is not important during the prediction time, and therefore we don’t save it.</li>
+<li>the input is assume to be cleaned with label {-1, 1}.</li>
+</ol>
+<blockquote>
+<p>This concludes the first part of my comprehensive guide towards support vector machines. In the future posts, I will talk about Lagrange Duality as well as the dual SVM, and how kernel metric can be applied.</p>
+</blockquote>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2024/01/interesting_problems/" data-toggle="tooltip" data-placement="top"
+                           title="A List of Interesting LeetCode Problems">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2023/12/prime_fac/" data-toggle="tooltip" data-placement="top"
+                           title="Smallest Perfect Square Number that Modulo K">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+                <!-- 来必力City版安装代码 -->
+                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg==">
+                    <script type="text/javascript">
+                        (function(d, s) {
+                            var j, e = d.getElementsByTagName(s)[0];
+
+                            if (typeof LivereTower === 'function') { return; }
+
+                            j = d.createElement(s);
+                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                            j.async = true;
+
+                            e.parentNode.insertBefore(j, e);
+                        })(document, 'script');
+                    </script>
+                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+                </div>
+                <!-- City版安装代码已完成 -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Motivation-and-Formulation"><span class="toc-text">Motivation and Formulation</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Limitations-of-Naive-SVM"><span class="toc-text">Limitations of Naive SVM</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Slack-SVM"><span class="toc-text">Slack SVM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Feature-Mapping"><span class="toc-text">Data Feature Mapping</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Implementation-of-SVM"><span class="toc-text">Implementation of SVM</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Python-Code"><span class="toc-text">Python Code</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/LeonDong1993">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/hailiang-dong-b344b3b7">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Leon 2024
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">Page View: <span id="busuanzi_value_site_pv"></span> Times</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/blog.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://leondong1993.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<!-- mathjax -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processEscapes: true
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    }});
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!--wechat title img-->
+<img class="wechat-title-img" src="/imgs/head.jpg">
+<!-- code copy function -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.js"></script>
+<script type="text/javascript" src="/js/clipboard_use.js"></script>
+</body>
+
+</html>

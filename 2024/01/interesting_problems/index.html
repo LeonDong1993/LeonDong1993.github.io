@@ -22,7 +22,7 @@
         
     </title>
 
-    <link rel="canonical" href="https://leondong1993.github.io/2023/12/interesting_problems/">
+    <link rel="canonical" href="https://leondong1993.github.io/2024/01/interesting_problems/">
 
     <!-- Bootstrap Core CSS -->
     
@@ -172,7 +172,7 @@
                     <span class="meta">
                          作者 Leon Dong
                         <span>
-                          日期 2023-12-29
+                          日期 2024-01-15
                          </span>
                     </span>
                     
@@ -200,7 +200,7 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>This post contains a list of LeetCode problems that I found interesting during my time practicing Data Structures and Algorithms (DSA) questions and learning competitive programming knowledge. Although I have been continuously practicing LeetCode questions since April 2022, the list is comprised only of my recent experiences in the last 1-2 months (from the date of 12-26-2023). I will keep updating this list, and it also serves as a useful memo for me to look back on some key knowledge related to each question.</p>
+                <p>This post contains a list of LeetCode problems that I found interesting during my time practicing Data Structures and Algorithms (DSA) questions and learning competitive programming knowledge. I have been continuously practicing LeetCode questions since April 2022, this list summaried my personal experience in learning the competitive programming. I will keep updating this list, and it also serves as a useful memo for me to look back on some key knowledge related to each question.</p>
 <blockquote>
 <p>The first version of this list is build on 12-26-2023. The date of this post shows the time of last update.</p>
 </blockquote>
@@ -215,6 +215,8 @@
 <li>In some problem involves string or integer with binary bit representation, we need to find the next input string&#x2F;integer satisfy certain given condition. Instead of going through the whole input list, we can also directly construct the candidates that satisfy the constraints and then check if it is inside the input. For example, <a target="_blank" rel="noopener" href="https://leetcode.com/problems/word-ladder-ii/">126. Word Ladder II</a>.</li>
 <li>For questions like <a target="_blank" rel="noopener" href="https://leetcode.com/problems/partition-equal-subset-sum">subset sum partition</a> or <a target="_blank" rel="noopener" href="https://leetcode.com/problems/coin-change-ii">coin changes</a>, we need to be careful about the order of outter&#x2F;inner loop variables when implement the iterative dynamic programming.</li>
 <li>The pre and post order traversal of tree along with the empty nodes can uniquely identify the tree structure, however this is not true for inorder traversal.</li>
+<li>Linked list reverse and two point method can be very useful when you want to perform some operations on linked list with constant space complexity.</li>
+<li>Add an additional dummy node in linked list realted problem can be useful.</li>
 </ul>
 <h2 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h2><ul>
 <li>During the binary search, if you shrink left&#x2F;right, you should calculate mid towards left&#x2F;right, In the case you need to calculate mid toward right, use <code>mid = (l+r+1) // 2</code>.</li>
@@ -224,6 +226,12 @@
 <li>Scanline algorithm do not need full size array to be allocated, we can also use a dictionary for implementation.</li>
 </ul>
 <h2 id="List-of-Problems"><a href="#List-of-Problems" class="headerlink" title="List of Problems"></a>List of Problems</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-beautiful-indices-in-the-given-array-ii/description/">3008. Find Beautiful Indices in the Given Array II</a><br>Practice of KMP string matching to find ALL occurrence of a pattern in the given string, can also be solved by using rolling hash (have an extremely small chance of hash collision). In case of english letters, consider them as digits with base-26.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/">3007. Maximum Number That Sum of the Prices Is Less Than or Equal to K</a><br>Digit dynamic programming, or mathematical analysis with combinatorics to compute the cost give the middle point, and use binary search over the candidate range of results.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-the-repetitions/">466. Count The Repetitions</a><br>The optimal solution involves find the “cycle section” between two strings. However, this can be tricky to implement and it is not so straight forward to me. Instead, we can solve it through pre-computation and binary lifting, which has almost the same time complexity.</p>
+</li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-well-performing-interval/">1124. Longest Well-Performing Interval</a><br>Monotonic stack, not asking for shortest but for longest pattern, the iteration order matters.</p>
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximize-score-after-n-operations/">1799. Maximize Score After N Operations</a><br>State compression dynamic programming.</p>
@@ -260,7 +268,7 @@
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-segment-sum-after-removals/">2382. Maximum Segment Sum After Removals</a><br>Reversal thinking, guarantee the monotonicity (the segment sum can only increase).</p>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-special-integers/">2376. Count Special Integers</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-stepping-numbers-in-range/">2801. Count Stepping Numbers in Range</a><br>Digit based dynamic programming.</p>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-special-integers/">2376. Count Special Integers</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-stepping-numbers-in-range/">2801. Count Stepping Numbers in Range</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-the-number-of-powerful-integers/">2999. Count the Number of Powerful Integers</a><br>Digit based dynamic programming. The DP state is quite depends on the relationship between digits. Specifically, if all of them are in dependent, we usually only have three state parameters <code>i, bound, target</code>, the target here is usually in string format in order to be hashable. Otherwise, the current choice of digit is depend on previous choice, in this case, we might need extra two state parameters <code>d, zero</code> where d is the previous digit and zero indicates whether all previous digits are zero.</p>
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/number-of-excellent-pairs/">2354. Number of Excellent Pairs</a><br>Simplifying the bit operation conditions, reformat the condition makes things clear.</p>
 </li>
@@ -403,8 +411,8 @@
                     
                     
                     <li class="next">
-                        <a href="/2023/12/prime_fac/" data-toggle="tooltip" data-placement="top"
-                           title="Smallest Perfect Square Number that Modulo K">Next Post &rarr;</a>
+                        <a href="/2024/01/art_of_svm/" data-toggle="tooltip" data-placement="top"
+                           title="The Art of Support Vector Machines - Part I">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -496,7 +504,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Leon 2023
+                    Copyright &copy; Leon 2024
                     <br>
                     <span id="busuanzi_container_site_pv" style="font-size: 12px;">Page View: <span id="busuanzi_value_site_pv"></span> Times</span>
                 </p>
