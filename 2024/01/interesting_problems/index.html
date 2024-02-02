@@ -226,6 +226,16 @@
 <li>Scanline algorithm do not need full size array to be allocated, we can also use a dictionary for implementation.</li>
 </ul>
 <h2 id="List-of-Problems"><a href="#List-of-Problems" class="headerlink" title="List of Problems"></a>List of Problems</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/5TxKeK/">LCP 24. 数字游戏</a><br>The trick of subtracting each element with its position, i.e., <code>nums[i] -= i</code>.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximize-the-number-of-partitions-after-operations/">3003. Maximize the Number of Partitions After Operations</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-number-of-groups-to-create-a-valid-assignment/">2910. Minimum Number of Groups to Create a Valid Assignment</a><br>Sometime, you need to analysis the brute force time complexity carefully.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimize-or-of-remaining-elements-using-operations/description/">3022. Minimize OR of Remaining Elements Using Operations</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/apply-operations-on-array-to-maximize-sum-of-squares/">2897. Apply Operations on Array to Maximize Sum of Squares</a><br>A type of question, minimize some bit operation (e.g. or) result of whole array, after some given operations. We can construct the answer by consider the value of each bit, i.e., solve the question “can we set the current considering bit to zero without break given constraints”.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/set-mismatch/description/">645. Set Mismatch</a><br>An interesting math problem, try solve it in constant space, it is very similar to but the solution is quite different as LC287, because the element is replaced, not something extra added.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-of-integers/">2719. Count of Integers</a><br>Another classical exmaple of digit programming. The implementation for this problem is in c++. Have to be extra careful about argument in c++, for complex argument type, we usually pass through reference <code>&amp;</code>, otherwise it is copied each time, very time consuming. Also the modulo operation in c++ does not take negative number into consideration. We need to do <code>(n2-n1+modv) % modv</code> instead of <code>(n2-n1) % modv</code> in Python. The code for this problem also serves as an example of implementing top-down dynamic programming in c++ using two array <code>vis</code> and <code>memo</code>. Also, my implementation in this problem introduce a way of handling boundary cases by defining <code>allow_bound</code> for digit based DP problems.</p>
+</li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-beautiful-indices-in-the-given-array-ii/description/">3008. Find Beautiful Indices in the Given Array II</a><br>Practice of KMP string matching to find ALL occurrence of a pattern in the given string, can also be solved by using rolling hash (have an extremely small chance of hash collision). In case of english letters, consider them as digits with base-26.</p>
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/">3007. Maximum Number That Sum of the Prices Is Less Than or Equal to K</a><br>Digit dynamic programming, or mathematical analysis with combinatorics to compute the cost give the middle point, and use binary search over the candidate range of results.</p>
@@ -236,11 +246,13 @@
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximize-score-after-n-operations/">1799. Maximize Score After N Operations</a><br>State compression dynamic programming.</p>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/delivering-boxes-from-storage-to-ports/">1687. Delivering Boxes from Storage to Ports</a><br>Dynamic programming and monotonic queue for maintaining the smallest value in certain range.</p>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/delivering-boxes-from-storage-to-ports/">1687. Delivering Boxes from Storage to Ports</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-maximum-non-decreasing-array-length/">2945. Find Maximum Non-decreasing Array Length</a><br>Dynamic programming and monotonic queue&#x2F;stack for maintaining the best set of candidates in certain range.</p>
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/soup-servings/">808. Soup Servings</a><br>A statistical probability question that has limit when input n is large enough, we can have if statement for these case.</p>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/reach-a-number/">754. Reach a Number</a><br>Analysis, logical thinking question.</p>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/reach-a-number/">754. Reach a Number</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimize-length-of-array-using-operations/description/">3012. Minimize Length of Array Using Operations</a><br>Analysis, logical thinking question.</p>
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/distinct-subsequences-ii/">940. Distinct Subsequences II</a><br>Dynamic programming, the definition of states here are important, and there is no choice to be made at each step.</p>
 </li>
@@ -423,25 +435,6 @@
 
 
                 <!--加入新的评论系统-->
-                
-                <!-- 来必力City版安装代码 -->
-                <div id="lv-container" data-id="city" data-uid="MTAyMC81ODk3MC8zNTQzMg==">
-                    <script type="text/javascript">
-                        (function(d, s) {
-                            var j, e = d.getElementsByTagName(s)[0];
-
-                            if (typeof LivereTower === 'function') { return; }
-
-                            j = d.createElement(s);
-                            j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-                            j.async = true;
-
-                            e.parentNode.insertBefore(j, e);
-                        })(document, 'script');
-                    </script>
-                    <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
-                </div>
-                <!-- City版安装代码已完成 -->
                 
 
                 
