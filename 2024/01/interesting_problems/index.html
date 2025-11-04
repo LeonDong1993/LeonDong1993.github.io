@@ -202,9 +202,6 @@
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
                 <p>This post contains a list of LeetCode problems that I found interesting during my time practicing Data Structures and Algorithms (DSA) questions and learning competitive programming knowledge. I have been continuously practicing LeetCode questions since April 2022, this list summaried my personal experience in learning the competitive programming. I will keep updating this list, and it also serves as a useful memo for me to look back on some key knowledge related to each question.</p>
 <blockquote>
-<p>The first version of this list is build on 12-26-2023. The date of this post shows the time of last update.</p>
-</blockquote>
-<blockquote>
 <p>The content of this post is better to be viewed along with the <code>search</code> function in your browser (keyboard shortcut <code>ctrl+f</code> or <code>f3</code>)!</p>
 </blockquote>
 <h2 id="Patterns-and-Experiences"><a href="#Patterns-and-Experiences" class="headerlink" title="Patterns and Experiences"></a>Patterns and Experiences</h2><ul>
@@ -217,6 +214,7 @@
 <li>The pre and post order traversal of tree along with the empty nodes can uniquely identify the tree structure, however this is not true for inorder traversal.</li>
 <li>Linked list reverse and two point method can be very useful when you want to perform some operations on linked list with constant space complexity.</li>
 <li>Add an additional dummy node in linked list realted problem can be useful.</li>
+<li>The number of factors are usually very small (especially when you compute the factors for all numbers in range 1 to N), the average number of factors for numbers up to N is approximately $\ln N$.</li>
 </ul>
 <h2 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h2><ul>
 <li>During the binary search, if you shrink left&#x2F;right, you should calculate mid towards left&#x2F;right, In the case you need to calculate mid toward right, use <code>mid = (l+r+1) // 2</code>.</li>
@@ -226,6 +224,80 @@
 <li>Scanline algorithm do not need full size array to be allocated, we can also use a dictionary for implementation.</li>
 </ul>
 <h2 id="List-of-Problems"><a href="#List-of-Problems" class="headerlink" title="List of Problems"></a>List of Problems</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/trapping-rain-water-ii/">407. Trapping Rain Water II</a><br><code>t_boundary_reasoning, t_priority_queue</code> same as 2d case, we should always start from the outter boundary and then find the minimum of boundary.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/check-if-digits-are-equal-in-string-after-operations-ii/">3463. Check If Digits Are Equal in String After Operations II</a><br><code>t_math, t_combination, t_modular_multiplicative_inverse, t_euler_theorem, t_analysis</code> how to do compute large number division with modular, when the modulo number is not prime.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-time-to-complete-all-deliveries/">3733. Minimum Time to Complete All Deliveries</a><br><code>t_valid_and_search, t_math, t_greedy, t_gcd</code> exist mathematical solution that can solve the three equations with floor operation in O(1) time, the only time complexity is to compute the lcm&#x2F;gcd.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/">1526. Minimum Number of Increments on Subarrays to Form a Target Array</a><br><code>t_unify_edge_case, t_analysis, t_reverse_thinking</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/next-greater-numerically-balanced-number/">2048. Next Greater Numerically Balanced Number</a><br><code>t_construction, t_greedy, t_first_lexical_greater</code>, can also be solved by first compute a balanced number and then find the best one.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-distinct-subarrays-divisible-by-k-in-sorted-array/">3729. Count Distinct Subarrays Divisible by K in Sorted Array</a><br><code>t_prefix_sum, t_sliding_window, t_distinct_value_subarray</code>, key observation is that, for all position with same value, do not update seen over states.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-operations-to-transform-array/">3724. Minimum Operations to Transform Array</a><br><code>t_analysis, t_interval_merge</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/count-ways-to-choose-coprime-integers-from-rows/">3725. Count Ways to Choose Coprime Integers from Rows</a><br><code>t_inclusion_exclusion, t_count_gcd, t_dynamic_programming</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-sum-of-array-product-of-magical-sequences/">3539. Find Sum of Array Product of Magical Sequences</a><br><code>t_dynamic_programming, t_math, t_combination, t_mask_dp</code> key observation is that how many high bit selected would not affect the 1&#x2F;0 in the lower bit any more.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/contest/weekly-contest-472/problems/longest-balanced-subarray-ii/">3721. Longest Balanced Subarray II</a><br><code>t_segment_tree, t_lazy_update, t_lazy_segment_tree, t_prefix_sum_dp, t_subarray_count_distinct</code> segment tree can be used to query last&#x2F;first element that is bigger&#x2F;smaller than x. In our case, because the prefix sum array over -1&#x2F;0&#x2F;1 will always have continuous values, we can also query first&#x2F;last element that is equal to x. This problem introduce a method to compute the distinct elements over any subarray ending at j, starting from any i&lt;j. This can be a prefix sum and then dynamic updated using DP. The key idea is to move the previous occurred element to current position and update the prefix sum with segment tree. In other words, for all same element, only the last one is kept.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/sum-of-perfect-square-ancestors/">3715. Sum of Perfect Square Ancestors</a><br><code>t_prime_factorization, t_tree_dp</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/longest-balanced-substring-ii/">3714. Longest Balanced Substring II</a><br><code>t_analysis, t_sliding_window, t_prefix_sum</code> maintain a valid dictionary of state codes, and find furthest code that is same to current code.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/lexicographically-smallest-string-after-applying-operations/">1625. Lexicographically Smallest String After Applying Operations</a><br><code>t_analysis, t_math</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-partition-factor/">3710. Maximum Partition Factor</a><br><code>t_valid_and_search, t_bipartite_graph</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-minimum-amount-of-time-to-brew-potions/">3494. Find the Minimum Amount of Time to Brew Potions</a><br><code>t_analysis, t_monotonicity</code> 凸包 + 二分, various solution for this question.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-no-zero-pairs-that-sum-to-n/">3704. Count No-Zero Pairs That Sum to N</a><br><code>t_digit_dp</code> the first digit dp that iterate from lower to higher digit, the choice definition here is very important. Instead of choose from number to fill in current digit, try think of whether or not to borrow from higher position.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/swim-in-rising-water/">778. Swim in Rising Water</a><br><code>t_dijkstra</code> shortest distance - min over sum, min weight - min over max, can handle both edge weight or point weight.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-score-triangulation-of-polygon/">1039. Minimum Score Triangulation of Polygon</a><br><code>t_analysis, t_matrix_chain_multiply</code> actually the matrix chain multiplication problem, need some analysis, greedy not work here.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/distinct-points-reachable-after-substring-removal/">3694. Distinct Points Reachable After Substring Removal</a><br><code>t_sliding_window, t_reverse_thinking, t_invariant_base</code>, can be optimized to O(n-k), which is very impressive.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-zigzag-arrays-ii/">3700. Number of ZigZag Arrays II</a><br><code>t_matrix_power_dp, t_fast_power, t_numpy_int_limit</code> can use object type in numpy to overcome integer 64 bit limitation.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/largest-triangle-area/">812. Largest Triangle Area</a><br><code>t_linear_algebra, t_vector_cross_product</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/xor-after-range-multiplication-queries-ii/">3655. XOR After Range Multiplication Queries II</a><br><code>t_sqrt_algo, t_advanced_line_sweep, t_multiplicative_inverse</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-total-subarray-value-ii/">3691. Maximum Total Subarray Value II</a><br><code>t_range_max, t_range_min, t_monotonicity</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/design-task-manager/">3408. Design Task Manager</a><br><code>t_lazy_update</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/design-a-food-rating-system/">2353. Design a Food Rating System</a><br><code>t_timestamp_trick, t_lazy_update</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/generate-schedule/">3680. Generate Schedule</a><br><code>t_generation, t_analysis</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/partition-array-for-maximum-xor-and-and/">3630. Partition Array for Maximum XOR and AND</a><br><code>t_xor_basis, t_subset_max_xor, t_branch_cut, t_subset_and, t_subset_xor, t_analysis</code> efficient version of max xor implemented.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-xor-of-subsequences/">3681. Maximum XOR of Subsequences</a><br><code>t_xor_basis, t_subset_max_xor</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/">421. Maximum XOR of Two Numbers in an Array</a><br><code>t_bitwise_construction, t_pair_maximize, t_xor</code> build the result from most to least significant bit</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximum-xor-after-operations/">2317. Maximum XOR After Operations </a><br><code>t_analysis</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subsequence-sum-after-capping-elements/">3685. Subsequence Sum After Capping Elements</a><br><code>t_bitset, t_01_backpack</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-operations-to-equalize-binary-string/">3666. Minimum Operations to Equalize Binary String</a><br><code>t_interval_bfs, t_bfs_union_find, t_bfs_optimization</code> very useful trick for optimizing bfs with integer states and interval range based actions.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/partition-array-into-k-distinct-groups/">3659. Partition Array Into K-Distinct Groups</a><br><code>t_max_grouping, t_max_pairing</code>, only need to care about the element appears the most.</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/convert-integer-to-the-sum-of-two-no-zero-integers/">1317. Convert Integer to the Sum of Two No-Zero Integers</a><br><code>t_analysis</code> reverse addition by value split</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sum-of-beautiful-subsequences/">3671. Sum of Beautiful Subsequences</a><br><code>t_count_gcd, t_binary_index_tree, t_lazy_update, t_inclusion_exclusion, t_inc_seqs, t_max_value_dependent, t_enum_factors, t_harmonic_series, t_timestamp_trick</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/sorted-gcd-pair-queries/">3312. Sorted GCD Pair Queries</a><br><code>t_max_value_dependent, t_count_gcd, t_inclusion_exclusion, t_valid_and_search</code></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-product-of-two-integers-with-no-common-bits/submissions/658640533/">3670. Maximum Product of Two Integers With No Common Bits</a><br><code>t_subset_dp, t_loop_order, t_bitwise_and_zero, t_set_enum</code></p>
+</li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/5TxKeK/">LCP 24. 数字游戏</a><br>The trick of subtracting each element with its position, i.e., <code>nums[i] -= i</code>.</p>
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/maximize-the-number-of-partitions-after-operations/">3003. Maximize the Number of Partitions After Operations</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-number-of-groups-to-create-a-valid-assignment/">2910. Minimum Number of Groups to Create a Valid Assignment</a><br>Sometime, you need to analysis the brute force time complexity carefully.</p>
@@ -368,7 +440,7 @@
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-the-k-sum-of-an-array/">2386. Find the K-Sum of an Array</a><br>Ordered arbitrary size subset enumeration, this is not like LC982, which is binary mask based. Specifically, define the two subsets of current set <code>S</code> as <code>S + next(max(S))</code> and <code>S - max(S) + next(max(S))</code>, we can form an recursive tree that involves all subsets of given array. Here, $next(\cdot)$ means the immediate next element that is larger than the input in the array. The <code>+/-</code> here means set union or difference. More information can be found <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/33219712/find-k-th-minimum-sum-of-every-possible-subset">here</a>.</p>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/triples-with-bitwise-and-equal-to-zero/">982. Triples with Bitwise AND Equal To Zero</a><br>Binary subset enumeration.</p>
+<li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/triples-with-bitwise-and-equal-to-zero/">982. Triples with Bitwise AND Equal To Zero</a><br>Binary subset enumeration. <code>t_bitwise_and_zero</code></p>
 </li>
 <li><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-interval-to-include-each-query/">1851. Minimum Interval to Include Each Query</a><br><a target="_blank" rel="noopener" href="https://leetcode.com/problems/find-building-where-alice-and-bob-can-meet/">2940. Find Building Where Alice and Bob Can Meet</a><br>Make use of monotonicity in hard questions is a very useful trick. To be more specific, if we process the queries in certain order, we can keep a set of candidates easily by make use of monotonicity.</p>
 </li>
@@ -497,7 +569,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Leon 2024
+                    Copyright &copy; Leon 2025
                     <br>
                     <span id="busuanzi_container_site_pv" style="font-size: 12px;">Page View: <span id="busuanzi_value_site_pv"></span> Times</span>
                 </p>
